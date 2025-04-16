@@ -1,6 +1,5 @@
 package xyz.mackan.registry;
 
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.resource.featuretoggle.FeatureSet;

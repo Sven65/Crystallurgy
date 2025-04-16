@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.gui.ResonanceForgeScreenHandler;
 import xyz.mackan.registry.ModBlockEntities;
+import xyz.mackan.registry.ModBlocks;
 
 public class ResonanceForgeBlockEntity extends BlockEntity implements NamedScreenHandlerFactory {
     private int energy;
@@ -30,7 +31,7 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements NamedScree
 
     @Override
     public Text getDisplayName() {
-        return Text.literal("Test GUI");
+        return Text.translatable(ModBlocks.RESONANCE_FORGE.getTranslationKey());
     }
 
     @Override
