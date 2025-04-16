@@ -1,0 +1,20 @@
+package xyz.mackan.registry;
+
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
+import xyz.mackan.Crystallurgy;
+import xyz.mackan.items.CatalystCrystalItem;
+
+public class ModItems {
+    public static final Item RESONANCE_FORGE = new BlockItem(ModBlocks.RESONANCE_FORGE, new Item.Settings());
+    public static final Item DIAMOND_RESONATOR_CRYSTAL = new CatalystCrystalItem(128);
+
+    public static void register() {
+        Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "resonance_forge"), RESONANCE_FORGE);
+        Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "diamond_resonator_crystal"), DIAMOND_RESONATOR_CRYSTAL);
+    }
+
+}
