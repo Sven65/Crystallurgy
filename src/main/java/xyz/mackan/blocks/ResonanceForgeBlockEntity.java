@@ -21,6 +21,7 @@ import net.minecraft.text.LiteralTextContent;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.Crystallurgy;
 import xyz.mackan.gui.ResonanceForgeScreenHandler;
@@ -40,6 +41,8 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements NamedScree
     private int energyStored;
     private int progress;
 
+    private boolean isDirty = false;
+
 
     private final Inventory inventory = new SimpleInventory(INVENTORY_SIZE);
 
@@ -51,11 +54,13 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements NamedScree
         // Add energy tick, check inputs, process synthesis
         // propertyDelegate.set(0, energyStored);
         // propertyDelegate.set(1, progress);
+
+        this.markDirty();
     }
 
     public void setCatalyst(ItemStack stack) {
         this.inventory.setStack(CATALYST_SLOT, stack);
-        this.markDirty();
+        this.isDirty = true;
     }
     @Nullable
     public ItemStack getCatalyst() {
@@ -64,7 +69,7 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements NamedScree
 
     public void setRawMaterial(ItemStack stack) {
         this.inventory.setStack(RAW_MATERIAL_SLOT, stack);
-        this.markDirty();
+        this.isDirty = true;
     }
 
     @Nullable
@@ -74,7 +79,7 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements NamedScree
 
     public void setOutput(ItemStack stack) {
         this.inventory.setStack(OUTPUT_SLOT, stack);
-        this.markDirty();
+        this.isDirty = true;
     }
 
     @Nullable
@@ -156,7 +161,10 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements NamedScree
     // Mark the block entity dirty whenever its state changes that needs saving or syncing
     @Override
     public void markDirty() {
+        if (!isDirty) return;
+
         Crystallurgy.LOGGER.info("Called mark dirty");
+
 
         if (world == null) {
             Crystallurgy.LOGGER.warn("World is null for block entity at " + pos);
@@ -169,5 +177,8 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements NamedScree
         } else {
             Crystallurgy.LOGGER.warn("Attempted to mark dirty on the client side at " + pos);
         }
+
+        isDirty = false;
+
     }
 }
