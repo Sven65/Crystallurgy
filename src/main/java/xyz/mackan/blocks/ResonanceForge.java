@@ -17,6 +17,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.mackan.Crystallurgy;
+import xyz.mackan.registry.ModBlockEntities;
 
 public class ResonanceForge extends BlockWithEntity {
     public ResonanceForge() {
@@ -31,31 +32,19 @@ public class ResonanceForge extends BlockWithEntity {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return (w, pos, s, be) -> {
-            if (be instanceof ResonanceForgeBlockEntity forge) {
-                forge.tick();
-            }
-        };
+        return world.isClient ? null : checkType(type, ModBlockEntities.RESONANCE_FORGE,
+                (tickerWorld, pos, tickerState, be) -> be.tick());
     }
-
-//    @Override
-//    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-//        if (!world.isClient) {
-//            // This will call the createScreenHandlerFactory method from BlockWithEntity, which will return our blockEntity casted to
-//            // a namedScreenHandlerFactory. If your block class does not extend BlockWithEntity, it needs to implement createScreenHandlerFactory.
-//            NamedScreenHandlerFactory screenHandlerFactory = state.createScreenHandlerFactory(world, pos);
-//
-//            if (screenHandlerFactory != null) {
-//                // With this call the server will request the client to open the appropriate Screenhandler
-//                player.openHandledScreen(screenHandlerFactory);
-//            }
-//        }
-//        return ActionResult.SUCCESS;
-//    }
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!world.isClient) {
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+
+            Crystallurgy.LOGGER.info("Block ent" + blockEntity);
+
+            if (blockEntity != null) blockEntity.setWorld(world);
+
             NamedScreenHandlerFactory screenHandlerFactory = state.createScreenHandlerFactory(world, pos);
 
             Crystallurgy.LOGGER.info("Opening? " + screenHandlerFactory);

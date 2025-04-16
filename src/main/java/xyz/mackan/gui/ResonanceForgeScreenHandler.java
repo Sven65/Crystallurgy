@@ -7,19 +7,21 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
 import xyz.mackan.Crystallurgy;
 import xyz.mackan.blocks.ResonanceForgeBlockEntity;
 import xyz.mackan.registry.ModScreens;
 
 public class ResonanceForgeScreenHandler extends ScreenHandler {
-    private final ResonanceForgeBlockEntity forge;
     private final Inventory inventory;
-    private final Slot rawMaterialSlot;
+    private final ResonanceForgeBlockEntity forge;
     private final Slot catalystSlot;
     private final Slot outputSlot;
+    private final PropertyDelegate propertyDelegate;
 
     public ResonanceForgeScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, new SimpleInventory(3));  // 3 slots: raw material, catalyst, output
@@ -27,13 +29,28 @@ public class ResonanceForgeScreenHandler extends ScreenHandler {
 
     public ResonanceForgeScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory) {
         super(ModScreens.RESONANCE_FORGE_SCREEN_HANDLER, syncId);
+        this.forge = new ResonanceForgeBlockEntity(playerInventory.player.getBlockPos(), null);
         this.inventory = inventory;
-        this.forge = new ResonanceForgeBlockEntity(playerInventory.player.getBlockPos(), null);  // Dummy block entity for now
+
+        this.propertyDelegate = forge.getPropertyDelegate();
+
+        this.addProperties(propertyDelegate);
+
 
         // Add slots to the container
-        this.rawMaterialSlot = this.addSlot(new Slot(inventory, 0, 44, 35));  // Raw material slot
-        this.catalystSlot = this.addSlot(new Slot(inventory, 1, 116, 35));  // Catalyst crystal slot
-        this.outputSlot = this.addSlot(new Slot(inventory, 2, 180, 35) {  // Output slot
+        this.catalystSlot = this.addSlot(new Slot(inventory, 0, 26, 35) {
+            @Override
+            public int getMaxItemCount() {
+                return 1;
+            }
+
+            @Override
+            public boolean canInsert(ItemStack stack) {
+                return super.canInsert(stack);
+            }
+        });  // Raw material slot
+        Slot rawMaterialSlot = this.addSlot(new Slot(inventory, 1, 51, 35));  // Catalyst crystal slot
+        this.outputSlot = this.addSlot(new Slot(inventory, 2, 112, 35) {  // Output slot
             @Override
             public boolean canInsert(ItemStack stack) {
                 return false;  // The player can’t insert into the output
@@ -51,6 +68,39 @@ public class ResonanceForgeScreenHandler extends ScreenHandler {
         }
     }
 
+    public int getEnergy() {
+        return propertyDelegate.get(0);
+    }
+
+    public int getProgress() {
+        return propertyDelegate.get(1);
+    }
+
+    @Override
+    public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
+        if (slotIndex < 0 || slotIndex >= this.slots.size()) {
+            return;
+        }
+
+        Slot slot = this.slots.get(slotIndex);
+
+        switch (slotIndex) {
+            case 0 -> {
+                // Catalyst
+                ItemStack stack = slot.getStack();
+                this.forge.setCatalyst(stack);
+            }
+            case 1 -> {
+                // Raw Material
+                ItemStack stack = slot.getStack();
+                this.forge.setRawMaterial(stack);
+            }
+        }
+
+
+        super.onSlotClick(slotIndex, button, actionType, player);
+    }
+
     @Override
     public boolean canUse(PlayerEntity player) {
         return true;
@@ -59,14 +109,15 @@ public class ResonanceForgeScreenHandler extends ScreenHandler {
 
     @Override
     public ItemStack quickMove(PlayerEntity player, int slot) {
+        // TODO: Fix this cuz it'll crash otherwise.
+        // See: https://wiki.fabricmc.net/tutorial:screenhandler
         return null;
     }
 
     @Override
     public void onClosed(PlayerEntity player) {
         super.onClosed(player);
-        // This is where we can remove or save item stacks when the screen is closed.
-        //Inventories.clearAll(this.inventory);
+        this.forge.markDirty();
     }
 
     public ResonanceForgeBlockEntity getForge() {
