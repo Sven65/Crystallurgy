@@ -1,9 +1,6 @@
-package xyz.mackan.blocks;
+package xyz.mackan.crystallurgy.blocks;
 
-import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
@@ -16,8 +13,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.mackan.Crystallurgy;
-import xyz.mackan.registry.ModBlockEntities;
+import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.registry.ModBlockEntities;
 
 public class ResonanceForge extends BlockWithEntity {
     public ResonanceForge() {

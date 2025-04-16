@@ -1,11 +1,11 @@
-package xyz.mackan.registry;
+package xyz.mackan.crystallurgy.registry;
 
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import xyz.mackan.Crystallurgy;
-import xyz.mackan.blocks.ResonanceForgeBlockEntity;
+import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.blocks.ResonanceForgeBlockEntity;
 
 public class ModBlockEntities {
     public static BlockEntityType<ResonanceForgeBlockEntity> RESONANCE_FORGE;

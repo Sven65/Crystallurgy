@@ -1,11 +1,9 @@
-package xyz.mackan.blocks;
+package xyz.mackan.crystallurgy.blocks;
 
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
@@ -17,17 +15,13 @@ import net.minecraft.screen.ArrayPropertyDelegate;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.LiteralTextContent;
 import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import xyz.mackan.Crystallurgy;
-import xyz.mackan.gui.ResonanceForgeScreenHandler;
-import xyz.mackan.registry.ModBlockEntities;
-import xyz.mackan.registry.ModBlocks;
-import xyz.mackan.util.DefaultedListInventoryHelper;
+import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.gui.ResonanceForgeScreenHandler;
+import xyz.mackan.crystallurgy.registry.ModBlockEntities;
+import xyz.mackan.crystallurgy.registry.ModBlocks;
 
 public class ResonanceForgeBlockEntity extends BlockEntity implements NamedScreenHandlerFactory {
     private static final int CATALYST_SLOT = 0;

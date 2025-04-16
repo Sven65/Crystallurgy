@@ -1,4 +1,4 @@
-package xyz.mackan.util;
+package xyz.mackan.crystallurgy.util;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;

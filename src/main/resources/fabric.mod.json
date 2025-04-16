@@ -16,13 +16,13 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"xyz.mackan.Crystallurgy"
+          "xyz.mackan.crystallurgy.Crystallurgy"
 		],
 		"client": [
-			"xyz.mackan.CrystallurgyClient"
+			"xyz.mackan.crystallurgy.CrystallurgyClient"
 		],
 		"fabric-datagen": [
-			"xyz.mackan.CrystallurgyDataGenerator"
+			"xyz.mackan.crystallurgy.CrystallurgyDataGenerator"
 		]
 	},
 	"mixins": [

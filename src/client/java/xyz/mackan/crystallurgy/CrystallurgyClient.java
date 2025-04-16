@@ -1,9 +1,9 @@
-package xyz.mackan;
+package xyz.mackan.crystallurgy;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
-import xyz.mackan.gui.ResonanceForgeScreen;
-import xyz.mackan.registry.ModScreens;
+import xyz.mackan.crystallurgy.gui.ResonanceForgeScreen;
+import xyz.mackan.crystallurgy.registry.ModScreens;
 
 public class CrystallurgyClient implements ClientModInitializer {
 	@Override

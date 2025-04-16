@@ -1,4 +1,4 @@
-package xyz.mackan.items;
+package xyz.mackan.crystallurgy.items;
 
 import net.minecraft.item.Item;
 

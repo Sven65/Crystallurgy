@@ -1,4 +1,4 @@
-package xyz.mackan.mixin.client;
+package xyz.mackan.crystallurgy.client;
 
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;

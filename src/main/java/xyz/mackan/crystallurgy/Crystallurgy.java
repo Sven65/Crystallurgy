@@ -1,20 +1,13 @@
-package xyz.mackan;
+package xyz.mackan.crystallurgy;
 
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.mackan.gui.ResonanceForgeScreenHandler;
-import xyz.mackan.registry.ModBlockEntities;
-import xyz.mackan.registry.ModBlocks;
-import xyz.mackan.registry.ModItems;
-import xyz.mackan.registry.ModScreens;
+import xyz.mackan.crystallurgy.registry.ModBlockEntities;
+import xyz.mackan.crystallurgy.registry.ModBlocks;
+import xyz.mackan.crystallurgy.registry.ModItems;
+import xyz.mackan.crystallurgy.registry.ModScreens;
 
 public class Crystallurgy implements ModInitializer {
 	public static final String MOD_ID = "crystallurgy";

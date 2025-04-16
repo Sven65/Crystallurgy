@@ -1,20 +1,16 @@
-package xyz.mackan.gui;
+package xyz.mackan.crystallurgy.gui;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import xyz.mackan.Crystallurgy;
-import xyz.mackan.blocks.ResonanceForgeBlockEntity;
-import xyz.mackan.registry.ModScreens;
+import xyz.mackan.crystallurgy.blocks.ResonanceForgeBlockEntity;
+import xyz.mackan.crystallurgy.registry.ModScreens;
 
 public class ResonanceForgeScreenHandler extends ScreenHandler {
     private final Inventory inventory;

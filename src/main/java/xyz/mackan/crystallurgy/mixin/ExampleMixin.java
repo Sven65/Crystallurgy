@@ -1,4 +1,4 @@
-package xyz.mackan.mixin;
+package xyz.mackan.crystallurgy.mixin;
 
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;

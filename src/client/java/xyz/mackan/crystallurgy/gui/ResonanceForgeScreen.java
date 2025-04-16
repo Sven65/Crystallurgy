@@ -1,15 +1,12 @@
-package xyz.mackan.gui;
+package xyz.mackan.crystallurgy.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import xyz.mackan.Crystallurgy;
+import xyz.mackan.crystallurgy.Crystallurgy;
 
 public class ResonanceForgeScreen extends HandledScreen<ResonanceForgeScreenHandler> {
     private static final Identifier TEXTURE = new Identifier(Crystallurgy.MOD_ID, "textures/gui/resonance_forge.png");

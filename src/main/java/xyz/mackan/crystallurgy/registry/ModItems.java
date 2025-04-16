@@ -1,12 +1,12 @@
-package xyz.mackan.registry;
+package xyz.mackan.crystallurgy.registry;
 
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import xyz.mackan.Crystallurgy;
-import xyz.mackan.items.CatalystCrystalItem;
+import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.items.CatalystCrystalItem;
 
 public class ModItems {
     public static final Item RESONANCE_FORGE = new BlockItem(ModBlocks.RESONANCE_FORGE, new Item.Settings());
