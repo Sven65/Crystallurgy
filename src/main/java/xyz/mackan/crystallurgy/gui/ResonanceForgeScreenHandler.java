@@ -1,122 +1,105 @@
 package xyz.mackan.crystallurgy.gui;
 
+
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ArrayPropertyDelegate;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
 import xyz.mackan.crystallurgy.blocks.ResonanceForgeBlockEntity;
 import xyz.mackan.crystallurgy.registry.ModScreens;
 
+
 public class ResonanceForgeScreenHandler extends ScreenHandler {
+
     private final Inventory inventory;
-    private final ResonanceForgeBlockEntity forge;
-    private final Slot catalystSlot;
-    private final Slot outputSlot;
     private final PropertyDelegate propertyDelegate;
+    public final ResonanceForgeBlockEntity forgeBlockEntity;
 
-    public ResonanceForgeScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, new SimpleInventory(3));  // 3 slots: raw material, catalyst, output
+    public ResonanceForgeScreenHandler(int syncId, PlayerInventory inventory, PacketByteBuf buf) {
+        this(syncId, inventory, inventory.player.getWorld().getBlockEntity(buf.readBlockPos()), 
+                new ArrayPropertyDelegate(3));
     }
 
-    public ResonanceForgeScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory) {
+
+    public ResonanceForgeScreenHandler(int syncId, PlayerInventory playerInventory, BlockEntity blockEntity, PropertyDelegate arrayPropertyDelegate) {
         super(ModScreens.RESONANCE_FORGE_SCREEN_HANDLER, syncId);
-        this.forge = new ResonanceForgeBlockEntity(playerInventory.player.getBlockPos(), null);
-        this.inventory = inventory;
+        checkSize((Inventory) blockEntity, 3);
+        this.inventory = ((Inventory) blockEntity);
+        inventory.onOpen(playerInventory.player);
+        this.propertyDelegate = arrayPropertyDelegate;
+        this.forgeBlockEntity = ((ResonanceForgeBlockEntity) blockEntity);
 
-        this.propertyDelegate = forge.getPropertyDelegate();
+        // TODO: Slot verifications, i.e. slot 0 accepts only one catalyst
+        this.addSlot(new Slot(inventory, 0, 26, 35));
+        this.addSlot(new Slot(inventory, 1, 51, 35));
+        this.addSlot(new Slot(inventory, 2, 112, 35));
 
-        this.addProperties(propertyDelegate);
+        addPlayerInventory(playerInventory);
+        addPlayerHotbar(playerInventory);
 
-
-        // Add slots to the container
-        this.catalystSlot = this.addSlot(new Slot(inventory, 0, 26, 35) {
-            @Override
-            public int getMaxItemCount() {
-                return 1;
-            }
-
-            @Override
-            public boolean canInsert(ItemStack stack) {
-                return super.canInsert(stack);
-            }
-        });  // Raw material slot
-        Slot rawMaterialSlot = this.addSlot(new Slot(inventory, 1, 51, 35));  // Catalyst crystal slot
-        this.outputSlot = this.addSlot(new Slot(inventory, 2, 112, 35) {  // Output slot
-            @Override
-            public boolean canInsert(ItemStack stack) {
-                return false;  // The player can’t insert into the output
-            }
-        });
-
-        // Player inventory
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-            }
-        }
-        for (int i = 0; i < 9; i++) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
-        }
+        addProperties(arrayPropertyDelegate);
     }
 
-    public int getEnergy() {
-        return propertyDelegate.get(0);
+    public boolean isCrafting() {
+        return propertyDelegate.get(0) > 0;
     }
 
-    public int getProgress() {
-        return propertyDelegate.get(1);
+    public int getScaledProgress() {
+        int progress = this.propertyDelegate.get(0);
+        int maxProgress = this.propertyDelegate.get(1);
+
+        int progressArrowSize = 22;
+
+        return maxProgress != 0 && progress != 0 ? progress * progressArrowSize / maxProgress : 0;
     }
 
     @Override
-    public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
-        if (slotIndex < 0 || slotIndex >= this.slots.size()) {
-            return;
+    public ItemStack quickMove(PlayerEntity player, int invSlot) {
+        ItemStack newStack = ItemStack.EMPTY;
+        Slot slot = this.slots.get(invSlot);
+        if (slot != null && slot.hasStack()) {
+            ItemStack originalStack = slot.getStack();
+            newStack = originalStack.copy();
+            if (invSlot < this.inventory.size()) {
+                if (!this.insertItem(originalStack, this.inventory.size(), this.slots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.insertItem(originalStack, 0, this.inventory.size(), false)) {
+                return ItemStack.EMPTY;
+            }
+
+            if (originalStack.isEmpty()) {
+                slot.setStack(ItemStack.EMPTY);
+            } else {
+                slot.markDirty();
+            }
         }
 
-        Slot slot = this.slots.get(slotIndex);
-
-        switch (slotIndex) {
-            case 0 -> {
-                // Catalyst
-                ItemStack stack = slot.getStack();
-                this.forge.setCatalyst(stack);
-            }
-            case 1 -> {
-                // Raw Material
-                ItemStack stack = slot.getStack();
-                this.forge.setRawMaterial(stack);
-            }
-        }
-
-
-        super.onSlotClick(slotIndex, button, actionType, player);
+        return newStack;
     }
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return true;
-        //return this.forge.canPlayerUse(player);
+        return this.inventory.canPlayerUse(player);
     }
 
-    @Override
-    public ItemStack quickMove(PlayerEntity player, int slot) {
-        // TODO: Fix this cuz it'll crash otherwise.
-        // See: https://wiki.fabricmc.net/tutorial:screenhandler
-        return null;
+    private void addPlayerInventory(PlayerInventory playerInventory) {
+        for (int i = 0; i < 3; i++) {
+            for (int l = 0; l < 9; l++) {
+                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 84 + i * 18));
+            }
+        }
     }
 
-    @Override
-    public void onClosed(PlayerEntity player) {
-        super.onClosed(player);
-        this.forge.markDirty();
-    }
-
-    public ResonanceForgeBlockEntity getForge() {
-        return this.forge;
+    private void addPlayerHotbar(PlayerInventory playerInventory) {
+        for (int i = 0; i < 9; i++) {
+            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
+        }
     }
 }

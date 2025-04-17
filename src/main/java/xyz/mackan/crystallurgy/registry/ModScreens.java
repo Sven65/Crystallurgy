@@ -1,5 +1,6 @@
 package xyz.mackan.crystallurgy.registry;
 
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.resource.featuretoggle.FeatureSet;
@@ -9,9 +10,11 @@ import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.gui.ResonanceForgeScreenHandler;
 
 public class ModScreens {
-    public static ScreenHandlerType<ResonanceForgeScreenHandler> RESONANCE_FORGE_SCREEN_HANDLER;
+    public static ScreenHandlerType<ResonanceForgeScreenHandler> RESONANCE_FORGE_SCREEN_HANDLER = Registry.register(
+            Registries.SCREEN_HANDLER,
+            Identifier.of(Crystallurgy.MOD_ID, "resonance_forge"),
+            new ExtendedScreenHandlerType<>(ResonanceForgeScreenHandler::new)
+    );
 
-    public static void register() {
-        RESONANCE_FORGE_SCREEN_HANDLER = Registry.register(Registries.SCREEN_HANDLER, Identifier.of(Crystallurgy.MOD_ID, "resonance_forge"), new ScreenHandlerType<>(ResonanceForgeScreenHandler::new, FeatureSet.empty()));
-    }
+    public static void register() {}
 }
