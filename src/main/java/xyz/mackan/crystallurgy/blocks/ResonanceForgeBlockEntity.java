@@ -3,6 +3,7 @@ package xyz.mackan.crystallurgy.blocks;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
@@ -18,6 +19,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.util.math.random.RandomSplitter;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Crystallurgy;
@@ -140,9 +143,18 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
     }
 
     private void craftItem() {
-        // TODO: REmove durability of catalyst
-
         Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
+        ItemStack catalystStack = this.getStack(CATALYST_SLOT);
+
+        if(catalystStack.getDamage() <= catalystStack.getMaxDamage()) {
+            Crystallurgy.LOGGER.info("Adding damage to item");
+            catalystStack.setDamage(catalystStack.getDamage() + 1);
+            //this.setStack(CATALYST_SLOT, catalystStack);
+        }
+
+        if (catalystStack.getMaxDamage() == catalystStack.getDamage()) {
+            this.removeStack(CATALYST_SLOT, 1);
+        }
 
         this.removeStack(RAW_MATERIAL_SLOT, 1);
 
