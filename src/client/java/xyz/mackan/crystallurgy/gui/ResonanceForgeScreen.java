@@ -7,10 +7,16 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.util.GUIElement;
 
 public class ResonanceForgeScreen extends HandledScreen<ResonanceForgeScreenHandler> {
     private static final Identifier TEXTURE = new Identifier(Crystallurgy.MOD_ID, "textures/gui/resonance_forge.png");
     private final ResonanceForgeScreenHandler handler;
+
+    private static final GUIElement ENERGY_BAR = new GUIElement(162, 9, 5, 64);
+    private static final GUIElement PROGRESS_ARROW = new GUIElement(75, 35, 22, 17);
+
+
 
     public ResonanceForgeScreen(ResonanceForgeScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -35,12 +41,27 @@ public class ResonanceForgeScreen extends HandledScreen<ResonanceForgeScreenHand
         context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
 
         renderProgressArrow(context, x, y);
+        renderRFBar(context, x, y);
     }
 
     private void renderProgressArrow(DrawContext context, int x, int y) {
         if (handler.isCrafting()) {
-            context.drawTexture(TEXTURE, x + 75, y + 35, 176, 0, 8, handler.getScaledProgress());
+            context.drawTexture(TEXTURE,
+                    x + PROGRESS_ARROW.x(), y + PROGRESS_ARROW.y(),
+                    176, 0,
+                    handler.getScaledProgress(), PROGRESS_ARROW.height()
+            );
         }
+    }
+
+    private void renderRFBar(DrawContext context, int x, int y) {
+        int barBottom = y + ENERGY_BAR.y() + ENERGY_BAR.height();  // Bottom of the energy bar
+        int barTop = barBottom - handler.getScaledEnergyBar();      // Top of the energy bar (drawn upwards)
+
+        context.fill(x + ENERGY_BAR.x(), barTop,
+                x + ENERGY_BAR.x() + ENERGY_BAR.width(),
+                barBottom,
+                0x80FF0000);
     }
 
     @Override

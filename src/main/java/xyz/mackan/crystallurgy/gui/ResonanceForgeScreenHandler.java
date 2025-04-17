@@ -23,7 +23,7 @@ public class ResonanceForgeScreenHandler extends ScreenHandler {
 
     public ResonanceForgeScreenHandler(int syncId, PlayerInventory inventory, PacketByteBuf buf) {
         this(syncId, inventory, inventory.player.getWorld().getBlockEntity(buf.readBlockPos()), 
-                new ArrayPropertyDelegate(3));
+                new ArrayPropertyDelegate(4));
     }
 
 
@@ -57,6 +57,15 @@ public class ResonanceForgeScreenHandler extends ScreenHandler {
         int progressArrowSize = 22;
 
         return maxProgress != 0 && progress != 0 ? progress * progressArrowSize / maxProgress : 0;
+    }
+
+    public int getScaledEnergyBar() {
+        int storedEnergy = this.propertyDelegate.get(2);
+        int maxEnergy = this.propertyDelegate.get(3);
+
+        int energyBarSize = 64;
+
+        return maxEnergy != 0 && storedEnergy != 0 ? storedEnergy * energyBarSize / maxEnergy : 0;
     }
 
     @Override

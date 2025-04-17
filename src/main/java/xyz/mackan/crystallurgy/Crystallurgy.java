@@ -4,10 +4,7 @@ import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.mackan.crystallurgy.registry.ModBlockEntities;
-import xyz.mackan.crystallurgy.registry.ModBlocks;
-import xyz.mackan.crystallurgy.registry.ModItems;
-import xyz.mackan.crystallurgy.registry.ModScreens;
+import xyz.mackan.crystallurgy.registry.*;
 
 public class Crystallurgy implements ModInitializer {
 	public static final String MOD_ID = "crystallurgy";
@@ -29,6 +26,7 @@ public class Crystallurgy implements ModInitializer {
 		ModBlocks.register();
 		ModBlockEntities.register();
 		ModItems.register();
+		ModRecipes.register();
 
 	}
 }
