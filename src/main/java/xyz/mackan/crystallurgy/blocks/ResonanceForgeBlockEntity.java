@@ -19,6 +19,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Crystallurgy;
@@ -133,6 +134,67 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
             this.resetProgress();
             markDirty(world, pos, state);
         }
+    }
+
+    @Override
+    public boolean canInsert(int slot, ItemStack stack, @Nullable Direction side) {
+        Direction localDir = this.getWorld().getBlockState(this.pos).get(ResonanceForge.FACING);
+
+        if (side == Direction.UP || side == Direction.DOWN) {
+            return false;
+        }
+
+        // Insert top 1
+        // Right insert 1
+        // Left insert 0
+
+        // TODO: Check item tag on slot 0 to only allow crystals
+
+        return switch (localDir) {
+            case EAST ->
+                    side.rotateYClockwise() == Direction.NORTH && slot == 1 ||
+                            side.rotateYClockwise() == Direction.EAST && slot == 1 ||
+                            side.rotateYClockwise() == Direction.WEST && slot == 0;
+            case SOUTH ->
+                    side == Direction.NORTH && slot == 1 ||
+                            side == Direction.EAST && slot == 1 ||
+                            side == Direction.WEST && slot == 0;
+            case WEST ->
+                    side.rotateYCounterclockwise() == Direction.NORTH && slot == 1 ||
+                            side.rotateYCounterclockwise() == Direction.EAST && slot == 1 ||
+                            side.rotateYCounterclockwise() == Direction.WEST && slot == 0;
+            default ->
+                    side.getOpposite() == Direction.NORTH && slot == 1 ||
+                            side.getOpposite() == Direction.EAST && slot == 1 ||
+                            side.getOpposite() == Direction.WEST && slot == 0;
+        };
+    }
+
+    @Override
+    public boolean canExtract(int slot, ItemStack stack, Direction side) {
+        Direction localDir = this.getWorld().getBlockState(this.pos).get(ResonanceForge.FACING);
+
+        if(side == Direction.UP) {
+            return false;
+        }
+
+        // Down extract 2
+        if(side == Direction.DOWN) {
+            return slot == 2;
+        }
+
+        // bottom extract 2
+        // right extract 2
+        return switch (localDir) {
+            case EAST -> side.rotateYClockwise() == Direction.SOUTH && slot == 2 ||
+                    side.rotateYClockwise() == Direction.EAST && slot == 2;
+            case SOUTH -> side == Direction.SOUTH && slot == 2 ||
+                    side == Direction.EAST && slot == 2;
+            case WEST -> side.rotateYCounterclockwise() == Direction.SOUTH && slot == 2 ||
+                    side.rotateYCounterclockwise() == Direction.EAST && slot == 2;
+            default -> side.getOpposite() == Direction.SOUTH && slot == 2 ||
+                    side.getOpposite() == Direction.EAST && slot == 2;
+        };
     }
 
     private void resetProgress() {

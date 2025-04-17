@@ -2,9 +2,9 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "main",
-		"1": "bowl",
-		"2": "vent_right",
+		"0": "crystallurgy:block/main",
+		"1": "crystallurgy:block/bowl",
+		"2": "crystallurgy:block/vent_right",
 		"particle": "main"
 	},
 	"elements": [

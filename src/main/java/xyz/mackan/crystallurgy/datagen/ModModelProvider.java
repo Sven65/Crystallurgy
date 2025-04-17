@@ -15,7 +15,9 @@ public class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-        blockStateModelGenerator.registerSimpleState(ModBlocks.RESONANCE_FORGE);
+        //blockStateModelGenerator.registerSimpleState(ModBlocks.RESONANCE_FORGE);
+        blockStateModelGenerator.registerNorthDefaultHorizontalRotation(ModBlocks.RESONANCE_FORGE);
+
     }
 
     @Override
