@@ -13,14 +13,14 @@ import xyz.mackan.crystallurgy.registry.ModItems;
 import java.util.concurrent.CompletableFuture;
 
 public class ModItemTagProvider extends FabricTagProvider.ItemTagProvider {
+    public static final TagKey<Item> RESONATOR_CRYSTALS = TagKey.of(RegistryKeys.ITEM, new Identifier(Crystallurgy.MOD_ID, "resonator_crystals"));
+
     public ModItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
         super(output, completableFuture);
     }
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
-        TagKey<Item> RESONATOR_CRYSTALS = TagKey.of(RegistryKeys.ITEM, new Identifier(Crystallurgy.MOD_ID, "resonator_crystals"));
-
         getOrCreateTagBuilder(RESONATOR_CRYSTALS)
                 .add(ModItems.DIAMOND_RESONATOR_CRYSTAL);
     }

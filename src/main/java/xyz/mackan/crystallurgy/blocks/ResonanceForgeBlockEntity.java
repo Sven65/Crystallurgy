@@ -19,8 +19,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.util.math.random.RandomSplitter;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Crystallurgy;
@@ -28,7 +26,6 @@ import xyz.mackan.crystallurgy.gui.ResonanceForgeScreenHandler;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
 import xyz.mackan.crystallurgy.registry.ModBlocks;
-import xyz.mackan.crystallurgy.registry.ModItems;
 import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
 import java.util.Optional;

@@ -12,6 +12,7 @@ import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import xyz.mackan.crystallurgy.blocks.ResonanceForgeBlockEntity;
+import xyz.mackan.crystallurgy.datagen.ModItemTagProvider;
 import xyz.mackan.crystallurgy.registry.ModScreens;
 
 
@@ -35,10 +36,19 @@ public class ResonanceForgeScreenHandler extends ScreenHandler {
         this.propertyDelegate = arrayPropertyDelegate;
         this.forgeBlockEntity = ((ResonanceForgeBlockEntity) blockEntity);
 
-        // TODO: Slot verifications, i.e. slot 0 accepts only one catalyst
-        this.addSlot(new Slot(inventory, 0, 26, 35));
+        this.addSlot(new Slot(inventory, 0, 26, 35) {
+            @Override
+            public boolean canInsert(ItemStack stack) {
+                return stack.isIn(ModItemTagProvider.RESONATOR_CRYSTALS);
+            }
+        });
         this.addSlot(new Slot(inventory, 1, 51, 35));
-        this.addSlot(new Slot(inventory, 2, 112, 35));
+        this.addSlot(new Slot(inventory, 2, 112, 35) {
+            @Override
+            public boolean canInsert(ItemStack stack) {
+                return false;
+            }
+        });
 
         addPlayerInventory(playerInventory);
         addPlayerHotbar(playerInventory);
