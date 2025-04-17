@@ -25,6 +25,9 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         Items.DIAMOND,
                         1
                 )
+                .ticks(60 * 20)
+                .energyPerTick(100)
                 .offerTo(consumer, new Identifier(Crystallurgy.MOD_ID, "resonance_forge_diamond"));
+
     }
 }

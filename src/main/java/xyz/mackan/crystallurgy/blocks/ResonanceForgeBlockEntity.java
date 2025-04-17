@@ -41,7 +41,7 @@ import java.util.Optional;
 public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(3, ItemStack.EMPTY);
 
-    public final SimpleEnergyStorage energyStorage = new SimpleEnergyStorage(10000, 32, 32) {
+    public final SimpleEnergyStorage energyStorage = new SimpleEnergyStorage(100000, 1000, 200) {
         @Override
         protected void onFinalCommit() {
             markDirty();
@@ -139,6 +139,7 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
             return;
         }
 
+
 //        if (hasEnergyItem(entity)) {
 //            try (Transaction transaction = Transaction.openOuter()) {
 //                entity.energyStorage.insert(16, transaction);
@@ -148,8 +149,14 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
 
         if (isOutputSlotEmptyOrReceivable()) {
             if (this.hasRecipe(entity) & hasEnoughEnergy(entity)) {
+                Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
+
+                int recipeTicks = recipe.get().getTicks();
+                
+                this.propertyDelegate.set(1, recipeTicks);
+
                 progress++;
-                extractEnergy(entity);
+                extractEnergy(entity, recipe.get().getEnergyPerTick());
                 markDirty(world, pos, state);
 
                 if (hasCraftingFinished()) {
@@ -165,18 +172,19 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
         }
     }
 
-    private static void extractEnergy(ResonanceForgeBlockEntity entity) {
+    private static void extractEnergy(ResonanceForgeBlockEntity entity, long amount) {
         try (Transaction transaction = Transaction.openOuter()) {
-            // TODO: Make this check RF from recipe
-
-            entity.energyStorage.extract(32, transaction);
+            entity.energyStorage.extract(amount, transaction);
             transaction.commit();
         }
     }
 
-    private static boolean hasEnoughEnergy(ResonanceForgeBlockEntity entity) {
-        // TODO: Make this check RF from recipe
-        return entity.energyStorage.amount >= 32;
+    private boolean hasEnoughEnergy(ResonanceForgeBlockEntity entity) {
+        if (!this.hasRecipe(entity)) return false;
+
+        Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
+
+        return entity.energyStorage.amount >= recipe.get().getEnergyPerTick();
     }
 
     @Override
@@ -242,6 +250,7 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
 
     private void resetProgress() {
         this.progress = 0;
+        this.maxProgress = 100;
     }
 
     private void craftItem() {

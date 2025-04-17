@@ -11,8 +11,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
-import xyz.mackan.crystallurgy.blocks.ResonanceForge;
-
 import java.util.List;
 
 public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
@@ -20,10 +18,15 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
     private final ItemStack output;
     private final List<Ingredient> recipeItems;
 
-    public ResonanceForgeRecipe(Identifier id, ItemStack output, DefaultedList<Ingredient> recipeItems) {
+    private final int energyPerTick;
+    private final int ticks;
+
+    public ResonanceForgeRecipe(Identifier id, ItemStack output, DefaultedList<Ingredient> recipeItems, int energyPerTick, int ticks) {
         this.id = id;
         this.output = output;
         this.recipeItems = recipeItems;
+        this.energyPerTick = energyPerTick;
+        this.ticks = ticks;
     }
 
     @Override
@@ -60,6 +63,14 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
         return list;
     }
 
+    public int getTicks () {
+        return this.ticks;
+    }
+
+    public int getEnergyPerTick() {
+        return this.energyPerTick;
+    }
+
     @Override
     public Identifier getId() {
         return null;
@@ -88,6 +99,11 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
         @Override
         public ResonanceForgeRecipe read(Identifier id, JsonObject json) {
             ItemStack output = ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "output"));
+            JsonObject energy = JsonHelper.getObject(json, "energy");
+
+            int ticks = JsonHelper.getInt(energy, "ticks");
+            int energyPerTick = JsonHelper.getInt(energy, "energy_per_tick");
+
 
             JsonArray ingredients = JsonHelper.getArray(json, "ingredients");
             DefaultedList<Ingredient> inputs = DefaultedList.ofSize(2, Ingredient.EMPTY);
@@ -96,7 +112,7 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
             }
 
-            return new ResonanceForgeRecipe(id, output, inputs);
+            return new ResonanceForgeRecipe(id, output, inputs, energyPerTick, ticks);
         }
 
         @Override
@@ -108,7 +124,11 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
             }
 
             ItemStack output = buf.readItemStack();
-            return new ResonanceForgeRecipe(id, output, inputs);
+
+            int ticks = buf.readInt();
+            int energyPerTick = buf.readInt();
+
+            return new ResonanceForgeRecipe(id, output, inputs, ticks, energyPerTick);
         }
 
         @Override
@@ -119,6 +139,14 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
             }
 
             buf.writeItemStack(recipe.getOutput(null));
+
+            buf.writeInt(recipe.ticks);
+            buf.writeInt(recipe.energyPerTick);
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[RECIPE] Ingredients: %s, Output: %s, Ticks: %s, Energy Per Tick: %s", this.getIngredients(), this.output, this.ticks, this.energyPerTick);
     }
 }

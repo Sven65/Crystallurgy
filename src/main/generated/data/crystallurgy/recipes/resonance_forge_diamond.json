@@ -1,5 +1,9 @@
 {
   "type": "crystallurgy:resonance_forging",
+  "energy": {
+    "energy_per_tick": 100,
+    "ticks": 1200
+  },
   "ingredients": [
     {
       "item": "crystallurgy:diamond_resonator_crystal"

@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 public class ResonanceForgeRecipeJsonBuilder {
     private final List<Ingredient> ingredients;
     private final ItemStack result;
+    private int energyPerTick;
+    private int ticks;
 
     public ResonanceForgeRecipeJsonBuilder(List<Ingredient> ingredients, ItemStack result) {
         this.ingredients = ingredients;
@@ -24,6 +26,16 @@ public class ResonanceForgeRecipeJsonBuilder {
 
     public static ResonanceForgeRecipeJsonBuilder create(List<Ingredient> ingredients, ItemConvertible resultItem, int count) {
         return new ResonanceForgeRecipeJsonBuilder(ingredients, new ItemStack(resultItem, count));
+    }
+
+    public ResonanceForgeRecipeJsonBuilder energyPerTick(int energyPerTick) {
+        this.energyPerTick = energyPerTick;
+        return this;
+    }
+
+    public ResonanceForgeRecipeJsonBuilder ticks(int ticks) {
+        this.ticks = ticks;
+        return this;
     }
 
     public void offerTo(Consumer<RecipeJsonProvider> exporter, Identifier recipeId) {
@@ -44,6 +56,12 @@ public class ResonanceForgeRecipeJsonBuilder {
                     resultObj.addProperty("count", result.getCount());
                 }
                 json.add("output", resultObj);
+
+                JsonObject energyObject = new JsonObject();
+                energyObject.addProperty("energy_per_tick", energyPerTick);
+                energyObject.addProperty("ticks", ticks);
+
+                json.add("energy", energyObject);
             }
 
             @Override
