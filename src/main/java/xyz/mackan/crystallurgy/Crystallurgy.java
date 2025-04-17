@@ -22,6 +22,7 @@ public class Crystallurgy implements ModInitializer {
 
 		LOGGER.info("Hello Fabric world!");
 
+		ModMessages.register();
 		ModItemGroup.register();
 		ModScreens.register();
 		ModBlocks.register();

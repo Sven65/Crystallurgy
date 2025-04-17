@@ -5,6 +5,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import team.reborn.energy.api.EnergyStorage;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.blocks.ResonanceForgeBlockEntity;
 
@@ -18,5 +19,7 @@ public class ModBlockEntities {
 
     public static void register() {
        Crystallurgy.LOGGER.info("Registering block entities.");
+
+        EnergyStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> blockEntity.energyStorage, RESONANCE_FORGE);
     }
 }

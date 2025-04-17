@@ -70,12 +70,12 @@ public class ResonanceForgeScreenHandler extends ScreenHandler {
     }
 
     public int getScaledEnergyBar() {
-        int storedEnergy = this.propertyDelegate.get(2);
-        int maxEnergy = this.propertyDelegate.get(3);
+        long storedEnergy = this.forgeBlockEntity.energyStorage.amount;
+        long maxEnergy = this.forgeBlockEntity.energyStorage.capacity;
 
         int energyBarSize = 64;
 
-        return maxEnergy != 0 && storedEnergy != 0 ? storedEnergy * energyBarSize / maxEnergy : 0;
+        return (int) (maxEnergy != 0 && storedEnergy != 0 ? storedEnergy * energyBarSize / maxEnergy : 0);
     }
 
     @Override
