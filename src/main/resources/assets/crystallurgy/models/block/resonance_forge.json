@@ -4,7 +4,7 @@
 	"textures": {
 		"0": "main",
 		"1": "bowl",
-		"2": "vent right",
+		"2": "vent_right",
 		"particle": "main"
 	},
 	"elements": [
@@ -904,7 +904,7 @@
 			}
 		},
 		{
-			"name": "vent right",
+			"name": "vent_right",
 			"from": [15, 3, 3],
 			"to": [15.5, 13, 13],
 			"faces": {
@@ -917,7 +917,7 @@
 			}
 		},
 		{
-			"name": "vent left",
+			"name": "vent_left",
 			"from": [0.5, 3, 3],
 			"to": [1, 13, 13],
 			"faces": {
