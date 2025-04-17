@@ -147,9 +147,7 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
         ItemStack catalystStack = this.getStack(CATALYST_SLOT);
 
         if(catalystStack.getDamage() <= catalystStack.getMaxDamage()) {
-            Crystallurgy.LOGGER.info("Adding damage to item");
             catalystStack.setDamage(catalystStack.getDamage() + 1);
-            //this.setStack(CATALYST_SLOT, catalystStack);
         }
 
         if (catalystStack.getMaxDamage() == catalystStack.getDamage()) {
