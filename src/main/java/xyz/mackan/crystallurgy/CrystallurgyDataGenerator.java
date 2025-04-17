@@ -2,10 +2,7 @@ package xyz.mackan.crystallurgy;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import xyz.mackan.crystallurgy.datagen.ModBlockTagProvider;
-import xyz.mackan.crystallurgy.datagen.ModItemTagProvider;
-import xyz.mackan.crystallurgy.datagen.ModModelProvider;
-import xyz.mackan.crystallurgy.datagen.ModRecipeProvider;
+import xyz.mackan.crystallurgy.datagen.*;
 
 public class CrystallurgyDataGenerator implements DataGeneratorEntrypoint {
 	@Override
@@ -16,6 +13,7 @@ public class CrystallurgyDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(ModModelProvider::new);
 		pack.addProvider(ModRecipeProvider::new);
 		pack.addProvider(ModItemTagProvider::new);
+		pack.addProvider(ModLootTableProvider::new);
 
 	}
 }

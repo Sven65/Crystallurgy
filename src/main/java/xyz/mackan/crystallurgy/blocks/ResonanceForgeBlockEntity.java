@@ -152,7 +152,7 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
                 Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
 
                 int recipeTicks = recipe.get().getTicks();
-                
+
                 this.propertyDelegate.set(1, recipeTicks);
 
                 progress++;

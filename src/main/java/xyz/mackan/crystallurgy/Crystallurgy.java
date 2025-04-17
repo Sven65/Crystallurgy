@@ -2,6 +2,11 @@ package xyz.mackan.crystallurgy;
 
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTables;
+import net.minecraft.loot.entry.LootTableEntry;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.mackan.crystallurgy.registry.*;
@@ -29,6 +34,9 @@ public class Crystallurgy implements ModInitializer {
 		ModBlockEntities.register();
 		ModItems.register();
 		ModRecipes.register();
+		ModLootTables.register();
+
+
 
 	}
 }
