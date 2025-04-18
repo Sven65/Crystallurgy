@@ -38,5 +38,14 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .ticks(100)
                 .offerTo(consumer, new Identifier(Crystallurgy.MOD_ID, "cauldron_diamond_crystal"));
 
+
+        CrystalFluidCauldronRecipeJsonBuilder
+                .create(
+                        List.of(Ingredient.ofItems(ModItems.CRYSTAL_SEED), Ingredient.ofItems(Items.GOLD_INGOT)),
+                        ModItems.GOLD_RESONATOR_CRYSTAL,
+                        1
+                )
+                .ticks(100)
+                .offerTo(consumer, new Identifier(Crystallurgy.MOD_ID, "cauldron_gold_crystal"));
     }
 }

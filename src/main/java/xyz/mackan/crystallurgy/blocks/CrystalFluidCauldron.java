@@ -31,7 +31,7 @@ public class CrystalFluidCauldron extends LeveledCauldronBlock implements BlockE
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         super.onEntityCollision(state, world, pos, entity);
 
-        // TODO: Make this check for items with "crystallurgy:growable" item tag
+        // TODO: Make this check for recipes to make sure we only get desireable items in the processing list
         if (entity instanceof ItemEntity) {
             ItemEntity itemEntity = (ItemEntity) entity;
             ItemStack itemStack = itemEntity.getStack();
