@@ -31,9 +31,19 @@ public class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-        itemModelGenerator.register(ModItems.DIAMOND_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.CRYSTAL_SEED, Models.GENERATED);
         itemModelGenerator.register(ModFluids.CRYSTAL_FLUID_BUCKET, Models.GENERATED);
+
+        itemModelGenerator.register(ModItems.COAL_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.IRON_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.GOLD_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.DIAMOND_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.NETHERITE_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.LAPIS_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.EMERALD_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.QUARTZ_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.REDSTONE_RESONATOR_CRYSTAL, Models.GENERATED);
+
 
         registerGrowthCrystal(itemModelGenerator, new Identifier(Crystallurgy.MOD_ID, "item/diamond_crystal_seed"));
     }

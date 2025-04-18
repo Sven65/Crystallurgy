@@ -17,9 +17,18 @@ public class ModItemGroup {
             .displayName(Text.literal("Crystallurgy"))
             .entries(((displayContext, entries) -> {
                 entries.add(ModItems.RESONANCE_FORGE);
-                entries.add(ModItems.DIAMOND_RESONATOR_CRYSTAL);
                 entries.add(ModItems.CRYSTAL_SEED);
                 entries.add(ModFluids.CRYSTAL_FLUID_BUCKET);
+
+                entries.add(ModItems.COAL_RESONATOR_CRYSTAL);
+                entries.add(ModItems.IRON_RESONATOR_CRYSTAL);
+                entries.add(ModItems.GOLD_RESONATOR_CRYSTAL);
+                entries.add(ModItems.DIAMOND_RESONATOR_CRYSTAL);
+                entries.add(ModItems.NETHERITE_RESONATOR_CRYSTAL);
+                entries.add(ModItems.LAPIS_RESONATOR_CRYSTAL);
+                entries.add(ModItems.EMERALD_RESONATOR_CRYSTAL);
+                entries.add(ModItems.QUARTZ_RESONATOR_CRYSTAL);
+                entries.add(ModItems.REDSTONE_RESONATOR_CRYSTAL);
             }))
             .build();
 

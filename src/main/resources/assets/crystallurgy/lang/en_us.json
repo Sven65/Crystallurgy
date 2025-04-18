@@ -1,13 +1,21 @@
 {
   "block.crystallurgy.resonance_forge": "Resonance Forge",
 
-
-
   "item.crystallurgy.resonance_forge": "Resonance Forge",
-  "item.crystallurgy.diamond_resonator_crystal": "Diamond Resonator Crystal",
   "item.crystallurgy.crystal_seed": "Crystal Seed",
   "item.crystallurgy.diamond_crystal_seed": "Diamond Crystal Seed",
   "item.crystallurgy.crystal_fluid_bucket": "Crystal Fluid Bucket",
+
+  "item.crystallurgy.coal_resonator_crystal": "Coal Resonator Crystal",
+  "item.crystallurgy.iron_resonator_crystal": "Iron Resonator Crystal",
+  "item.crystallurgy.gold_resonator_crystal": "Gold Resonator Crystal",
+  "item.crystallurgy.diamond_resonator_crystal": "Diamond Resonator Crystal",
+  "item.crystallurgy.netherite_resonator_crystal": "Netherite Resonator Crystal",
+  "item.crystallurgy.lapis_resonator_crystal": "Lapis Resonator Crystal",
+  "item.crystallurgy.emerald_resonator_crystal": "Emerald Resonator Crystal",
+  "item.crystallurgy.quartz_resonator_crystal": "Quartz Resonator Crystal",
+  "item.crystallurgy.redstone_resonator_crystal": "Redstone Resonator Crystal",
+
 
   "fluid.crystallurgy.crystal_fluid": "Crystal Fluid"
 }
