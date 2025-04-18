@@ -69,6 +69,7 @@ public class ModModelProvider extends FabricModelProvider {
     }
 
 
+    // TODO: Make this not be white, aka actually have color
     private void generateCrystalCauldronBlockState(BlockStateModelGenerator blockStateModelGenerator) {
         Identifier level1 = createCauldronModel("crystal_cauldron_level1",
                 TextureMap.cauldron(new Identifier("minecraft:block/cauldron_inner"))
@@ -76,7 +77,7 @@ public class ModModelProvider extends FabricModelProvider {
                         .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
                         .put(TextureKey.SIDE, new Identifier("minecraft:block/cauldron_side"))
                         .put(TextureKey.PARTICLE, new Identifier("minecraft:block/cauldron_side"))
-                        .put(TextureKey.CONTENT, new Identifier(Crystallurgy.MOD_ID, "block/crystal_fluid_still")),
+                        .put(TextureKey.CONTENT, new Identifier("minecraft:block/water_still")),
                 blockStateModelGenerator
         );
 
@@ -86,7 +87,7 @@ public class ModModelProvider extends FabricModelProvider {
                         .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
                         .put(TextureKey.SIDE, new Identifier("minecraft:block/cauldron_side"))
                         .put(TextureKey.PARTICLE, new Identifier("minecraft:block/cauldron_side"))
-                        .put(TextureKey.CONTENT, new Identifier(Crystallurgy.MOD_ID, "block/crystal_fluid_still")),
+                        .put(TextureKey.CONTENT, new Identifier("minecraft:block/water_still")),
                 blockStateModelGenerator
         );
 
@@ -96,7 +97,7 @@ public class ModModelProvider extends FabricModelProvider {
                         .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
                         .put(TextureKey.SIDE, new Identifier("minecraft:block/cauldron_side"))
                         .put(TextureKey.PARTICLE, new Identifier("minecraft:block/cauldron_side"))
-                        .put(TextureKey.CONTENT, new Identifier(Crystallurgy.MOD_ID, "block/crystal_fluid_still")),
+                        .put(TextureKey.CONTENT, new Identifier("minecraft:block/water_still")),
                 blockStateModelGenerator
         );
 
@@ -124,7 +125,15 @@ public class ModModelProvider extends FabricModelProvider {
             parentId = Optional.of(new Identifier("minecraft:block/template_cauldron_full"));
         }
 
-        Model model = new Model(parentId, Optional.empty(), TextureKey.PARTICLE);
+        Model model = new Model(
+                parentId,
+                Optional.empty(),
+                TextureKey.TOP,
+                TextureKey.BOTTOM,
+                TextureKey.SIDE,
+                TextureKey.PARTICLE,
+                TextureKey.CONTENT
+        );
 
         model.upload(modelId, textureMap, blockStateModelGenerator.modelCollector);
 

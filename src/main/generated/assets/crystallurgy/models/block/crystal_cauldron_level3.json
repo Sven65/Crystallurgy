@@ -1,6 +1,11 @@
 {
   "parent": "minecraft:block/template_cauldron_full",
   "textures": {
-    "particle": "minecraft:block/cauldron_side"
+    "bottom": "minecraft:block/cauldron_bottom",
+    "content": "minecraft:block/water_still",
+    "particle": "minecraft:block/cauldron_side",
+    "side": "minecraft:block/cauldron_side",
+    "top": "minecraft:block/cauldron_top",
+    "inner": "minecraft:block/cauldron_inner"
   }
 }

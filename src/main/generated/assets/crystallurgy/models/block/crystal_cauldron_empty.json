@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/template_cauldron_empty",
-  "textures": {
-    "particle": "minecraft:block/cauldron_side"
-  }
-}
