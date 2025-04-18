@@ -8,6 +8,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -22,6 +23,8 @@ import net.minecraft.world.World;
 import org.apache.commons.compress.utils.Lists;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.datagen.ModBlockTagProvider;
+import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
+import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
 import xyz.mackan.crystallurgy.registry.ModCauldron;
 import xyz.mackan.crystallurgy.registry.ModItems;
@@ -93,7 +96,12 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         isHeating = blockBelow.isIn(ModBlockTagProvider.FLUID_CAULDRON_HEATERS);
 
         // TODO: Make this check recipes, similar to ResonanceForge
-        if (isHeating && !this.itemsBeingProcessed.isEmpty()) {
+        if (isHeating && !this.itemsBeingProcessed.isEmpty() && this.hasRecipe(entity)) {
+            Optional<CrystalFluidCauldronRecipe> recipe = getCurrentRecipe();
+
+            int recipeTicks = recipe.get().getTicks();
+            this.maxProgress = recipeTicks;
+
             progress++;
 
             Crystallurgy.LOGGER.info("Progress is "+progress+"/"+maxProgress);
@@ -104,11 +112,11 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
             if (hasCraftingFinished()) {
                 Crystallurgy.LOGGER.info("Crafting finished");
                 if (!this.itemsBeingProcessed.isEmpty()) {
-                    this.itemsBeingProcessed.get(0).getStack().decrement(1);
-                    this.itemsBeingProcessed.remove(0);
-
                     this.clearFluid(world, pos);
                     this.craftItem(world, pos);
+
+                    this.itemsBeingProcessed.get(0).getStack().decrement(1);
+                    this.itemsBeingProcessed.remove(0);
                     resetProgress();
                 }
             }
@@ -128,36 +136,47 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
     }
 
     private void craftItem(World world, BlockPos pos) {
-        ItemStack itemStack = new ItemStack(ModItems.DIAMOND_RESONATOR_CRYSTAL);
-        itemStack.setCount(1);
+        Optional<CrystalFluidCauldronRecipe> recipe = getCurrentRecipe();
 
-        Crystallurgy.LOGGER.info("Spawning item" + itemStack);
+        if (recipe.isEmpty()) return;
+
+        ItemStack itemStack = recipe.get().getOutput(null);
+
+        Crystallurgy.LOGGER.info("Spawning item{}", itemStack);
 
         ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY() + 3, pos.getZ(), itemStack);
 
-        Crystallurgy.LOGGER.info("Spawning entity" + itemEntity);
+        Crystallurgy.LOGGER.info("Spawning entity{}", itemEntity);
 
         world.spawnEntity(itemEntity);
-
-//        MinecraftServer server = world.getServer();
-//
-//        if (server == null) {
-//            Crystallurgy.LOGGER.info("Server is null, can't spawn item");
-//            return;
-//        }
-//
-//        ServerWorld serverWorld = server.getWorld(world.getRegistryKey());
-//
-//        Crystallurgy.LOGGER.info("Spawning entity in server" + itemEntity);
-//
-//        serverWorld.spawnEntity(itemEntity);
     }
 
     private void resetProgress() {
         this.progress = 0;
+        this.maxProgress = 100;
     }
 
     private boolean hasCraftingFinished() {
         return progress >= maxProgress;
+    }
+
+    private Optional<CrystalFluidCauldronRecipe> getCurrentRecipe() {
+        SimpleInventory inv = new SimpleInventory(this.itemEntitiesInCauldron.size());
+
+        for (int i = 0; i < this.itemEntitiesInCauldron.size(); i++) {
+            inv.setStack(i, this.itemEntitiesInCauldron.get(i).getStack());
+        }
+
+        Crystallurgy.LOGGER.info("Inv is" + inv);
+
+        return getWorld().getRecipeManager().getFirstMatch(CrystalFluidCauldronRecipe.Type.INSTANCE, inv, getWorld());
+    }
+
+    private boolean hasRecipe(CrystalFluidCauldronBlockEntity entity) {
+        Optional<CrystalFluidCauldronRecipe> recipe = getCurrentRecipe();
+
+        Crystallurgy.LOGGER.info("Current recipe" + recipe);
+
+        return recipe.isPresent();
     }
 }
