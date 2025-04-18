@@ -22,15 +22,23 @@ public class Crystallurgy implements ModInitializer {
 
 		LOGGER.info("Hello Fabric world!");
 
+
+		/*
+		 * WARNING! HERE BE DRAGONS
+		 * For whatever reason, this all needs to be in this exact order
+		 * Do NOT modify if you don't know what you're doing. Things WILL break.
+		 */
 		ModMessages.register();
 		ModScreens.register();
 		ModBlocks.register();
-		ModBlockEntities.register();
 		ModItems.register();
 		ModRecipes.register();
 		ModLootTables.register();
 		ModFluids.register();
 		ModItemGroup.register();
+
 		ModCauldron.register();
+		ModBlockEntities.register();
+
 	}
 }

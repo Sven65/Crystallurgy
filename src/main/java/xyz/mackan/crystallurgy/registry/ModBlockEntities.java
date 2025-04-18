@@ -7,6 +7,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import team.reborn.energy.api.EnergyStorage;
 import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.blocks.CrystalFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.blocks.ResonanceForgeBlockEntity;
 
 public class ModBlockEntities {
@@ -17,9 +18,18 @@ public class ModBlockEntities {
                     ModBlocks.RESONANCE_FORGE).build()
     );
 
+    public static BlockEntityType<CrystalFluidCauldronBlockEntity> CRYSTAL_FLUID_CAULDRON = Registry.register(
+            Registries.BLOCK_ENTITY_TYPE,
+            new Identifier(Crystallurgy.MOD_ID, "crystal_fluid_cauldron_entity"),
+            FabricBlockEntityTypeBuilder.create(CrystalFluidCauldronBlockEntity::new,
+                    ModCauldron.CRYSTAL_CAULDRON).build()
+    );
+
     public static void register() {
        Crystallurgy.LOGGER.info("Registering block entities.");
 
         EnergyStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> blockEntity.energyStorage, RESONANCE_FORGE);
     }
+
+
 }
