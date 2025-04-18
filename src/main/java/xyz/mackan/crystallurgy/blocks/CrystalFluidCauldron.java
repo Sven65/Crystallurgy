@@ -7,14 +7,18 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
+import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
+import xyz.mackan.crystallurgy.registry.ModItems;
 
 import java.util.Map;
 
@@ -26,6 +30,32 @@ public class CrystalFluidCauldron extends LeveledCauldronBlock implements BlockE
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         super.onEntityCollision(state, world, pos, entity);
+
+        // TODO: Make this check for items with "crystallurgy:growable" item tag
+        if (entity instanceof ItemEntity) {
+            ItemEntity itemEntity = (ItemEntity) entity;
+            ItemStack itemStack = itemEntity.getStack();
+
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof CrystalFluidCauldronBlockEntity) {
+                CrystalFluidCauldronBlockEntity cauldronEntity = (CrystalFluidCauldronBlockEntity) blockEntity;
+
+                if (!cauldronEntity.isItemBeingProcessed(itemEntity)) {
+
+                    if (itemStack.getItem() == ModItems.CRYSTAL_SEED) {
+                        Crystallurgy.LOGGER.info("Crystal seed was thrown in");
+                        itemEntity.setNeverDespawn();
+
+                        cauldronEntity.addItemToProcessing(itemEntity);
+                        cauldronEntity.addItemToCauldron(itemEntity);
+
+
+                    }
+                }
+
+
+            }
+        }
     }
 
     @Override
