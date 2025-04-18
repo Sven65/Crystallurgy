@@ -1,5 +1,6 @@
 package xyz.mackan.crystallurgy.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -18,6 +19,10 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity {
             return;
         }
 
-        Crystallurgy.LOGGER.info("Ticked fluid cauldron");
+        BlockState blockBelow = world.getBlockState(pos.down());
+
+
+
+        Crystallurgy.LOGGER.info("Block below is" + blockBelow);
     }
 }
