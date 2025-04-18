@@ -5,6 +5,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.blocks.CrystalFluidCauldron;
 import xyz.mackan.crystallurgy.blocks.ResonanceForge;
 
 public class ModBlocks {

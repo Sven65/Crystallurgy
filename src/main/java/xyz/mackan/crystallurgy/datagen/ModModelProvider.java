@@ -3,28 +3,39 @@ package xyz.mackan.crystallurgy.datagen;
 import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
-import net.minecraft.data.client.BlockStateModelGenerator;
-import net.minecraft.data.client.ItemModelGenerator;
-import net.minecraft.data.client.Models;
-import net.minecraft.data.client.TextureKey;
+import net.minecraft.block.LeveledCauldronBlock;
+import net.minecraft.data.client.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.registry.ModBlocks;
+import xyz.mackan.crystallurgy.registry.ModCauldron;
+import xyz.mackan.crystallurgy.registry.ModFluids;
 import xyz.mackan.crystallurgy.registry.ModItems;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ModModelProvider extends FabricModelProvider {
     public ModModelProvider(FabricDataOutput output) {
         super(output);
     }
 
+
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-        //blockStateModelGenerator.registerSimpleState(ModBlocks.RESONANCE_FORGE);
         blockStateModelGenerator.registerNorthDefaultHorizontalRotation(ModBlocks.RESONANCE_FORGE);
+        generateCrystalCauldronBlockState(blockStateModelGenerator);
+    }
+
+    @Override
+    public void generateItemModels(ItemModelGenerator itemModelGenerator) {
+        itemModelGenerator.register(ModItems.DIAMOND_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.CRYSTAL_SEED, Models.GENERATED);
+        itemModelGenerator.register(ModFluids.CRYSTAL_FLUID_BUCKET, Models.GENERATED);
+
+        registerGrowthCrystal(itemModelGenerator, new Identifier(Crystallurgy.MOD_ID, "item/diamond_crystal_seed"));
     }
 
     public void registerGrowthCrystal (ItemModelGenerator itemModelGenerator, Identifier itemId) {
@@ -41,14 +52,12 @@ public class ModModelProvider extends FabricModelProvider {
                 new Pair(Map.of("charge", 100), new Identifier(itemId.getNamespace(), itemId.getPath() + "_100"))
         );
 
-        // Call your custom method
         JsonObject modelJson = PredicateItemJsonBuilder.createItemModelWithOverrides(itemId, textures, overrides);
 
-        // Register it with the model generator
         itemModelGenerator.writer.accept(itemId, () -> modelJson);
 
         for (Pair<Map<String, Number>, Identifier> override : overrides) {
-            Identifier overrideModelId = override.getRight(); // e.g. "mymod:item/myitem_variant1"
+            Identifier overrideModelId = override.getRight();
 
             Map<TextureKey, Identifier> overrideTextures = Map.of(
                     TextureKey.LAYER0, new Identifier(itemId.getNamespace(), overrideModelId.getPath())
@@ -60,10 +69,65 @@ public class ModModelProvider extends FabricModelProvider {
     }
 
 
-    @Override
-    public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-        itemModelGenerator.register(ModItems.DIAMOND_RESONATOR_CRYSTAL, Models.GENERATED);
+    private void generateCrystalCauldronBlockState(BlockStateModelGenerator blockStateModelGenerator) {
+        Identifier level1 = createCauldronModel("crystal_cauldron_level1",
+                TextureMap.cauldron(new Identifier("minecraft:block/cauldron_inner"))
+                        .put(TextureKey.TOP, new Identifier("minecraft:block/cauldron_top"))
+                        .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
+                        .put(TextureKey.SIDE, new Identifier("minecraft:block/cauldron_side"))
+                        .put(TextureKey.PARTICLE, new Identifier("minecraft:block/cauldron_side"))
+                        .put(TextureKey.CONTENT, new Identifier(Crystallurgy.MOD_ID, "block/crystal_fluid_still")),
+                blockStateModelGenerator
+        );
 
-        registerGrowthCrystal(itemModelGenerator, new Identifier(Crystallurgy.MOD_ID, "item/diamond_crystal_seed"));
+        Identifier level2 = createCauldronModel("crystal_cauldron_level2",
+                TextureMap.cauldron(new Identifier("minecraft:block/cauldron_inner"))
+                        .put(TextureKey.TOP, new Identifier("minecraft:block/cauldron_top"))
+                        .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
+                        .put(TextureKey.SIDE, new Identifier("minecraft:block/cauldron_side"))
+                        .put(TextureKey.PARTICLE, new Identifier("minecraft:block/cauldron_side"))
+                        .put(TextureKey.CONTENT, new Identifier(Crystallurgy.MOD_ID, "block/crystal_fluid_still")),
+                blockStateModelGenerator
+        );
+
+        Identifier level3 = createCauldronModel("crystal_cauldron_level3",
+                TextureMap.cauldron(new Identifier("minecraft:block/cauldron_inner"))
+                        .put(TextureKey.TOP, new Identifier("minecraft:block/cauldron_top"))
+                        .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
+                        .put(TextureKey.SIDE, new Identifier("minecraft:block/cauldron_side"))
+                        .put(TextureKey.PARTICLE, new Identifier("minecraft:block/cauldron_side"))
+                        .put(TextureKey.CONTENT, new Identifier(Crystallurgy.MOD_ID, "block/crystal_fluid_still")),
+                blockStateModelGenerator
+        );
+
+        // Create the blockstate definition with variants for each level
+        VariantsBlockStateSupplier blockStateSupplier = VariantsBlockStateSupplier.create(ModCauldron.CRYSTAL_CAULDRON)
+                .coordinate(BlockStateVariantMap.create(LeveledCauldronBlock.LEVEL)
+                        .register(1, BlockStateVariant.create().put(VariantSettings.MODEL, level1))
+                        .register(2, BlockStateVariant.create().put(VariantSettings.MODEL, level2))
+                        .register(3, BlockStateVariant.create().put(VariantSettings.MODEL, level3)));
+
+        blockStateModelGenerator.blockStateCollector.accept(blockStateSupplier);
+    }
+
+    private Identifier createCauldronModel(String name, TextureMap textureMap, BlockStateModelGenerator blockStateModelGenerator) {
+        Identifier modelId = new Identifier(Crystallurgy.MOD_ID, "block/" + name);
+
+        Optional<Identifier> parentId;
+        if (name.contains("empty")) {
+            parentId = Optional.of(new Identifier("minecraft:block/template_cauldron_empty"));
+        } else if (name.contains("level1")) {
+            parentId = Optional.of(new Identifier("minecraft:block/template_cauldron_level1"));
+        } else if (name.contains("level2")) {
+            parentId = Optional.of(new Identifier("minecraft:block/template_cauldron_level2"));
+        } else {
+            parentId = Optional.of(new Identifier("minecraft:block/template_cauldron_full"));
+        }
+
+        Model model = new Model(parentId, Optional.empty(), TextureKey.PARTICLE);
+
+        model.upload(modelId, textureMap, blockStateModelGenerator.modelCollector);
+
+        return modelId;
     }
 }

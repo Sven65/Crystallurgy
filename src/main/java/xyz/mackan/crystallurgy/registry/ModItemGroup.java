@@ -18,6 +18,8 @@ public class ModItemGroup {
             .entries(((displayContext, entries) -> {
                 entries.add(ModItems.RESONANCE_FORGE);
                 entries.add(ModItems.DIAMOND_RESONATOR_CRYSTAL);
+                entries.add(ModItems.CRYSTAL_SEED);
+                entries.add(ModFluids.CRYSTAL_FLUID_BUCKET);
             }))
             .build();
 

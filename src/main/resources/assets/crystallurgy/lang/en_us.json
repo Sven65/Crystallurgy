@@ -1,3 +1,13 @@
 {
-  "block.crystallurgy.crystal_resonator": "Crystal Resonator"
+  "block.crystallurgy.resonance_forge": "Resonance Forge",
+
+
+
+  "item.crystallurgy.resonance_forge": "Resonance Forge",
+  "item.crystallurgy.diamond_resonator_crystal": "Diamond Resonator Crystal",
+  "item.crystallurgy.crystal_seed": "Crystal Seed",
+  "item.crystallurgy.diamond_crystal_seed": "Diamond Crystal Seed",
+  "item.crystallurgy.crystal_fluid_bucket": "Crystal Fluid Bucket",
+
+  "fluid.crystallurgy.crystal_fluid": "Crystal Fluid"
 }
