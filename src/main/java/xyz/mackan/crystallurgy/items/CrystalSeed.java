@@ -6,4 +6,6 @@ public class CrystalSeed extends Item {
     public CrystalSeed() {
         super(new Item.Settings());
     }
+
+
 }

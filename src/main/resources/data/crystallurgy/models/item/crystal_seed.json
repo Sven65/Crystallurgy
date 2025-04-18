@@ -1,0 +1,38 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "crystallurgy:item/crystal_seed"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "growth": 0
+      },
+      "model": "crystallurgy:item/crystal_seed"
+    },
+    {
+      "predicate": {
+        "growth": 25
+      },
+      "model": "crystallurgy:item/crystal_seed_25"
+    },
+    {
+      "predicate": {
+        "growth": 50
+      },
+      "model": "crystallurgy:item/crystal_seed_50"
+    },
+    {
+      "predicate": {
+        "growth": 75
+      },
+      "model": "crystallurgy:item/crystal_seed_75"
+    },
+    {
+      "predicate": {
+        "growth": 100
+      },
+      "model": "crystallurgy:item/crystal_seed_100"
+    }
+  ]
+}
