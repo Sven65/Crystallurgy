@@ -20,6 +20,8 @@ import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
 import java.util.*;
 
+
+// TODO: Make particles during processing
 public class CrystalFluidCauldronBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
     private final DefaultedList<ItemEntity> itemEntitiesInCauldron = DefaultedList.ofSize(2);
