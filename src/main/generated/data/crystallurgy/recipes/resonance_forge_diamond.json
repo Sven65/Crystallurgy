@@ -2,17 +2,19 @@
   "type": "crystallurgy:resonance_forging",
   "energy": {
     "energy_per_tick": 100,
-    "ticks": 1200
+    "ticks": 100
   },
   "ingredients": [
     {
+      "count": 1,
       "item": "crystallurgy:diamond_resonator_crystal"
     },
     {
+      "count": 64,
       "item": "minecraft:coal_block"
     }
   ],
   "output": {
-    "item": "minecraft:diamond"
+    "item": "minecraft:coal"
   }
 }

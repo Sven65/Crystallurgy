@@ -39,11 +39,22 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.register(ModItems.GOLD_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.DIAMOND_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.NETHERITE_RESONATOR_CRYSTAL, Models.GENERATED);
+
         itemModelGenerator.register(ModItems.LAPIS_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.EMERALD_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.QUARTZ_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.REDSTONE_RESONATOR_CRYSTAL, Models.GENERATED);
 
+        itemModelGenerator.register(ModItems.UNREFINED_COAL_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.UNREFINED_IRON_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.UNREFINED_GOLD_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.UNREFINED_DIAMOND_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.UNREFINED_NETHERITE_RESONATOR_CRYSTAL, Models.GENERATED);
+
+        itemModelGenerator.register(ModItems.UNREFINED_LAPIS_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.UNREFINED_EMERALD_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.UNREFINED_QUARTZ_RESONATOR_CRYSTAL, Models.GENERATED);
+        itemModelGenerator.register(ModItems.UNREFINED_REDSTONE_RESONATOR_CRYSTAL, Models.GENERATED);
 
         registerGrowthCrystal(itemModelGenerator, new Identifier(Crystallurgy.MOD_ID, "item/diamond_crystal_seed"));
     }

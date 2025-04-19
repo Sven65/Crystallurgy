@@ -39,7 +39,7 @@ import xyz.mackan.crystallurgy.util.ImplementedInventory;
 import java.util.Optional;
 
 public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory {
-    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(3, ItemStack.EMPTY);
+    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
 
     public final SimpleEnergyStorage energyStorage = new SimpleEnergyStorage(100000, 1000, 200) {
         @Override
@@ -60,7 +60,8 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
 
     private static final int CATALYST_SLOT = 0;
     private static final int RAW_MATERIAL_SLOT = 1;
-    private static final int OUTPUT_SLOT = 2;
+    private static final int DYE_SLOT = 2;
+    private static final int OUTPUT_SLOT = 3;
 
     protected final PropertyDelegate propertyDelegate;
 
@@ -139,14 +140,6 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
             return;
         }
 
-
-//        if (hasEnergyItem(entity)) {
-//            try (Transaction transaction = Transaction.openOuter()) {
-//                entity.energyStorage.insert(16, transaction);
-//                transaction.commit();;
-//            }
-//        }
-
         if (isOutputSlotEmptyOrReceivable()) {
             if (this.hasRecipe(entity) & hasEnoughEnergy(entity)) {
                 Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
@@ -200,6 +193,7 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
         // Left insert 0
 
         // TODO: Check item tag on slot 0 to only allow crystals
+        // TODO: Make this work with slot 2
 
         return switch (localDir) {
             case EAST ->
@@ -229,22 +223,22 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
             return false;
         }
 
-        // Down extract 2
+        // Down extract 3
         if(side == Direction.DOWN) {
-            return slot == 2;
+            return slot == 3;
         }
 
-        // bottom extract 2
-        // right extract 2
+        // bottom extract 3
+        // right extract 3
         return switch (localDir) {
-            case EAST -> side.rotateYClockwise() == Direction.SOUTH && slot == 2 ||
-                    side.rotateYClockwise() == Direction.EAST && slot == 2;
-            case SOUTH -> side == Direction.SOUTH && slot == 2 ||
-                    side == Direction.EAST && slot == 2;
-            case WEST -> side.rotateYCounterclockwise() == Direction.SOUTH && slot == 2 ||
-                    side.rotateYCounterclockwise() == Direction.EAST && slot == 2;
-            default -> side.getOpposite() == Direction.SOUTH && slot == 2 ||
-                    side.getOpposite() == Direction.EAST && slot == 2;
+            case EAST -> side.rotateYClockwise() == Direction.SOUTH && slot == 3 ||
+                    side.rotateYClockwise() == Direction.EAST && slot == 3;
+            case SOUTH -> side == Direction.SOUTH && slot == 3 ||
+                    side == Direction.EAST && slot == 3;
+            case WEST -> side.rotateYCounterclockwise() == Direction.SOUTH && slot == 3 ||
+                    side.rotateYCounterclockwise() == Direction.EAST && slot == 3;
+            default -> side.getOpposite() == Direction.SOUTH && slot == 3 ||
+                    side.getOpposite() == Direction.EAST && slot == 3;
         };
     }
 
@@ -265,7 +259,12 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
             this.removeStack(CATALYST_SLOT, 1);
         }
 
+        // TODO: Make this remove count in recipe
         this.removeStack(RAW_MATERIAL_SLOT, 1);
+
+        if (!this.getStack(DYE_SLOT).isEmpty()) {
+            this.removeStack(DYE_SLOT, 1);
+        }
 
         this.setStack(OUTPUT_SLOT,
                 new ItemStack(

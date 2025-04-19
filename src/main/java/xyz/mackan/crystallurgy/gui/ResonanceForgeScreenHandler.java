@@ -36,14 +36,16 @@ public class ResonanceForgeScreenHandler extends ScreenHandler {
         this.propertyDelegate = arrayPropertyDelegate;
         this.forgeBlockEntity = ((ResonanceForgeBlockEntity) blockEntity);
 
-        this.addSlot(new Slot(inventory, 0, 26, 35) {
+        this.addSlot(new Slot(inventory, 0, 7, 35) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 return stack.isIn(ModItemTagProvider.RESONATOR_CRYSTALS);
             }
         });
-        this.addSlot(new Slot(inventory, 1, 51, 35));
-        this.addSlot(new Slot(inventory, 2, 112, 35) {
+        this.addSlot(new Slot(inventory, 1, 29, 35));
+        this.addSlot(new Slot(inventory, 2, 51, 35));
+
+        this.addSlot(new Slot(inventory, 3, 112, 35) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 return false;

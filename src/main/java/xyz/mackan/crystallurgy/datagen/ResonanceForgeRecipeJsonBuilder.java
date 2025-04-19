@@ -1,6 +1,7 @@
 package xyz.mackan.crystallurgy.datagen;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.item.ItemConvertible;
@@ -8,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
+import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 
 import java.util.List;
@@ -46,7 +48,16 @@ public class ResonanceForgeRecipeJsonBuilder {
 
                 JsonArray ingredientsArray = new JsonArray();
                 for (Ingredient ingredient : ingredients) {
-                    ingredientsArray.add(ingredient.toJson());
+                    Crystallurgy.LOGGER.info("INGREDIENT IS {}", ingredient.toJson());
+                    JsonObject ingredientJson = ingredient.toJson().getAsJsonObject();
+                    ItemStack[] matching = ingredient.getMatchingStacks();
+
+                    if (matching[0].getCount() > 0) {
+                        ingredientJson.addProperty("count", matching[0].getCount());
+                    }
+
+
+                    ingredientsArray.add(ingredientJson);
                 }
                 json.add("ingredients", ingredientsArray);
 

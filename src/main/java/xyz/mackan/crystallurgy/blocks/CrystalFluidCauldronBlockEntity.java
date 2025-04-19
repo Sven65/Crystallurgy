@@ -83,7 +83,6 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
 
         isHeating = blockBelow.isIn(ModBlockTagProvider.FLUID_CAULDRON_HEATERS);
 
-        // TODO: Make this check recipes, similar to ResonanceForge
         if (isHeating && !this.itemsBeingProcessed.isEmpty() && this.hasRecipe(entity)) {
             Optional<CrystalFluidCauldronRecipe> recipe = getCurrentRecipe();
 
@@ -94,7 +93,7 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
 
             Crystallurgy.LOGGER.info("Progress is "+progress+"/"+maxProgress);
 
-            // TODO: Set fluid level with
+            // TODO: Set fluid level with math progress
             // world.setBlockState(pos, state.with(LeveledCauldronBlock.LEVEL, 0));
 
             if (hasCraftingFinished()) {

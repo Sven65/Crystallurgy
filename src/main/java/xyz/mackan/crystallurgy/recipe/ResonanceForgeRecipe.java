@@ -37,8 +37,13 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
 
         ItemStack catalyst = inventory.getStack(0);
         ItemStack rawMaterial = inventory.getStack(1);
+        ItemStack dye = inventory.getStack(2);
 
-        return recipeItems.get(0).test(catalyst) && recipeItems.get(1).test(rawMaterial);
+        if (dye == null) {
+            return recipeItems.get(0).test(catalyst) && recipeItems.get(1).test(rawMaterial);
+        } else {
+            return recipeItems.get(0).test(catalyst) && recipeItems.get(1).test(rawMaterial) && recipeItems.get(2).test(dye);
+        }
     }
 
     @Override
@@ -106,7 +111,7 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
 
 
             JsonArray ingredients = JsonHelper.getArray(json, "ingredients");
-            DefaultedList<Ingredient> inputs = DefaultedList.ofSize(2, Ingredient.EMPTY);
+            DefaultedList<Ingredient> inputs = DefaultedList.ofSize(3, Ingredient.EMPTY);
 
             for (int i = 0; i < inputs.size(); i++) {
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
