@@ -24,6 +24,19 @@ import java.util.Optional;
 
 
 // TODO: Make particles during processing
+/* GOAL: Cauldron with custom cooling fluid, surrounded by cooling blocks, which give different cooling scores, which get combined.
+ * Recipe includes a min cooling score (maybe max too)
+ * Will work like CrystalFluidCauldron in that it uses recipes and takes fluid.
+ *
+ * Something like this for the blocks
+ * int coolingScore = 0;
+ * if (block == Blocks.ICE) coolingScore += 1;
+ * if (block == Blocks.BLUE_ICE) coolingScore += 3;
+ * if (block == Blocks.SNOW_BLOCK) coolingScore += 2;
+ * if (block == Blocks.FIRE) coolingScore -= 5;
+ *
+ * But, try to give them custom props (maybe with tags) in order to define cooling score somewhere else in a list, sort of like block tags.
+ */
 public class CoolingFluidCauldronBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
     private final DefaultedList<ItemEntity> itemEntitiesInCauldron = DefaultedList.ofSize(2);
