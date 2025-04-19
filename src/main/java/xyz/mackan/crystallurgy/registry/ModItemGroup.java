@@ -29,6 +29,16 @@ public class ModItemGroup {
                 entries.add(ModItems.EMERALD_RESONATOR_CRYSTAL);
                 entries.add(ModItems.QUARTZ_RESONATOR_CRYSTAL);
                 entries.add(ModItems.REDSTONE_RESONATOR_CRYSTAL);
+
+                entries.add(ModItems.UNREFINED_COAL_RESONATOR_CRYSTAL);
+                entries.add(ModItems.UNREFINED_IRON_RESONATOR_CRYSTAL);
+                entries.add(ModItems.UNREFINED_GOLD_RESONATOR_CRYSTAL);
+                entries.add(ModItems.UNREFINED_DIAMOND_RESONATOR_CRYSTAL);
+                entries.add(ModItems.UNREFINED_NETHERITE_RESONATOR_CRYSTAL);
+                entries.add(ModItems.UNREFINED_LAPIS_RESONATOR_CRYSTAL);
+                entries.add(ModItems.UNREFINED_EMERALD_RESONATOR_CRYSTAL);
+                entries.add(ModItems.UNREFINED_QUARTZ_RESONATOR_CRYSTAL);
+                entries.add(ModItems.UNREFINED_REDSTONE_RESONATOR_CRYSTAL);
             }))
             .build();
 

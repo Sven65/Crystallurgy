@@ -1,6 +1,14 @@
 {
   "replace": false,
   "values": [
-    "crystallurgy:diamond_resonator_crystal"
+    "crystallurgy:coal_resonator_crystal",
+    "crystallurgy:iron_resonator_crystal",
+    "crystallurgy:gold_resonator_crystal",
+    "crystallurgy:diamond_resonator_crystal",
+    "crystallurgy:netherite_resonator_crystal",
+    "crystallurgy:lapis_resonator_crystal",
+    "crystallurgy:emerald_resonator_crystal",
+    "crystallurgy:quartz_resonator_crystal",
+    "crystallurgy:redstone_resonator_crystal"
   ]
 }

@@ -22,6 +22,14 @@ public class ModItemTagProvider extends FabricTagProvider.ItemTagProvider {
     @Override
     protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
         getOrCreateTagBuilder(RESONATOR_CRYSTALS)
-                .add(ModItems.DIAMOND_RESONATOR_CRYSTAL);
+                .add(ModItems.COAL_RESONATOR_CRYSTAL)
+                .add(ModItems.IRON_RESONATOR_CRYSTAL)
+                .add(ModItems.GOLD_RESONATOR_CRYSTAL)
+                .add(ModItems.DIAMOND_RESONATOR_CRYSTAL)
+                .add(ModItems.NETHERITE_RESONATOR_CRYSTAL)
+                .add(ModItems.LAPIS_RESONATOR_CRYSTAL)
+                .add(ModItems.EMERALD_RESONATOR_CRYSTAL)
+                .add(ModItems.QUARTZ_RESONATOR_CRYSTAL)
+                .add(ModItems.REDSTONE_RESONATOR_CRYSTAL);
     }
 }

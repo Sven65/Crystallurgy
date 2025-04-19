@@ -259,11 +259,10 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
             this.removeStack(CATALYST_SLOT, 1);
         }
 
-        // TODO: Make this remove count in recipe
-        this.removeStack(RAW_MATERIAL_SLOT, 1);
+        this.removeStack(RAW_MATERIAL_SLOT, recipe.get().getCount(RAW_MATERIAL_SLOT));
 
         if (!this.getStack(DYE_SLOT).isEmpty()) {
-            this.removeStack(DYE_SLOT, 1);
+            this.removeStack(DYE_SLOT, recipe.get().getCount(DYE_SLOT));
         }
 
         this.setStack(OUTPUT_SLOT,
@@ -278,11 +277,21 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
         return progress >= maxProgress;
     }
 
+    private boolean hasEnoughItems(int slot) {
+        Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
+
+        if (recipe.isEmpty()) return false;
+        int count = recipe.get().getCount(slot);
+
+        return this.getStack(slot).getCount() >= count;
+    }
 
     private boolean hasRecipe(ResonanceForgeBlockEntity entity) {
         Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
 
         return recipe.isPresent()
+                && hasEnoughItems(RAW_MATERIAL_SLOT)
+                && hasEnoughItems(DYE_SLOT)
                 && canInsertAmountIntoOutputSlot(recipe.get().getOutput(null))
                 && canInsertItemIntoOutputSlot(recipe.get().getOutput(null).getItem());
     }

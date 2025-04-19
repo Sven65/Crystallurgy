@@ -10,6 +10,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
 import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.recipe.CountedIngredient;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 
 import java.util.List;
@@ -48,7 +49,6 @@ public class ResonanceForgeRecipeJsonBuilder {
 
                 JsonArray ingredientsArray = new JsonArray();
                 for (Ingredient ingredient : ingredients) {
-                    Crystallurgy.LOGGER.info("INGREDIENT IS {}", ingredient.toJson());
                     JsonObject ingredientJson = ingredient.toJson().getAsJsonObject();
                     ItemStack[] matching = ingredient.getMatchingStacks();
 

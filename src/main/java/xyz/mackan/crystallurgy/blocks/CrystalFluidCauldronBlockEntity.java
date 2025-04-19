@@ -162,8 +162,6 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
     private boolean hasRecipe(CrystalFluidCauldronBlockEntity entity) {
         Optional<CrystalFluidCauldronRecipe> recipe = getCurrentRecipe();
 
-        Crystallurgy.LOGGER.info("Current recipe" + recipe);
-
         return recipe.isPresent();
     }
 }

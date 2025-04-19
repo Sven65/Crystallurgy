@@ -1,6 +1,7 @@
 package xyz.mackan.crystallurgy.recipe;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
@@ -11,22 +12,27 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
+import xyz.mackan.crystallurgy.Crystallurgy;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
     private final Identifier id;
     private final ItemStack output;
     private final List<Ingredient> recipeItems;
+    private final List<Integer> recipeItemCount;
 
     private final int energyPerTick;
     private final int ticks;
 
-    public ResonanceForgeRecipe(Identifier id, ItemStack output, DefaultedList<Ingredient> recipeItems, int energyPerTick, int ticks) {
+    public ResonanceForgeRecipe(Identifier id, ItemStack output, DefaultedList<Ingredient> recipeItems, DefaultedList<Integer> recipeItemCount, int energyPerTick, int ticks) {
         this.id = id;
         this.output = output;
         this.recipeItems = recipeItems;
         this.energyPerTick = energyPerTick;
         this.ticks = ticks;
+        this.recipeItemCount = recipeItemCount;
     }
 
     @Override
@@ -78,7 +84,7 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
 
     @Override
     public Identifier getId() {
-        return null;
+        return this.id;
     }
 
     @Override
@@ -89,6 +95,10 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
     @Override
     public RecipeType<?> getType() {
         return Type.INSTANCE;
+    }
+
+    public int getCount(int slot) {
+        return this.recipeItemCount.get(slot);
     }
 
     public static class Type implements RecipeType<ResonanceForgeRecipe> {
@@ -112,20 +122,33 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
 
             JsonArray ingredients = JsonHelper.getArray(json, "ingredients");
             DefaultedList<Ingredient> inputs = DefaultedList.ofSize(3, Ingredient.EMPTY);
+            DefaultedList<Integer> countInputs = DefaultedList.ofSize(3, 1);
 
-            for (int i = 0; i < inputs.size(); i++) {
+            for (int i = 0; i < ingredients.size(); i++) {
+                int count = ingredients.get(i).getAsJsonObject().get("count").getAsInt();
+
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
+                countInputs.set(i, count);
             }
 
-            return new ResonanceForgeRecipe(id, output, inputs, energyPerTick, ticks);
+            return new ResonanceForgeRecipe(id, output, inputs, countInputs, energyPerTick, ticks);
         }
 
         @Override
         public ResonanceForgeRecipe read(Identifier id, PacketByteBuf buf) {
-            DefaultedList<Ingredient> inputs = DefaultedList.ofSize(buf.readInt(), Ingredient.EMPTY);
+            Crystallurgy.LOGGER.info("Reading recipe with ID: {}", id);
+            int size = buf.readInt();
+            Crystallurgy.LOGGER.info("size is {}", size);
+
+            DefaultedList<Ingredient> inputs = DefaultedList.ofSize(size, Ingredient.EMPTY);
+            DefaultedList<Integer> inputCount = DefaultedList.ofSize(size, 1);
 
             for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Ingredient.fromPacket(buf));
+                Ingredient ingredient = Ingredient.fromPacket(buf);
+
+                // TODO: Something about getting the counts here?
+
+                inputs.set(i, ingredient);
             }
 
             ItemStack output = buf.readItemStack();
@@ -133,12 +156,15 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
             int ticks = buf.readInt();
             int energyPerTick = buf.readInt();
 
-            return new ResonanceForgeRecipe(id, output, inputs, ticks, energyPerTick);
+            return new ResonanceForgeRecipe(id, output, inputs, inputCount, energyPerTick, ticks);
         }
 
         @Override
         public void write(PacketByteBuf buf, ResonanceForgeRecipe recipe) {
+            Crystallurgy.LOGGER.info("writing recipe");
             buf.writeInt(recipe.getIngredients().size());
+            // TODO: Something about getting the counts here?
+
             for (Ingredient ing : recipe.getIngredients()) {
                 ing.write(buf);
             }
