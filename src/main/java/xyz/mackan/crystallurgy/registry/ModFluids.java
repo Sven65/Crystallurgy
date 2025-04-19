@@ -14,6 +14,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.fluid.CrystalFluid;
+import xyz.mackan.crystallurgy.fluid.CoolingFluid;
 
 public class ModFluids {
     public static FlowableFluid STILL_CRYSTAL_FLUID;
@@ -21,12 +22,24 @@ public class ModFluids {
     public static Block CRYSTAL_FLUID_BLOCK;
     public static Item CRYSTAL_FLUID_BUCKET;
 
+    public static FlowableFluid STILL_COOLING_FLUID;
+    public static FlowableFluid FLOWING_COOLING_FLUID;
+    public static Block COOLING_FLUID_BLOCK;
+    public static Item COOLING_FLUID_BUCKET;
+
     public static void register() {
         STILL_CRYSTAL_FLUID = Registry.register(Registries.FLUID, new Identifier(Crystallurgy.MOD_ID, "crystal_fluid"), new CrystalFluid.Still());
         FLOWING_CRYSTAL_FLUID = Registry.register(Registries.FLUID, new Identifier(Crystallurgy.MOD_ID, "flowing_crystal_fluid"), new CrystalFluid.Flowing());
 
         CRYSTAL_FLUID_BLOCK = Registry.register(Registries.BLOCK, new Identifier(Crystallurgy.MOD_ID, "crystal_fluid_block"), new FluidBlock(ModFluids.STILL_CRYSTAL_FLUID, FabricBlockSettings.copyOf(Blocks.WATER)));
         CRYSTAL_FLUID_BUCKET = Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "crystal_fluid_bucket"), new BucketItem(ModFluids.STILL_CRYSTAL_FLUID, new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)));
+
+
+        STILL_COOLING_FLUID = Registry.register(Registries.FLUID, new Identifier(Crystallurgy.MOD_ID, "cooling_fluid"), new CoolingFluid.Still());
+        FLOWING_COOLING_FLUID = Registry.register(Registries.FLUID, new Identifier(Crystallurgy.MOD_ID, "flowing_cooling_fluid"), new CoolingFluid.Flowing());
+
+        COOLING_FLUID_BLOCK = Registry.register(Registries.BLOCK, new Identifier(Crystallurgy.MOD_ID, "cooling_fluid_block"), new FluidBlock(ModFluids.STILL_COOLING_FLUID, FabricBlockSettings.copyOf(Blocks.WATER)));
+        COOLING_FLUID_BUCKET = Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "cooling_fluid_bucket"), new BucketItem(ModFluids.STILL_COOLING_FLUID, new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)));
     }
 
 }

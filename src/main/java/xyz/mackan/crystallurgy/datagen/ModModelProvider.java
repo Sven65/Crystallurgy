@@ -3,6 +3,7 @@ package xyz.mackan.crystallurgy.datagen;
 import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.minecraft.block.Block;
 import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.data.client.*;
 import net.minecraft.util.Identifier;
@@ -26,7 +27,8 @@ public class ModModelProvider extends FabricModelProvider {
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
         blockStateModelGenerator.registerNorthDefaultHorizontalRotation(ModBlocks.RESONANCE_FORGE);
-        generateCrystalCauldronBlockState(blockStateModelGenerator);
+        generateCauldronBlockState("crystal_cauldron", ModCauldron.CRYSTAL_CAULDRON, blockStateModelGenerator);
+        generateCauldronBlockState("cooling_cauldron", ModCauldron.COOLING_CAULDRON, blockStateModelGenerator);
     }
 
     @Override
@@ -91,8 +93,8 @@ public class ModModelProvider extends FabricModelProvider {
 
 
     // TODO: Make this not be white, aka actually have color
-    private void generateCrystalCauldronBlockState(BlockStateModelGenerator blockStateModelGenerator) {
-        Identifier level1 = createCauldronModel("crystal_cauldron_level1",
+    private void generateCauldronBlockState(String name, Block cauldronBlock, BlockStateModelGenerator blockStateModelGenerator) {
+        Identifier level1 = createCauldronModel(String.format("%s_level1", name),
                 TextureMap.cauldron(new Identifier("minecraft:block/cauldron_inner"))
                         .put(TextureKey.TOP, new Identifier("minecraft:block/cauldron_top"))
                         .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
@@ -102,7 +104,7 @@ public class ModModelProvider extends FabricModelProvider {
                 blockStateModelGenerator
         );
 
-        Identifier level2 = createCauldronModel("crystal_cauldron_level2",
+        Identifier level2 = createCauldronModel(String.format("%s_level2", name),
                 TextureMap.cauldron(new Identifier("minecraft:block/cauldron_inner"))
                         .put(TextureKey.TOP, new Identifier("minecraft:block/cauldron_top"))
                         .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
@@ -112,7 +114,7 @@ public class ModModelProvider extends FabricModelProvider {
                 blockStateModelGenerator
         );
 
-        Identifier level3 = createCauldronModel("crystal_cauldron_level3",
+        Identifier level3 = createCauldronModel(String.format("%s_level3", name),
                 TextureMap.cauldron(new Identifier("minecraft:block/cauldron_inner"))
                         .put(TextureKey.TOP, new Identifier("minecraft:block/cauldron_top"))
                         .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
@@ -123,7 +125,7 @@ public class ModModelProvider extends FabricModelProvider {
         );
 
         // Create the blockstate definition with variants for each level
-        VariantsBlockStateSupplier blockStateSupplier = VariantsBlockStateSupplier.create(ModCauldron.CRYSTAL_CAULDRON)
+        VariantsBlockStateSupplier blockStateSupplier = VariantsBlockStateSupplier.create(cauldronBlock)
                 .coordinate(BlockStateVariantMap.create(LeveledCauldronBlock.LEVEL)
                         .register(1, BlockStateVariant.create().put(VariantSettings.MODEL, level1))
                         .register(2, BlockStateVariant.create().put(VariantSettings.MODEL, level2))

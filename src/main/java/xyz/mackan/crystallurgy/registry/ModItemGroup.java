@@ -19,6 +19,7 @@ public class ModItemGroup {
                 entries.add(ModItems.RESONANCE_FORGE);
                 entries.add(ModItems.CRYSTAL_SEED);
                 entries.add(ModFluids.CRYSTAL_FLUID_BUCKET);
+                entries.add(ModFluids.COOLING_FLUID_BUCKET);
 
                 entries.add(ModItems.COAL_RESONATOR_CRYSTAL);
                 entries.add(ModItems.IRON_RESONATOR_CRYSTAL);
