@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "crystallurgy:item/unrefined_gold_resonator_crystal"
+  }
+}
