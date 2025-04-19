@@ -22,6 +22,9 @@ import java.util.*;
 
 
 // TODO: Make particles during processing
+// TODO: Stop matching thrown in item entities from being picked up, extract by right click with empty hand
+// TODO: Clear inv on recipe create
+// TODO: Keep track of other items thrown in for the sake of matching recipes
 public class CrystalFluidCauldronBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
     private final DefaultedList<ItemEntity> itemEntitiesInCauldron = DefaultedList.ofSize(2);

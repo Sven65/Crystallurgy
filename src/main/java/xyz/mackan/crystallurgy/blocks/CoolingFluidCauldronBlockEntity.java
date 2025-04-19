@@ -171,7 +171,7 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
             inv.setStack(i, this.itemEntitiesInCauldron.get(i).getStack());
         }
 
-        Crystallurgy.LOGGER.info("Inv is" + inv);
+        //Crystallurgy.LOGGER.info("Inv is" + inv);
 
         return getWorld().getRecipeManager().getFirstMatch(CrystalFluidCauldronRecipe.Type.INSTANCE, inv, getWorld());
     }
