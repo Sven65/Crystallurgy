@@ -1,4 +1,4 @@
-// 1.20.1	2025-04-20T13:56:03.548844	Crystallurgy/Model Definitions
+// 1.20.1	2025-04-20T17:09:05.1489676	Crystallurgy/Model Definitions
 9294e797913e41e64bf939186f96a1c1bc2b5a2b assets\crystallurgy\models\item\coal_resonator_crystal.json
 7bbcdfa7c703a8ceafbf8aee22a3042d1805b418 assets\crystallurgy\models\block\crystal_cauldron_level1.json
 df64f057ecf894038b7a879dfb35acf243616577 assets\crystallurgy\blockstates\resonance_forge.json
@@ -27,8 +27,8 @@ ebccff2a9db597943d552c808f372180187bdf45 assets\crystallurgy\models\block\coolin
 4de3399055184707f8ea60f963df29211bb0586c assets\crystallurgy\models\item\diamond_resonator_crystal.json
 5e6db216d5d691e4a055e0c4e36d1c4d3fc27343 assets\crystallurgy\models\item\netherite_resonator_crystal.json
 ebccff2a9db597943d552c808f372180187bdf45 assets\crystallurgy\models\block\crystal_cauldron_level0.json
-b0f7c0b41fb2b3a7109d8cb6ea1d09a8bf6da7bb assets\crystallurgy\models\item\diamond_crystal_seed_50.json
 26d3f00c8a764030d8d90b63f933f753b1e9cc0f assets\crystallurgy\models\block\crystal_cauldron_level3.json
+b0f7c0b41fb2b3a7109d8cb6ea1d09a8bf6da7bb assets\crystallurgy\models\item\diamond_crystal_seed_50.json
 942b358a9e98316e38b98db89560db5857d5d66b assets\crystallurgy\blockstates\crystal_fluid_cauldron.json
 040a360978a9998350a0a3706e647a5f80f332ca assets\crystallurgy\models\item\unrefined_lapis_resonator_crystal.json
 727b7994dc97ac82168fd4f8301c2b6d1367d1df assets\crystallurgy\models\item\diamond_crystal_seed.json

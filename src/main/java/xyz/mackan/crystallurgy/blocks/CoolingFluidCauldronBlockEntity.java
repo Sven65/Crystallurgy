@@ -40,7 +40,6 @@ import java.util.Optional;
 public class CoolingFluidCauldronBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
     private final DefaultedList<ItemEntity> itemEntitiesInCauldron = DefaultedList.ofSize(2);
-    private List<ItemEntity> itemsBeingProcessed = new ArrayList<>();
     public boolean isHeating = false;
 
     private static final int SEED_SLOT = 0;
@@ -53,29 +52,12 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
         super(ModBlockEntities.CRYSTAL_FLUID_CAULDRON, pos, state);
     }
 
-    // Check if an item is already being processed
-    public boolean isItemBeingProcessed(ItemEntity itemEntity) {
-        return itemsBeingProcessed.contains(itemEntity);
-    }
-
-    // Add an item to the processing set
-    public void addItemToProcessing(ItemEntity itemEntity) {
-        itemsBeingProcessed.add(itemEntity);
-    }
-
-    // Remove an item from the processing set once it is finished
-    public void removeItemFromProcessing(ItemEntity itemEntity) {
-        itemsBeingProcessed.remove(itemEntity);
-    }
 
     @Override
     public DefaultedList<ItemStack> getItems() {
         return inventory;
     }
 
-    public void addItemToCauldron(ItemEntity entity) {
-        this.itemEntitiesInCauldron.add(entity);
-    }
 
     @Override
     protected void writeNbt(NbtCompound nbt) {
@@ -91,6 +73,22 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
         progress = nbt.getInt(String.format("%s.progress", Crystallurgy.MOD_ID));
     }
 
+    public int getCoolingLevel(World world, BlockPos startPos) {
+        List<BlockPos> cardinals = List.of(
+                startPos.up(), startPos.down(), startPos.east(), startPos.west(), startPos.north(), startPos.south()
+        );
+
+        int cooling = 0;
+
+        for(BlockPos nextBlockPos : cardinals) {
+            BlockState state = world.getBlockState(nextBlockPos);
+
+
+        }
+
+        return cooling;
+    }
+
     public void tick(World world, BlockPos pos, BlockState state, CoolingFluidCauldronBlockEntity entity) {
         if (world.isClient()) {
             return;
@@ -98,33 +96,7 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
 
         BlockState blockBelow = world.getBlockState(pos.down());
 
-        isHeating = blockBelow.isIn(ModBlockTagProvider.FLUID_CAULDRON_HEATERS);
 
-        if (isHeating && !this.itemsBeingProcessed.isEmpty() && this.hasRecipe(entity)) {
-            Optional<CrystalFluidCauldronRecipe> recipe = getCurrentRecipe();
-
-            int recipeTicks = recipe.get().getTicks();
-            this.maxProgress = recipeTicks;
-
-            progress++;
-
-            Crystallurgy.LOGGER.info("Progress is "+progress+"/"+maxProgress);
-
-            // TODO: Set fluid level with math progress
-            // world.setBlockState(pos, state.with(LeveledCauldronBlock.LEVEL, 0));
-
-            if (hasCraftingFinished()) {
-                Crystallurgy.LOGGER.info("Crafting finished");
-                if (!this.itemsBeingProcessed.isEmpty()) {
-                    this.clearFluid(world, pos);
-                    this.craftItem(world, pos);
-
-                    this.itemsBeingProcessed.get(0).getStack().decrement(1);
-                    this.itemsBeingProcessed.remove(0);
-                    resetProgress();
-                }
-            }
-        }
     }
 
     public void clearFluid(World world, BlockPos pos) {

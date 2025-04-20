@@ -49,13 +49,13 @@ public class CoolingFluidCauldron extends LeveledCauldronBlock implements BlockE
             ItemStack itemStack = itemEntity.getStack();
 
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof CrystalFluidCauldronBlockEntity) {
-                CrystalFluidCauldronBlockEntity cauldronEntity = (CrystalFluidCauldronBlockEntity) blockEntity;
+            if (blockEntity instanceof CoolingFluidCauldronBlockEntity) {
+                CoolingFluidCauldronBlockEntity cauldronEntity = (CoolingFluidCauldronBlockEntity) blockEntity;
 
                 if (itemStack.getItem() == ModItems.CRYSTAL_SEED) {
                     Crystallurgy.LOGGER.info("Crystal seed was thrown in");
 
-                    cauldronEntity.addItemEntityToCauldron(itemEntity);
+                    //cauldronEntity.addItemEntityToCauldron(itemEntity);
                 }
             }
         }
