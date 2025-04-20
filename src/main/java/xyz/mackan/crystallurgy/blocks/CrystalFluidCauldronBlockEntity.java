@@ -1,5 +1,6 @@
 package xyz.mackan.crystallurgy.blocks;
 
+import com.mojang.authlib.minecraft.client.MinecraftClient;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeveledCauldronBlock;
@@ -10,10 +11,14 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.joml.Vector3f;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.datagen.ModBlockTagProvider;
 import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
@@ -30,6 +35,7 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
     private final List<ItemEntity> itemsBeingProcessed = new ArrayList<>();
     public boolean isHeating = false;
+    private boolean isCrafting;
 
     private int maxProgress = 100;
     private int progress = 0;
@@ -119,14 +125,38 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
 
     public void tick(World world, BlockPos pos, BlockState state, CrystalFluidCauldronBlockEntity entity) {
         if (world.isClient()) {
+            int chance = 10;
+            Vector3f color = new Vector3f(0.8F, 0.3F, 1.0F);
+
+            if (isCrafting) {
+                chance = 30;
+            }
+
+            if(world.random.nextInt(chance) == 0) {
+                // ~10% chance per tick → average once every 0.5 seconds
+                double x = pos.getX() + world.random.nextDouble();
+                double y = pos.getY() + 1.0 + world.random.nextDouble() * 0.2;
+                double z = pos.getZ() + world.random.nextDouble();
+
+                world.addParticle(
+                        new DustParticleEffect(color, 1.0F),
+                        x, y, z,
+                        0.0, 0.02, 0.0
+                );
+            }
+
             return;
         }
+
+
 
         BlockState blockBelow = world.getBlockState(pos.down());
 
         isHeating = blockBelow.isIn(ModBlockTagProvider.FLUID_CAULDRON_HEATERS);
 
         if (isHeating && !this.itemsBeingProcessed.isEmpty() && this.hasRecipe(entity) && this.hasFluid(world)) {
+            isCrafting = true;
+
             Optional<CrystalFluidCauldronRecipe> recipe = getCurrentRecipe();
 
             int recipeTicks = recipe.get().getTicks();
@@ -190,6 +220,7 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
     private void resetProgress() {
         this.progress = 0;
         this.maxProgress = 100;
+        this.isCrafting = false;
     }
 
     private boolean hasCraftingFinished() {
@@ -218,6 +249,7 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
 
     public void handleEmptyHandInteraction(Hand hand, PlayerEntity player) {
         if (this.inventory.isEmpty()) return;
+
         Optional<ItemStack> firstNonEmpty = inventory.stream()
                 .filter(stack -> !stack.isEmpty())
                 .findFirst();
@@ -228,6 +260,9 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
             inventory.set(index, ItemStack.EMPTY); // Remove by replacing with EMPTY
             player.setStackInHand(hand, stack);
         });
+
+        this.isCrafting = false;
+
     }
 
     public boolean canAcceptItem(ItemStack itemStack) {
