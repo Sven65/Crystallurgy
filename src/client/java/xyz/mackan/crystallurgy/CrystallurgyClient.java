@@ -4,13 +4,17 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import xyz.mackan.crystallurgy.gui.ResonanceForgeScreen;
 import xyz.mackan.crystallurgy.networking.ModNetworking;
+import xyz.mackan.crystallurgy.registry.ModBlockEntities;
 import xyz.mackan.crystallurgy.registry.ModFluids;
 import xyz.mackan.crystallurgy.registry.ModScreens;
+import xyz.mackan.crystallurgy.render.CrystalFluidCauldronRenderer;
+
 
 public class CrystallurgyClient implements ClientModInitializer {
 	@Override
@@ -41,6 +45,12 @@ public class CrystallurgyClient implements ClientModInitializer {
 				ModFluids.STILL_COOLING_FLUID, ModFluids.FLOWING_COOLING_FLUID);
 
 		HandledScreens.register(ModScreens.RESONANCE_FORGE_SCREEN_HANDLER, ResonanceForgeScreen::new);
+
+		BlockEntityRendererRegistry.INSTANCE.register(
+				ModBlockEntities.CRYSTAL_FLUID_CAULDRON, // The BlockEntityType instance for your cauldron
+				(context) -> new CrystalFluidCauldronRenderer() // A factory (lambda) that creates your renderer instance
+				// Note: The 'context' can be used if your renderer's constructor needs access to things like the BlockEntityRenderDispatcher
+		);
 
 		ModNetworking.registerS2CPackets();
 	}

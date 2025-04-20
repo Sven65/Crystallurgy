@@ -57,16 +57,10 @@ public class CrystalFluidCauldron extends AbstractCauldronBlock implements Block
 
         // TODO: Make this check for recipes to make sure we only get desireable items in the processing list
         if (entity instanceof ItemEntity itemEntity) {
-            ItemStack itemStack = itemEntity.getStack();
 
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CrystalFluidCauldronBlockEntity cauldronEntity) {
-                if (!cauldronEntity.canAcceptItem(itemStack)) return;
-
-                itemEntity.setDespawnImmediately();
-
-                cauldronEntity.addItemToProcessing(itemEntity);
-                cauldronEntity.addItemToCauldron(itemEntity.getStack());
+                cauldronEntity.addItemEntityToCauldron(itemEntity);
             }
         }
     }
