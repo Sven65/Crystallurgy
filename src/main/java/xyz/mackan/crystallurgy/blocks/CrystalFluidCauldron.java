@@ -43,12 +43,12 @@ public class CrystalFluidCauldron extends AbstractCauldronBlock implements Block
 
     @Override
     protected double getFluidHeight(BlockState state) {
-        return (6.0 + (double)(Integer)state.get(ModCauldron.FLUID_LEVEL) * 3.0) / 16.0;
+        return (6.0 + (double)state.get(ModCauldron.FLUID_LEVEL) * 3.0) / 16.0;
     }
 
     @Override
     public boolean isFull(BlockState state) {
-        return (Integer)state.get(ModCauldron.FLUID_LEVEL) == 3;
+        return state.get(ModCauldron.FLUID_LEVEL) == 3;
     }
 
     @Override
@@ -60,13 +60,9 @@ public class CrystalFluidCauldron extends AbstractCauldronBlock implements Block
             ItemStack itemStack = itemEntity.getStack();
 
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof CrystalFluidCauldronBlockEntity) {
-                CrystalFluidCauldronBlockEntity cauldronEntity = (CrystalFluidCauldronBlockEntity) blockEntity;
-
+            if (blockEntity instanceof CrystalFluidCauldronBlockEntity cauldronEntity) {
                 if (!cauldronEntity.canAcceptItem(itemStack)) return;
 
-                // TODO: cauldronEntity.canAcceptItem(itemStack)
-                Crystallurgy.LOGGER.info("Crystal seed or gold ingot was thrown in");
                 itemEntity.setDespawnImmediately();
 
                 cauldronEntity.addItemToProcessing(itemEntity);

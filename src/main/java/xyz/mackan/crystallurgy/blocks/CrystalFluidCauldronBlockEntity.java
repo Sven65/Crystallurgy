@@ -25,7 +25,7 @@ import java.util.*;
 
 
 // TODO: Make particles during processing
-// TODO: Stop matching thrown in item entities from being picked up, extract by right click with empty hand
+// TODO: Make items in inv render at bottom
 public class CrystalFluidCauldronBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
     private final List<ItemEntity> itemsBeingProcessed = new ArrayList<>();
@@ -100,6 +100,23 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         progress = nbt.getInt(String.format("%s.progress", Crystallurgy.MOD_ID));
     }
 
+    private int getFluidProgress() {
+        float normalizedProgress = (float) this.progress / this.maxProgress;
+
+        // Only return 0 when progress is exactly at max
+        if (normalizedProgress >= 0.99999f) {
+            return 0;
+        }
+
+        // Otherwise, map the fluid level to 1-3 based on progress
+        float fluidLevel = 1 - normalizedProgress;
+        return Math.max(1, Math.min(3, (int)Math.ceil(fluidLevel * 3)));
+    }
+
+    private boolean hasFluid(World world) {
+        return world.getBlockState(this.pos).get(ModCauldron.FLUID_LEVEL) > 0;
+    }
+
     public void tick(World world, BlockPos pos, BlockState state, CrystalFluidCauldronBlockEntity entity) {
         if (world.isClient()) {
             return;
@@ -109,7 +126,7 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
 
         isHeating = blockBelow.isIn(ModBlockTagProvider.FLUID_CAULDRON_HEATERS);
 
-        if (isHeating && !this.itemsBeingProcessed.isEmpty() && this.hasRecipe(entity)) {
+        if (isHeating && !this.itemsBeingProcessed.isEmpty() && this.hasRecipe(entity) && this.hasFluid(world)) {
             Optional<CrystalFluidCauldronRecipe> recipe = getCurrentRecipe();
 
             int recipeTicks = recipe.get().getTicks();
@@ -121,6 +138,8 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
 
             // TODO: Set fluid level with math progress
             // world.setBlockState(pos, state.with(LeveledCauldronBlock.LEVEL, 0));
+
+            world.setBlockState(pos, state.with(ModCauldron.FLUID_LEVEL, getFluidProgress()));
 
             if (hasCraftingFinished()) {
                 Crystallurgy.LOGGER.info("Crafting finished");
