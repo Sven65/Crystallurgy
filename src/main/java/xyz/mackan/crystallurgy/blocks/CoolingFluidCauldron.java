@@ -49,7 +49,7 @@ public class CoolingFluidCauldron extends LeveledCauldronBlock implements BlockE
                         itemEntity.setNeverDespawn();
 
                         cauldronEntity.addItemToProcessing(itemEntity);
-                        cauldronEntity.addItemToCauldron(itemEntity);
+                        //cauldronEntity.addItemToCauldron(itemEntity);
 
 
                     }

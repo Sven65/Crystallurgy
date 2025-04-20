@@ -42,12 +42,12 @@ public class CrystalFluidCauldron extends LeveledCauldronBlock implements BlockE
 
                 if (!cauldronEntity.isItemBeingProcessed(itemEntity)) {
 
-                    if (itemStack.getItem() == ModItems.CRYSTAL_SEED) {
-                        Crystallurgy.LOGGER.info("Crystal seed was thrown in");
-                        itemEntity.setNeverDespawn();
+                    if (itemStack.getItem() == ModItems.CRYSTAL_SEED || itemStack.getItem() == Items.GOLD_INGOT || itemStack.getItem() == Items.GLASS) {
+                        Crystallurgy.LOGGER.info("Crystal seed or gold ingot was thrown in");
+                        itemEntity.setDespawnImmediately();
 
                         cauldronEntity.addItemToProcessing(itemEntity);
-                        cauldronEntity.addItemToCauldron(itemEntity);
+                        cauldronEntity.addItemToCauldron(itemEntity.getStack());
 
 
                     }

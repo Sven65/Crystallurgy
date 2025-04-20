@@ -23,16 +23,10 @@ import java.util.*;
 
 // TODO: Make particles during processing
 // TODO: Stop matching thrown in item entities from being picked up, extract by right click with empty hand
-// TODO: Clear inv on recipe create
-// TODO: Keep track of other items thrown in for the sake of matching recipes
 public class CrystalFluidCauldronBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
-    private final DefaultedList<ItemEntity> itemEntitiesInCauldron = DefaultedList.ofSize(2);
-    private List<ItemEntity> itemsBeingProcessed = new ArrayList<>();
+    private final List<ItemEntity> itemsBeingProcessed = new ArrayList<>();
     public boolean isHeating = false;
-
-    private static final int SEED_SLOT = 0;
-    private static final int MATERIAL_SLOT = 1;
 
     private int maxProgress = 100;
     private int progress = 0;
@@ -49,6 +43,7 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
     // Add an item to the processing set
     public void addItemToProcessing(ItemEntity itemEntity) {
         itemsBeingProcessed.add(itemEntity);
+        this.progress = 0;
     }
 
     // Remove an item from the processing set once it is finished
@@ -61,8 +56,34 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         return inventory;
     }
 
-    public void addItemToCauldron(ItemEntity entity) {
-        this.itemEntitiesInCauldron.add(entity);
+    public boolean addToInventory(ItemStack toAdd) {
+        for (int i = 0; i < inventory.size(); i++) {
+            ItemStack existing = inventory.get(i);
+
+            if (existing.isEmpty()) {
+                inventory.set(i, toAdd.copy());
+                return true;
+            } else if (ItemStack.canCombine(existing, toAdd)) {
+                int space = existing.getMaxCount() - existing.getCount();
+                if (space > 0) {
+                    int toMove = Math.min(space, toAdd.getCount());
+                    existing.increment(toMove);
+                    toAdd.decrement(toMove);
+
+                    if (toAdd.isEmpty()) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // If we still have leftovers, it means inventory is full
+        return toAdd.isEmpty();
+    }
+
+    public void addItemToCauldron(ItemStack itemStack) {
+       this.addToInventory(itemStack);
+
     }
 
     @Override
@@ -107,8 +128,12 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
                     this.clearFluid(world, pos);
                     this.craftItem(world, pos);
 
-                    this.itemsBeingProcessed.get(0).getStack().decrement(1);
-                    this.itemsBeingProcessed.remove(0);
+                    for (ItemStack itemStack : inventory) {
+                        itemStack.decrement(1);
+                    }
+
+                    this.itemsBeingProcessed.clear();
+
                     resetProgress();
                 }
             }
@@ -153,13 +178,15 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
     }
 
     private Optional<CrystalFluidCauldronRecipe> getCurrentRecipe() {
-        SimpleInventory inv = new SimpleInventory(this.itemEntitiesInCauldron.size());
+        SimpleInventory inv = new SimpleInventory(this.inventory.size());
 
-        for (int i = 0; i < this.itemEntitiesInCauldron.size(); i++) {
-            inv.setStack(i, this.itemEntitiesInCauldron.get(i).getStack());
+        for (int i = 0; i < this.inventory.size(); i++) {
+            inv.setStack(i, this.inventory.get(i));
         }
 
         Crystallurgy.LOGGER.info("Inv is" + inv);
+
+
 
         return getWorld().getRecipeManager().getFirstMatch(CrystalFluidCauldronRecipe.Type.INSTANCE, inv, getWorld());
     }

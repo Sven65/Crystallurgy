@@ -34,14 +34,15 @@ public class CrystalFluidCauldronRecipe implements Recipe<SimpleInventory> {
             return false;
         }
 
-        ItemStack seed = inventory.getStack(0);
-        ItemStack rawMaterial = inventory.getStack(1);
+        ItemStack first = inventory.getStack(0);
+        ItemStack second = inventory.getStack(1);
 
-        if (rawMaterial == null) {
-            return recipeItems.get(0).test(seed);
-        } else {
-            return recipeItems.get(0).test(seed) && recipeItems.get(1).test(rawMaterial);
-        }
+        Ingredient firstIngredient = recipeItems.get(0);
+        Ingredient secondIngredient = recipeItems.get(1);
+
+        // Check both possible orderings
+        return (firstIngredient.test(first) && secondIngredient.test(second)) ||
+                (firstIngredient.test(second) && secondIngredient.test(first));
     }
 
     @Override
