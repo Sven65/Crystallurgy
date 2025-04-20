@@ -1,12 +1,15 @@
 {
   "variants": {
-    "level=1": {
+    "fluid_level=0": {
+      "model": "crystallurgy:block/cooling_cauldron_level0"
+    },
+    "fluid_level=1": {
       "model": "crystallurgy:block/cooling_cauldron_level1"
     },
-    "level=2": {
+    "fluid_level=2": {
       "model": "crystallurgy:block/cooling_cauldron_level2"
     },
-    "level=3": {
+    "fluid_level=3": {
       "model": "crystallurgy:block/cooling_cauldron_level3"
     }
   }

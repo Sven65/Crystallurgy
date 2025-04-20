@@ -1,6 +1,7 @@
 package xyz.mackan.crystallurgy.blocks;
 
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeveledCauldronBlock;
@@ -14,12 +15,14 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
+import xyz.mackan.crystallurgy.registry.ModCauldron;
 import xyz.mackan.crystallurgy.registry.ModItems;
 
 import java.util.Map;
@@ -27,6 +30,13 @@ import java.util.Map;
 public class CoolingFluidCauldron extends LeveledCauldronBlock implements BlockEntityProvider {
     public CoolingFluidCauldron(Settings settings, Map<Item, CauldronBehavior> behaviorMap) {
         super(settings, precipitation -> false, behaviorMap);
+        this.setDefaultState(this.stateManager.getDefaultState().with(ModCauldron.FLUID_LEVEL, 0));
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(ModCauldron.FLUID_LEVEL);
     }
 
     @Override
@@ -49,9 +59,6 @@ public class CoolingFluidCauldron extends LeveledCauldronBlock implements BlockE
                         itemEntity.setNeverDespawn();
 
                         cauldronEntity.addItemToProcessing(itemEntity);
-                        //cauldronEntity.addItemToCauldron(itemEntity);
-
-
                     }
                 }
 

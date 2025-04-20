@@ -5,10 +5,12 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -16,6 +18,7 @@ import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.datagen.ModBlockTagProvider;
 import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
+import xyz.mackan.crystallurgy.registry.ModCauldron;
 import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
 import java.util.*;
@@ -56,13 +59,13 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         return inventory;
     }
 
-    public boolean addToInventory(ItemStack toAdd) {
+    public void addToInventory(ItemStack toAdd) {
         for (int i = 0; i < inventory.size(); i++) {
             ItemStack existing = inventory.get(i);
 
             if (existing.isEmpty()) {
                 inventory.set(i, toAdd.copy());
-                return true;
+                return;
             } else if (ItemStack.canCombine(existing, toAdd)) {
                 int space = existing.getMaxCount() - existing.getCount();
                 if (space > 0) {
@@ -71,14 +74,11 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
                     toAdd.decrement(toMove);
 
                     if (toAdd.isEmpty()) {
-                        return true;
+                        return;
                     }
                 }
             }
         }
-
-        // If we still have leftovers, it means inventory is full
-        return toAdd.isEmpty();
     }
 
     public void addItemToCauldron(ItemStack itemStack) {
@@ -147,8 +147,8 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         BlockState state = world.getBlockState(pos);
 
         // Check if the block is a cauldron and it contains a fluid
-        if (state.getBlock() instanceof CrystalFluidCauldron && state.get(LeveledCauldronBlock.LEVEL) > 0) {
-            world.setBlockState(pos, Blocks.CAULDRON.getDefaultState());
+        if (state.getBlock() instanceof CrystalFluidCauldron && state.get(ModCauldron.FLUID_LEVEL) > 0) {
+            world.setBlockState(pos, ModCauldron.CRYSTAL_CAULDRON.getDefaultState());
         }
     }
 
@@ -195,5 +195,23 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         Optional<CrystalFluidCauldronRecipe> recipe = getCurrentRecipe();
 
         return recipe.isPresent();
+    }
+
+    public void handleEmptyHandInteraction(Hand hand, PlayerEntity player) {
+        if (this.inventory.isEmpty()) return;
+        Optional<ItemStack> firstNonEmpty = inventory.stream()
+                .filter(stack -> !stack.isEmpty())
+                .findFirst();
+
+
+        firstNonEmpty.ifPresent(stack -> {
+            int index = inventory.indexOf(stack);
+            inventory.set(index, ItemStack.EMPTY); // Remove by replacing with EMPTY
+            player.setStackInHand(hand, stack);
+        });
+    }
+
+    public boolean canAcceptItem(ItemStack itemStack) {
+        return inventory.stream().anyMatch(ItemStack::isEmpty);
     }
 }

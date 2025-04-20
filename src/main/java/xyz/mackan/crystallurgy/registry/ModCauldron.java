@@ -3,6 +3,7 @@ package xyz.mackan.crystallurgy.registry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.block.cauldron.CauldronBehavior;
@@ -15,6 +16,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.event.GameEvent;
@@ -25,6 +27,8 @@ import xyz.mackan.crystallurgy.blocks.CrystalFluidCauldron;
 import java.util.Map;
 
 public class ModCauldron {
+    public static final IntProperty FLUID_LEVEL = IntProperty.of("fluid_level", 0, 3);
+
     // Custom cauldron registration
     public static Block CRYSTAL_CAULDRON;
     public static Block COOLING_CAULDRON;
@@ -62,7 +66,7 @@ public class ModCauldron {
             if (!world.isClient) {
                 Item item = stack.getItem();
                 player.setStackInHand(hand, ItemUtils.createFilledResult(stack, player, new ItemStack(Items.BUCKET)));
-                world.setBlockState(pos, newCauldron.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3));
+                world.setBlockState(pos, newCauldron.getDefaultState().with(FLUID_LEVEL, 3));
                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
             }
@@ -73,8 +77,11 @@ public class ModCauldron {
         behaviorMap.put(Items.BUCKET, (state, world, pos, player, hand, stack) -> {
             if (!world.isClient) {
                 Item item = stack.getItem();
+
+                if (state.get(FLUID_LEVEL) < 3) return ActionResult.PASS;
+
                 player.setStackInHand(hand, ItemUtils.createFilledResult(stack, player, new ItemStack(bucket)));
-                world.setBlockState(pos, Blocks.CAULDRON.getDefaultState());
+                world.setBlockState(pos, state.getBlock().getDefaultState());
                 world.playSound(null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 world.emitGameEvent(null, GameEvent.FLUID_PICKUP, pos);
             }

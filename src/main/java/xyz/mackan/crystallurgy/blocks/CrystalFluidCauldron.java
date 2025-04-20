@@ -8,23 +8,47 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.state.StateManager;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
+import xyz.mackan.crystallurgy.registry.ModCauldron;
 import xyz.mackan.crystallurgy.registry.ModItems;
 
 import java.util.Map;
 
-public class CrystalFluidCauldron extends LeveledCauldronBlock implements BlockEntityProvider {
+public class CrystalFluidCauldron extends AbstractCauldronBlock implements BlockEntityProvider {
     public CrystalFluidCauldron(Settings settings, Map<Item, CauldronBehavior> behaviorMap) {
-        super(settings, precipitation -> false, behaviorMap);
+        super(settings, behaviorMap);
+        this.setDefaultState(this.stateManager.getDefaultState().with(ModCauldron.FLUID_LEVEL, 0));
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(ModCauldron.FLUID_LEVEL);
+    }
+
+    @Override
+    protected double getFluidHeight(BlockState state) {
+        return (6.0 + (double)(Integer)state.get(ModCauldron.FLUID_LEVEL) * 3.0) / 16.0;
+    }
+
+    @Override
+    public boolean isFull(BlockState state) {
+        return (Integer)state.get(ModCauldron.FLUID_LEVEL) == 3;
     }
 
     @Override
@@ -32,30 +56,47 @@ public class CrystalFluidCauldron extends LeveledCauldronBlock implements BlockE
         super.onEntityCollision(state, world, pos, entity);
 
         // TODO: Make this check for recipes to make sure we only get desireable items in the processing list
-        if (entity instanceof ItemEntity) {
-            ItemEntity itemEntity = (ItemEntity) entity;
+        if (entity instanceof ItemEntity itemEntity) {
             ItemStack itemStack = itemEntity.getStack();
 
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CrystalFluidCauldronBlockEntity) {
                 CrystalFluidCauldronBlockEntity cauldronEntity = (CrystalFluidCauldronBlockEntity) blockEntity;
 
-                if (!cauldronEntity.isItemBeingProcessed(itemEntity)) {
+                if (!cauldronEntity.canAcceptItem(itemStack)) return;
 
-                    if (itemStack.getItem() == ModItems.CRYSTAL_SEED || itemStack.getItem() == Items.GOLD_INGOT || itemStack.getItem() == Items.GLASS) {
-                        Crystallurgy.LOGGER.info("Crystal seed or gold ingot was thrown in");
-                        itemEntity.setDespawnImmediately();
+                // TODO: cauldronEntity.canAcceptItem(itemStack)
+                Crystallurgy.LOGGER.info("Crystal seed or gold ingot was thrown in");
+                itemEntity.setDespawnImmediately();
 
-                        cauldronEntity.addItemToProcessing(itemEntity);
-                        cauldronEntity.addItemToCauldron(itemEntity.getStack());
-
-
-                    }
-                }
-
-
+                cauldronEntity.addItemToProcessing(itemEntity);
+                cauldronEntity.addItemToCauldron(itemEntity.getStack());
             }
         }
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (hand != Hand.MAIN_HAND) return ActionResult.PASS;
+
+        ItemStack stack = player.getStackInHand(hand);
+        if (stack.isEmpty()) {
+            if (!world.isClient()) {
+                // Handle your empty-hand logic here!
+                player.sendMessage(Text.literal("Touched the goo with your bare hands 💀"), false);
+                // maybe trigger a recipe or mutate state
+
+                BlockEntity be = world.getBlockEntity(pos);
+                if (be instanceof CrystalFluidCauldronBlockEntity cauldronEntity) {
+                    // Call your logic here!
+                    cauldronEntity.handleEmptyHandInteraction(hand, player);
+                }
+
+            }
+            return ActionResult.SUCCESS;
+        }
+
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override

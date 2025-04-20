@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.data.client.*;
 import net.minecraft.util.Identifier;
@@ -94,6 +95,16 @@ public class ModModelProvider extends FabricModelProvider {
 
     // TODO: Make this not be white, aka actually have color
     private void generateCauldronBlockState(String name, Block cauldronBlock, BlockStateModelGenerator blockStateModelGenerator) {
+        Identifier level0 = createCauldronModel(String.format("%s_level0", name),
+                TextureMap.cauldron(new Identifier("minecraft:block/cauldron_inner"))
+                        .put(TextureKey.TOP, new Identifier("minecraft:block/cauldron_top"))
+                        .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
+                        .put(TextureKey.SIDE, new Identifier("minecraft:block/cauldron_side"))
+                        .put(TextureKey.PARTICLE, new Identifier("minecraft:block/cauldron_side"))
+                        .put(TextureKey.CONTENT, new Identifier("minecraft:block/cauldron_empty")),
+                blockStateModelGenerator
+        );
+
         Identifier level1 = createCauldronModel(String.format("%s_level1", name),
                 TextureMap.cauldron(new Identifier("minecraft:block/cauldron_inner"))
                         .put(TextureKey.TOP, new Identifier("minecraft:block/cauldron_top"))
@@ -126,7 +137,8 @@ public class ModModelProvider extends FabricModelProvider {
 
         // Create the blockstate definition with variants for each level
         VariantsBlockStateSupplier blockStateSupplier = VariantsBlockStateSupplier.create(cauldronBlock)
-                .coordinate(BlockStateVariantMap.create(LeveledCauldronBlock.LEVEL)
+                .coordinate(BlockStateVariantMap.create(ModCauldron.FLUID_LEVEL)
+                        .register(0, BlockStateVariant.create().put(VariantSettings.MODEL, level0))
                         .register(1, BlockStateVariant.create().put(VariantSettings.MODEL, level1))
                         .register(2, BlockStateVariant.create().put(VariantSettings.MODEL, level2))
                         .register(3, BlockStateVariant.create().put(VariantSettings.MODEL, level3)));
@@ -138,8 +150,8 @@ public class ModModelProvider extends FabricModelProvider {
         Identifier modelId = new Identifier(Crystallurgy.MOD_ID, "block/" + name);
 
         Optional<Identifier> parentId;
-        if (name.contains("empty")) {
-            parentId = Optional.of(new Identifier("minecraft:block/template_cauldron_empty"));
+        if (name.contains("level0")) {
+            parentId = Optional.of(new Identifier("minecraft:block/cauldron"));
         } else if (name.contains("level1")) {
             parentId = Optional.of(new Identifier("minecraft:block/template_cauldron_level1"));
         } else if (name.contains("level2")) {
