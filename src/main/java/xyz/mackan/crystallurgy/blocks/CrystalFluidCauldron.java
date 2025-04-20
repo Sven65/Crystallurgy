@@ -111,6 +111,8 @@ public class CrystalFluidCauldron extends AbstractCauldronBlock implements Block
 
     @Nullable
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> givenType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker) {
+        Crystallurgy.LOGGER.info("Crystal Fluid: Checking type {} against expected {}", givenType, expectedType);
+
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
     }
 

@@ -1,10 +1,7 @@
 package xyz.mackan.crystallurgy.blocks;
 
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LeveledCauldronBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -27,10 +24,20 @@ import xyz.mackan.crystallurgy.registry.ModItems;
 
 import java.util.Map;
 
-public class CoolingFluidCauldron extends LeveledCauldronBlock implements BlockEntityProvider {
+public class CoolingFluidCauldron extends AbstractCauldronBlock implements BlockEntityProvider {
     public CoolingFluidCauldron(Settings settings, Map<Item, CauldronBehavior> behaviorMap) {
-        super(settings, precipitation -> false, behaviorMap);
+        super(settings, behaviorMap);
         this.setDefaultState(this.stateManager.getDefaultState().with(ModCauldron.FLUID_LEVEL, 0));
+    }
+
+    @Override
+    protected double getFluidHeight(BlockState state) {
+        return (6.0 + (double)state.get(ModCauldron.FLUID_LEVEL) * 3.0) / 16.0;
+    }
+
+    @Override
+    public boolean isFull(BlockState state) {
+        return state.get(ModCauldron.FLUID_LEVEL) == 3;
     }
 
     @Override
@@ -78,16 +85,19 @@ public class CoolingFluidCauldron extends LeveledCauldronBlock implements BlockE
 
     @Override
     public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new CrystalFluidCauldronBlockEntity(pos, state);
+        return new CoolingFluidCauldronBlockEntity(pos, state);
     }
 
     @Nullable
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> givenType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker) {
+        Crystallurgy.LOGGER.info("CoolCauldron: Checking type {} against expected {}", givenType, expectedType);
+
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
     }
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        Crystallurgy.LOGGER.info("Getting ticker for cool cauldron");
         return checkType(type, ModBlockEntities.COOLING_FLUID_CAULDRON,
                 (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1, blockEntity));
     }

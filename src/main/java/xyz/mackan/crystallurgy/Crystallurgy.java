@@ -2,11 +2,8 @@ package xyz.mackan.crystallurgy;
 
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.resource.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.mackan.crystallurgy.data.BlockAttributeLoader;
 import xyz.mackan.crystallurgy.registry.*;
 
 public class Crystallurgy implements ModInitializer {
@@ -31,9 +28,6 @@ public class Crystallurgy implements ModInitializer {
 		 * For whatever reason, this all needs to be in this exact order
 		 * Do NOT modify if you don't know what you're doing. Things WILL break.
 		 */
-		ResourceManagerHelper.get(ResourceType.SERVER_DATA)
-				.registerReloadListener(new BlockAttributeLoader());
-
 		ModMessages.register();
 		ModScreens.register();
 		ModBlocks.register();
@@ -45,8 +39,5 @@ public class Crystallurgy implements ModInitializer {
 
 		ModCauldron.register();
 		ModBlockEntities.register();
-
-
-
 	}
 }

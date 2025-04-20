@@ -8,28 +8,34 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
-import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
+import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public class CrystalFluidCauldronRecipeJsonBuilder {
+public class CoolingFluidCauldronRecipeJsonBuilder {
     private final List<Ingredient> ingredients;
     private final ItemStack result;
     private int ticks;
+    private int coolingScore;
 
-    public CrystalFluidCauldronRecipeJsonBuilder(List<Ingredient> ingredients, ItemStack result) {
+    public CoolingFluidCauldronRecipeJsonBuilder(List<Ingredient> ingredients, ItemStack result) {
         this.ingredients = ingredients;
         this.result = result;
     }
 
-    public static CrystalFluidCauldronRecipeJsonBuilder create(List<Ingredient> ingredients, ItemConvertible resultItem, int count) {
-        return new CrystalFluidCauldronRecipeJsonBuilder(ingredients, new ItemStack(resultItem, count));
+    public static CoolingFluidCauldronRecipeJsonBuilder create(List<Ingredient> ingredients, ItemConvertible resultItem, int count) {
+        return new CoolingFluidCauldronRecipeJsonBuilder(ingredients, new ItemStack(resultItem, count));
     }
 
-    public CrystalFluidCauldronRecipeJsonBuilder ticks(int ticks) {
+    public CoolingFluidCauldronRecipeJsonBuilder ticks(int ticks) {
         this.ticks = ticks;
+        return this;
+    }
+
+    public CoolingFluidCauldronRecipeJsonBuilder coolingScore(int coolingScore) {
+        this.coolingScore = coolingScore;
         return this;
     }
 
@@ -37,7 +43,7 @@ public class CrystalFluidCauldronRecipeJsonBuilder {
         exporter.accept(new RecipeJsonProvider() {
             @Override
             public void serialize(JsonObject json) {
-                json.addProperty("type", "crystallurgy:crystal_fluid_cauldron_recipe");
+                json.addProperty("type", "crystallurgy:cooling_fluid_cauldron_recipe");
 
                 JsonArray ingredientsArray = new JsonArray();
                 for (Ingredient ingredient : ingredients) {
@@ -52,8 +58,7 @@ public class CrystalFluidCauldronRecipeJsonBuilder {
                 }
                 json.add("output", resultObj);
                 json.addProperty("ticks", ticks);
-
-                JsonObject energyObject = new JsonObject();
+                json.addProperty("cooling_score", coolingScore);
             }
 
             @Override
@@ -63,7 +68,7 @@ public class CrystalFluidCauldronRecipeJsonBuilder {
 
             @Override
             public RecipeSerializer<?> getSerializer() {
-                return CrystalFluidCauldronRecipe.Serializer.INSTANCE;
+                return ResonanceForgeRecipe.Serializer.INSTANCE;
             }
 
             @Override

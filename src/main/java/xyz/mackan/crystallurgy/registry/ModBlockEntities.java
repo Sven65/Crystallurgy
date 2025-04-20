@@ -26,17 +26,19 @@ public class ModBlockEntities {
                     ModCauldron.CRYSTAL_CAULDRON).build()
     );
 
-    public static BlockEntityType<CoolingFluidCauldronBlockEntity> COOLING_FLUID_CAULDRON = Registry.register(
-            Registries.BLOCK_ENTITY_TYPE,
-            new Identifier(Crystallurgy.MOD_ID, "cooling_fluid_cauldron_entity"),
-            FabricBlockEntityTypeBuilder.create(CoolingFluidCauldronBlockEntity::new,
-                    ModCauldron.CRYSTAL_CAULDRON).build()
-    );
+    public static BlockEntityType<CoolingFluidCauldronBlockEntity> COOLING_FLUID_CAULDRON;
 
     public static void register() {
        Crystallurgy.LOGGER.info("Registering block entities.");
 
-        EnergyStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> blockEntity.energyStorage, RESONANCE_FORGE);
+       EnergyStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> blockEntity.energyStorage, RESONANCE_FORGE);
+
+       COOLING_FLUID_CAULDRON = Registry.register(
+                Registries.BLOCK_ENTITY_TYPE,
+                new Identifier(Crystallurgy.MOD_ID, "cooling_fluid_cauldron_entity"),
+                FabricBlockEntityTypeBuilder.create(CoolingFluidCauldronBlockEntity::new,
+                        ModCauldron.COOLING_CAULDRON).build()
+        );
     }
 
 

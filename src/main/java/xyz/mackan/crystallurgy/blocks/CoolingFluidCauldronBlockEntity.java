@@ -1,5 +1,6 @@
 package xyz.mackan.crystallurgy.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeveledCauldronBlock;
@@ -13,14 +14,11 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.mackan.crystallurgy.Crystallurgy;
-import xyz.mackan.crystallurgy.datagen.ModBlockTagProvider;
 import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
 import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 // TODO: Make particles during processing
@@ -40,16 +38,17 @@ import java.util.Optional;
 public class CoolingFluidCauldronBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
     private final DefaultedList<ItemEntity> itemEntitiesInCauldron = DefaultedList.ofSize(2);
-    public boolean isHeating = false;
-
-    private static final int SEED_SLOT = 0;
-    private static final int MATERIAL_SLOT = 1;
+    private Map<Block, Integer> COOLING_SCORES = new HashMap<>() {
+        {
+            put(Blocks.ICE, 1);
+        }
+    };
 
     private int maxProgress = 100;
     private int progress = 0;
 
     public CoolingFluidCauldronBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.CRYSTAL_FLUID_CAULDRON, pos, state);
+        super(ModBlockEntities.COOLING_FLUID_CAULDRON, pos, state);
     }
 
 
@@ -73,20 +72,25 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
         progress = nbt.getInt(String.format("%s.progress", Crystallurgy.MOD_ID));
     }
 
-    public int getCoolingLevel(World world, BlockPos startPos) {
+    public int getCoolingScore(World world, BlockPos startPos) {
         List<BlockPos> cardinals = List.of(
                 startPos.up(), startPos.down(), startPos.east(), startPos.west(), startPos.north(), startPos.south()
         );
 
-        int cooling = 0;
+        int coolingScore = 0;
 
         for(BlockPos nextBlockPos : cardinals) {
-            BlockState state = world.getBlockState(nextBlockPos);
+            BlockState blockState = world.getBlockState(nextBlockPos);
+            Block block = blockState.getBlock();
 
+            if (!COOLING_SCORES.containsKey(block)) {
+                continue;
+            }
 
+            coolingScore += COOLING_SCORES.get(block);
         }
 
-        return cooling;
+        return coolingScore;
     }
 
     public void tick(World world, BlockPos pos, BlockState state, CoolingFluidCauldronBlockEntity entity) {
@@ -94,9 +98,9 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
             return;
         }
 
-        BlockState blockBelow = world.getBlockState(pos.down());
+        int coolingScore = getCoolingScore(world, pos);
 
-
+        Crystallurgy.LOGGER.info("Cooling level is {}", coolingScore);
     }
 
     public void clearFluid(World world, BlockPos pos) {

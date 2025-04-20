@@ -1,0 +1,13 @@
+{
+  "type": "crystallurgy:cooling_fluid_cauldron_recipe",
+  "cooling_score": 5,
+  "ingredients": [
+    {
+      "item": "crystallurgy:unrefined_gold_resonator_crystal"
+    }
+  ],
+  "output": {
+    "item": "crystallurgy:gold_resonator_crystal"
+  },
+  "ticks": 100
+}
