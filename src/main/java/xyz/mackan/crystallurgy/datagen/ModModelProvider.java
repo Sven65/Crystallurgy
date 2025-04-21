@@ -59,40 +59,7 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.register(ModItems.UNREFINED_EMERALD_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.UNREFINED_QUARTZ_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.UNREFINED_REDSTONE_RESONATOR_CRYSTAL, Models.GENERATED);
-
-        registerGrowthCrystal(itemModelGenerator, new Identifier(Crystallurgy.MOD_ID, "item/diamond_crystal_seed"));
     }
-
-    public void registerGrowthCrystal (ItemModelGenerator itemModelGenerator, Identifier itemId) {
-        // Base texture
-        Map<TextureKey, Identifier> textures = Map.of(
-                TextureKey.LAYER0, new Identifier(itemId.getNamespace(), "item/" + itemId.getPath())
-        );
-
-        // Overrides
-        List<Pair<Map<String, Number>, Identifier>> overrides = List.of(
-                new Pair(Map.of("charge", 25), new Identifier(itemId.getNamespace(), itemId.getPath() + "_25")),
-                new Pair(Map.of("charge", 50), new Identifier(itemId.getNamespace(), itemId.getPath() + "_50")),
-                new Pair(Map.of("charge", 75), new Identifier(itemId.getNamespace(), itemId.getPath() + "_75")),
-                new Pair(Map.of("charge", 100), new Identifier(itemId.getNamespace(), itemId.getPath() + "_100"))
-        );
-
-        JsonObject modelJson = PredicateItemJsonBuilder.createItemModelWithOverrides(itemId, textures, overrides);
-
-        itemModelGenerator.writer.accept(itemId, () -> modelJson);
-
-        for (Pair<Map<String, Number>, Identifier> override : overrides) {
-            Identifier overrideModelId = override.getRight();
-
-            Map<TextureKey, Identifier> overrideTextures = Map.of(
-                    TextureKey.LAYER0, new Identifier(itemId.getNamespace(), overrideModelId.getPath())
-            );
-
-            JsonObject overrideModel = Models.GENERATED.createJson(overrideModelId, overrideTextures);
-            itemModelGenerator.writer.accept(overrideModelId, () -> overrideModel);
-        }
-    }
-
 
     // TODO: Make this not be white, aka actually have color
     private void generateCauldronBlockState(String name, Block cauldronBlock, BlockStateModelGenerator blockStateModelGenerator) {

@@ -9,6 +9,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import xyz.mackan.crystallurgy.gui.ResonanceForgeScreen;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 import xyz.mackan.crystallurgy.registry.ModBlocks;
+import xyz.mackan.crystallurgy.registry.ModRecipes;
 
 public class CrystallurgyREIClientPlugin implements REIClientPlugin {
     @Override
@@ -19,10 +20,7 @@ public class CrystallurgyREIClientPlugin implements REIClientPlugin {
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {
-        registry.registerFillerWithReason(
-                (recipe, reason) -> recipe instanceof ResonanceForgeRecipe,
-                (recipe, reason) -> new ResonanceForgeDisplay((ResonanceForgeRecipe) recipe)
-        );
+        registry.registerRecipeFiller(ResonanceForgeRecipe.class, ModRecipes.RESONANCE_FORGE_RECIPE_SERIALIZER, ResonanceForgeDisplay::new);
     }
 
     @Override
