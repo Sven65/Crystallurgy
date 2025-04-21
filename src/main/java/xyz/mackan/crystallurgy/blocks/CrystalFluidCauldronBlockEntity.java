@@ -313,10 +313,6 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
 
 
         this.isCrafting = false;
-
-        //markDirty();
-
-        //Crystallurgy.LOGGER.info("Set index to {}", this.inventory.get(index.get()));
     }
 
     public boolean canAcceptItem(ItemStack itemStack) {

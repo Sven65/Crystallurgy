@@ -8,11 +8,16 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.StateManager;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -31,6 +36,12 @@ public class CoolingFluidCauldron extends AbstractCauldronBlock implements Block
     }
 
     @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(ModCauldron.FLUID_LEVEL);
+    }
+
+    @Override
     protected double getFluidHeight(BlockState state) {
         return (6.0 + (double)state.get(ModCauldron.FLUID_LEVEL) * 3.0) / 16.0;
     }
@@ -41,31 +52,46 @@ public class CoolingFluidCauldron extends AbstractCauldronBlock implements Block
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
-        builder.add(ModCauldron.FLUID_LEVEL);
-    }
-
-    @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+
         super.onEntityCollision(state, world, pos, entity);
 
-        // TODO: Make this check for recipes to make sure we only get desireable items in the processing list
         if (entity instanceof ItemEntity) {
+
             ItemEntity itemEntity = (ItemEntity) entity;
             ItemStack itemStack = itemEntity.getStack();
 
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CoolingFluidCauldronBlockEntity) {
                 CoolingFluidCauldronBlockEntity cauldronEntity = (CoolingFluidCauldronBlockEntity) blockEntity;
+                cauldronEntity.addItemEntityToCauldron(itemEntity);
 
-                if (itemStack.getItem() == ModItems.CRYSTAL_SEED) {
-                    Crystallurgy.LOGGER.info("Crystal seed was thrown in");
-
-                    //cauldronEntity.addItemEntityToCauldron(itemEntity);
-                }
             }
         }
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (hand != Hand.MAIN_HAND) return ActionResult.PASS;
+
+        ItemStack stack = player.getStackInHand(hand);
+        if (stack.isEmpty()) {
+            if (!world.isClient()) {
+                // Handle your empty-hand logic here!
+                player.sendMessage(Text.literal("Touched the goo with your bare hands 💀"), false);
+                // maybe trigger a recipe or mutate state
+
+                BlockEntity be = world.getBlockEntity(pos);
+                if (be instanceof CoolingFluidCauldronBlockEntity cauldronEntity) {
+                    // Call your logic here!
+                    cauldronEntity.handleEmptyHandInteraction(hand, player);
+                }
+
+            }
+            return ActionResult.SUCCESS;
+        }
+
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override

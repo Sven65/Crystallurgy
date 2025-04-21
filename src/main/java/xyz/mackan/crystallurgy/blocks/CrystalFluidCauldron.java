@@ -55,11 +55,10 @@ public class CrystalFluidCauldron extends AbstractCauldronBlock implements Block
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         super.onEntityCollision(state, world, pos, entity);
 
-        // TODO: Make this check for recipes to make sure we only get desireable items in the processing list
         if (entity instanceof ItemEntity itemEntity) {
-
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof CrystalFluidCauldronBlockEntity cauldronEntity) {
+            if (blockEntity instanceof CoolingFluidCauldronBlockEntity cauldronEntity) {
+                Crystallurgy.LOGGER.info("Adding item");
                 cauldronEntity.addItemEntityToCauldron(itemEntity);
             }
         }
