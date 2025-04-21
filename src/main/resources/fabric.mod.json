@@ -23,6 +23,9 @@
 		],
 		"fabric-datagen": [
 			"xyz.mackan.crystallurgy.CrystallurgyDataGenerator"
+		],
+		"rei_client": [
+			"xyz.mackan.crystallurgy.compat.CrystallurgyREIClientPlugin"
 		]
 	},
 	"mixins": [

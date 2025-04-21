@@ -3,10 +3,12 @@ package xyz.mackan.crystallurgy.datagen;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.RecipeProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Crystallurgy;
@@ -128,7 +130,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         generateCrystalFluidCauldronRecipes(consumer);
         generateCoolingFluidCauldronRecipes(consumer);
     }
-
+    
     private record CrystalRecipeContainer(String recipeId, Item baseItem, @Nullable Item secondItem, Item result, int count, int ticks) {}
     private record CoolingRecipeContainer(String recipeId, Item baseItem, Item result, int count, int ticks, int coolingScore) {}
     private record ForgeRecipeContainer(String recipeId, Item baseItem, ItemStack secondItem, @Nullable ItemStack dyeItem, Item result, int count, int ticks, int energyPerTicks) {}
