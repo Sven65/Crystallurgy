@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
+import xyz.mackan.crystallurgy.Crystallurgy;
 
 import java.util.List;
 
@@ -36,7 +37,12 @@ public class CoolingFluidCauldronRecipe implements Recipe<SimpleInventory> {
             return false;
         }
 
+
         ItemStack first = inventory.getStack(0);
+
+        if (first == null) {
+            Crystallurgy.LOGGER.warn("First item in cooling recipe is null?");
+        }
 
         Ingredient firstIngredient = recipeItems.get(0);
 
@@ -75,7 +81,7 @@ public class CoolingFluidCauldronRecipe implements Recipe<SimpleInventory> {
 
     @Override
     public Identifier getId() {
-        return null;
+        return this.id;
     }
 
     @Override
@@ -100,14 +106,22 @@ public class CoolingFluidCauldronRecipe implements Recipe<SimpleInventory> {
 
         @Override
         public CoolingFluidCauldronRecipe read(Identifier id, JsonObject json) {
+            Crystallurgy.LOGGER.info("Reading cooling recipe");
+
             ItemStack output = ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "output"));
 
             JsonArray ingredients = JsonHelper.getArray(json, "ingredients");
-            DefaultedList<Ingredient> inputs = DefaultedList.ofSize(2, Ingredient.EMPTY);
+            DefaultedList<Ingredient> inputs = DefaultedList.ofSize(1, Ingredient.EMPTY);
+
+            Crystallurgy.LOGGER.info("Read cooling ingredients {}", ingredients);
+
 
             for (int i = 0; i < ingredients.size(); i++) {
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
             }
+
+            Crystallurgy.LOGGER.info("Made cooling inputs {}", inputs);
+
 
             int ticks = JsonHelper.getInt(json, "ticks");
             int coolingScore = JsonHelper.getInt(json, "cooling_score");
@@ -148,6 +162,6 @@ public class CoolingFluidCauldronRecipe implements Recipe<SimpleInventory> {
 
     @Override
     public String toString() {
-        return String.format("[RECIPE] Ingredients: %s, Output: %s, Ticks: %s, Cooling Score: %s", this.getIngredients(), this.output, this.ticks, this.coolingScore);
+        return String.format("[Cooling Fluid Recipe] Ingredients: %s, Output: %s, Ticks: %s, Cooling Score: %s", this.getIngredients(), this.output, this.ticks, this.coolingScore);
     }
 }

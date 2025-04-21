@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
+import xyz.mackan.crystallurgy.Crystallurgy;
 
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class CrystalFluidCauldronRecipe implements Recipe<SimpleInventory> {
 
     @Override
     public Identifier getId() {
-        return null;
+        return this.id;
     }
 
     @Override
@@ -98,14 +99,22 @@ public class CrystalFluidCauldronRecipe implements Recipe<SimpleInventory> {
 
         @Override
         public CrystalFluidCauldronRecipe read(Identifier id, JsonObject json) {
+            Crystallurgy.LOGGER.info("Reading crystal recipe");
+
             ItemStack output = ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "output"));
 
             JsonArray ingredients = JsonHelper.getArray(json, "ingredients");
             DefaultedList<Ingredient> inputs = DefaultedList.ofSize(2, Ingredient.EMPTY);
 
+            Crystallurgy.LOGGER.info("Read crystal ingredients {}", ingredients);
+
+
             for (int i = 0; i < ingredients.size(); i++) {
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
             }
+
+            Crystallurgy.LOGGER.info("Made crystal inputs {}", inputs);
+
 
             int ticks = JsonHelper.getInt(json, "ticks");
 
@@ -143,6 +152,6 @@ public class CrystalFluidCauldronRecipe implements Recipe<SimpleInventory> {
 
     @Override
     public String toString() {
-        return String.format("[RECIPE] Ingredients: %s, Output: %s, Ticks: %s", this.getIngredients(), this.output, this.ticks);
+        return String.format("[Crystal Fluid Recipe] Ingredients: %s, Output: %s, Ticks: %s", this.getIngredients(), this.output, this.ticks);
     }
 }
