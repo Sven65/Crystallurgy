@@ -29,5 +29,7 @@
 
 
   "fluid.crystallurgy.crystal_fluid": "Crystal Fluid",
-  "fluid.crystallurgy.cooling_fluid": "Cooling Fluid"
+  "fluid.crystallurgy.cooling_fluid": "Cooling Fluid",
+
+  "text.crystallurgy.item_group": "Crystallurgy"
 }

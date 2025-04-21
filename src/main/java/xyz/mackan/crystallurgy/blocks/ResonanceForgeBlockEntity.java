@@ -282,8 +282,10 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
 
         if (recipe.isEmpty()) return false;
         int count = recipe.get().getCount(slot);
+        ItemStack stackInSlot = this.getStack(slot);
+        int slotCount = stackInSlot.isEmpty() ? 64 : stackInSlot.getCount();
 
-        return this.getStack(slot).getCount() >= count;
+        return slotCount >= count;
     }
 
     private boolean hasRecipe(ResonanceForgeBlockEntity entity) {

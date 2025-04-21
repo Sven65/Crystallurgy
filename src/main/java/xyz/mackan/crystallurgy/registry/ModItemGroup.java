@@ -13,8 +13,7 @@ public class ModItemGroup {
     public static final ItemGroup CRYSTALLURGY = FabricItemGroup
             .builder()
             .icon(() -> new ItemStack(ModItems.DIAMOND_RESONATOR_CRYSTAL))
-            // TODO: Make this a translatable
-            .displayName(Text.literal("Crystallurgy"))
+            .displayName(Text.translatable("text.crystallurgy.item_group"))
             .entries(((displayContext, entries) -> {
                 entries.add(ModItems.RESONANCE_FORGE);
                 entries.add(ModItems.CRYSTAL_SEED);

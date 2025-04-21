@@ -146,8 +146,6 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
             for (int i = 0; i < inputs.size(); i++) {
                 Ingredient ingredient = Ingredient.fromPacket(buf);
 
-                // TODO: Something about getting the counts here?
-
                 inputs.set(i, ingredient);
             }
 
@@ -163,7 +161,6 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
         public void write(PacketByteBuf buf, ResonanceForgeRecipe recipe) {
             Crystallurgy.LOGGER.info("writing recipe");
             buf.writeInt(recipe.getIngredients().size());
-            // TODO: Something about getting the counts here?
 
             for (Ingredient ing : recipe.getIngredients()) {
                 ing.write(buf);

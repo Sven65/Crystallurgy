@@ -10,13 +10,12 @@ import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 
 public class ModRecipes {
-    public static final RecipeSerializer<ResonanceForgeRecipe> RESONANCE_FORGE_RECIPE_SERIALIZER = Registry.register(
-            Registries.RECIPE_SERIALIZER,
-            new Identifier(Crystallurgy.MOD_ID, ResonanceForgeRecipe.Serializer.ID),
-            ResonanceForgeRecipe.Serializer.INSTANCE
-    );
-
     public static void register() {
+        Registry.register(
+                Registries.RECIPE_SERIALIZER,
+                new Identifier(Crystallurgy.MOD_ID, ResonanceForgeRecipe.Serializer.ID),
+                ResonanceForgeRecipe.Serializer.INSTANCE
+        );
 
         Registry.register(Registries.RECIPE_TYPE, new Identifier(Crystallurgy.MOD_ID, ResonanceForgeRecipe.Type.ID), ResonanceForgeRecipe.Type.INSTANCE);
 
