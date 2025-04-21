@@ -10,7 +10,6 @@ import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
-import xyz.mackan.crystallurgy.Crystallurgy;
 
 
 import java.io.IOException;

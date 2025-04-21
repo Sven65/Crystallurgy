@@ -7,25 +7,18 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.DustParticleEffect;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.joml.Vector3f;
-import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.blocks.CoolingFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.blocks.CrystalFluidCauldronBlockEntity;
-import xyz.mackan.crystallurgy.blocks.ResonanceForgeBlockEntity;
-import xyz.mackan.crystallurgy.gui.ResonanceForgeScreenHandler;
-import xyz.mackan.crystallurgy.util.ImplementedInventory;
 import xyz.mackan.crystallurgy.util.TextureUtil;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ParticleSpawnS2CPacket {
     public static void spawnParticles(World world, BlockPos pos, int chance, Vector3f color) {
-        //int chance = 10;
-        //Vector3f color = new Vector3f(0.8F, 0.3F, 1.0F);
-
-        // TODO: Get Colors on client side
-        if(world.random.nextInt(chance) == 0) {
+        if(ThreadLocalRandom.current().nextInt(chance) == 0) {
             // ~10% chance per tick → average once every 0.5 seconds
             double x = pos.getX() + world.random.nextDouble();
             double y = pos.getY() + 1.0 + world.random.nextDouble() * 0.2;

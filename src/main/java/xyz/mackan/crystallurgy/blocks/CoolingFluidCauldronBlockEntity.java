@@ -14,6 +14,9 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -21,6 +24,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
@@ -122,6 +126,10 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
                     toAdd.decrement(toMove);
                     markDirty(); // Use this.markDirty() after modification
 
+                    if (world != null && !world.isClient) {
+                        world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
+                    }
+
                     if (toAdd.isEmpty()) {
                         Crystallurgy.LOGGER.info("Added everything...");
 
@@ -213,7 +221,10 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
         return world.getBlockState(this.pos).get(ModCauldron.FLUID_LEVEL) > 0;
     }
 
-
+    @Override
+    public @Nullable Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
 
     public void tick(World world, BlockPos pos, BlockState state, CoolingFluidCauldronBlockEntity entity) {
         if (world.isClient() && this.hasFluid(world)) {
@@ -355,6 +366,9 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
 
         Crystallurgy.LOGGER.info("[extract] inv is now {}", inventory);
 
+        if (world != null && !world.isClient) {
+            world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
+        }
 
         this.isCrafting = false;
     }
