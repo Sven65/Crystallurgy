@@ -3,6 +3,7 @@ package xyz.mackan.crystallurgy.blocks;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
@@ -12,6 +13,9 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -86,6 +90,10 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
                     if (toAdd.isEmpty()) {
                         Crystallurgy.LOGGER.info("Added everything...");
 
+                        if (world != null && !world.isClient) {
+                            world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
+                        }
+
                         return; // All items added
                     }
                 }
@@ -109,6 +117,11 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
                     }
                     if (toAdd.isEmpty()) {
                         markDirty();
+
+                        if (world != null && !world.isClient) {
+                            world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
+                        }
+
                         return; // All items added
                     }
                 }
@@ -118,6 +131,11 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         Crystallurgy.LOGGER.warn("FAILED TO ADD ITEM TO INVENTORY???");
         // If the method reaches here, toAdd still contains items that couldn't fit.
         // These items are implicitly dropped/lost as per the void return type.
+    }
+
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     public void addItemToCauldron(ItemStack itemStack) {
@@ -133,6 +151,10 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
             Crystallurgy.LOGGER.info("We can accept, add item.");
             this.addToInventory(itemEntity.getStack());
             itemEntity.setDespawnImmediately();
+
+            if (world != null && !world.isClient) {
+                world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
+            }
         }
     }
 
@@ -310,6 +332,10 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
             index.set(inventory.indexOf(stack));
             this.removeStack(index.get(), stack.getCount());
             markDirty();
+
+            if (world != null && !world.isClient) {
+                world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
+            }
         };
 
         Crystallurgy.LOGGER.info("[extract] inv is now {}", inventory);

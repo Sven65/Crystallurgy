@@ -26,7 +26,7 @@ public class CrystalFluidCauldronRenderer implements BlockEntityRenderer<Crystal
     public void render(CrystalFluidCauldronBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         DefaultedList<ItemStack> items = blockEntity.getItems();
 
-        //Crystallurgy.LOGGER.info("Render items {}", items);
+        Crystallurgy.LOGGER.info("Render items {}", items);
 
 
         // Loop through both items in the cauldron's inventory
