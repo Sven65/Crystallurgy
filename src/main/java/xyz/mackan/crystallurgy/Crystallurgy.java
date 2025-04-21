@@ -2,8 +2,6 @@ package xyz.mackan.crystallurgy;
 
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.recipe.Recipe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.mackan.crystallurgy.registry.*;
@@ -41,12 +39,5 @@ public class Crystallurgy implements ModInitializer {
 
 		ModCauldron.register();
 		ModBlockEntities.register();
-
-		ServerLifecycleEvents.SERVER_STARTED.register((server) -> {
-			Crystallurgy.LOGGER.info("Registered Recipes:");
-			for (Recipe<?> recipe : server.getRecipeManager().values()) {
-				Crystallurgy.LOGGER.info("Recipe: " + recipe.getId());
-			}
-		});
 	}
 }
