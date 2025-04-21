@@ -2,6 +2,7 @@ package xyz.mackan.crystallurgy.fluid;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
@@ -17,8 +18,8 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import xyz.mackan.crystallurgy.registry.ModFluids;
 
+
 // TODO: Add random particles to placed fluid
-// TODO: Make player take freezing damage if in liquid
 public abstract class CoolingFluid extends FlowableFluid {
     @Override
     protected boolean isInfinite(World world) {

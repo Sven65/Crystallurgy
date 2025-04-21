@@ -13,6 +13,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.fluid.CoolingFluidBlock;
 import xyz.mackan.crystallurgy.fluid.CrystalFluid;
 import xyz.mackan.crystallurgy.fluid.CoolingFluid;
 
@@ -38,7 +39,7 @@ public class ModFluids {
         STILL_COOLING_FLUID = Registry.register(Registries.FLUID, new Identifier(Crystallurgy.MOD_ID, "cooling_fluid"), new CoolingFluid.Still());
         FLOWING_COOLING_FLUID = Registry.register(Registries.FLUID, new Identifier(Crystallurgy.MOD_ID, "flowing_cooling_fluid"), new CoolingFluid.Flowing());
 
-        COOLING_FLUID_BLOCK = Registry.register(Registries.BLOCK, new Identifier(Crystallurgy.MOD_ID, "cooling_fluid_block"), new FluidBlock(ModFluids.STILL_COOLING_FLUID, FabricBlockSettings.copyOf(Blocks.WATER)));
+        COOLING_FLUID_BLOCK = Registry.register(Registries.BLOCK, new Identifier(Crystallurgy.MOD_ID, "cooling_fluid_block"), new CoolingFluidBlock(ModFluids.STILL_COOLING_FLUID, FabricBlockSettings.copyOf(Blocks.WATER)));
         COOLING_FLUID_BUCKET = Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "cooling_fluid_bucket"), new BucketItem(ModFluids.STILL_COOLING_FLUID, new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)));
     }
 

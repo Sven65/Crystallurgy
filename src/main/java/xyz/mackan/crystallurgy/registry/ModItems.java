@@ -13,6 +13,9 @@ import xyz.mackan.crystallurgy.items.CrystalSeed;
 public class ModItems {
     public static final Item RESONANCE_FORGE = new BlockItem(ModBlocks.RESONANCE_FORGE, new FabricItemSettings());
 
+    public static final Item CRYSTAL_SEED = new CrystalSeed();
+    public static final Item UNREFINED_CRYSTAL_SEED = new CatalystCrystalItem(1);
+
     public static final Item COAL_RESONATOR_CRYSTAL = new CatalystCrystalItem(64);
     public static final Item IRON_RESONATOR_CRYSTAL = new CatalystCrystalItem(64);
     public static final Item GOLD_RESONATOR_CRYSTAL = new CatalystCrystalItem(64);
@@ -33,15 +36,13 @@ public class ModItems {
     public static final Item UNREFINED_QUARTZ_RESONATOR_CRYSTAL = new CatalystCrystalItem(1);
     public static final Item UNREFINED_REDSTONE_RESONATOR_CRYSTAL = new CatalystCrystalItem(1);
 
-    public static final Item CRYSTAL_SEED = new CrystalSeed();
-    public static final Item DIAMOND_CRYSTAL_SEED = new CrystalSeed();
 
 
 
     public static void register() {
         Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "resonance_forge"), RESONANCE_FORGE);
         Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "crystal_seed"), CRYSTAL_SEED);
-        Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "diamond_crystal_seed"), DIAMOND_CRYSTAL_SEED);
+        Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "unrefined_crystal_seed"), UNREFINED_CRYSTAL_SEED);
 
         Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "coal_resonator_crystal"), COAL_RESONATOR_CRYSTAL);
         Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "iron_resonator_crystal"), IRON_RESONATOR_CRYSTAL);

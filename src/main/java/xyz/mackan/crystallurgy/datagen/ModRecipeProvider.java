@@ -17,8 +17,9 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class ModRecipeProvider extends FabricRecipeProvider {
+    // TODO: Balancing
     private final static List<CrystalRecipeContainer> crystalCauldronRecipes = List.of(
-            new CrystalRecipeContainer("seed", ModItems.CRYSTAL_SEED, null, ModItems.CRYSTAL_SEED, 1, 100), // TODO: Make unrefined crystal seed item
+            new CrystalRecipeContainer("seed", ModItems.CRYSTAL_SEED, null, ModItems.UNREFINED_CRYSTAL_SEED, 1, 100),
             new CrystalRecipeContainer("coal", ModItems.CRYSTAL_SEED, Items.COAL, ModItems.UNREFINED_COAL_RESONATOR_CRYSTAL, 1, 100),
             new CrystalRecipeContainer("iron", ModItems.CRYSTAL_SEED, Items.IRON_INGOT, ModItems.UNREFINED_IRON_RESONATOR_CRYSTAL, 1, 100),
             new CrystalRecipeContainer("gold", ModItems.CRYSTAL_SEED, Items.GOLD_INGOT, ModItems.UNREFINED_GOLD_RESONATOR_CRYSTAL, 1, 100),
@@ -32,7 +33,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     );
 
     private final static List<CoolingRecipeContainer> coolingCauldronRecipes = List.of(
-            //new CoolingRecipeContainer("seed", ModItems.CRYSTAL_SEED, null, ModItems.CRYSTAL_SEED, 1, 100), // TODO
+            new CoolingRecipeContainer("seed", ModItems.CRYSTAL_SEED, ModItems.UNREFINED_CRYSTAL_SEED, 1, 100, 5),
             new CoolingRecipeContainer("coal", ModItems.UNREFINED_COAL_RESONATOR_CRYSTAL, ModItems.COAL_RESONATOR_CRYSTAL, 1, 100, 5),
             new CoolingRecipeContainer("iron", ModItems.UNREFINED_IRON_RESONATOR_CRYSTAL, ModItems.IRON_RESONATOR_CRYSTAL, 1, 100, 5),
             new CoolingRecipeContainer("gold", ModItems.UNREFINED_GOLD_RESONATOR_CRYSTAL, ModItems.GOLD_RESONATOR_CRYSTAL,1, 100, 5),

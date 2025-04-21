@@ -18,6 +18,7 @@ public class ModItemGroup {
             .entries(((displayContext, entries) -> {
                 entries.add(ModItems.RESONANCE_FORGE);
                 entries.add(ModItems.CRYSTAL_SEED);
+                entries.add(ModItems.UNREFINED_CRYSTAL_SEED);
                 entries.add(ModFluids.CRYSTAL_FLUID_BUCKET);
                 entries.add(ModFluids.COOLING_FLUID_BUCKET);
 
