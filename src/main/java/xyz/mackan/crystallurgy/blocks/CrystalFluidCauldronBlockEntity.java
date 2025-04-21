@@ -161,32 +161,36 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         return world.getBlockState(this.pos).get(ModCauldron.FLUID_LEVEL) > 0;
     }
 
-    public void tick(World world, BlockPos pos, BlockState state, CrystalFluidCauldronBlockEntity entity) {
-        if (world.isClient()) {
-            int chance = 10;
-            Vector3f color = new Vector3f(0.8F, 0.3F, 1.0F);
+    private void spawnParticles(World world, BlockPos pos) {
+        int chance = 10;
+        Vector3f color = new Vector3f(0.8F, 0.3F, 1.0F);
 
-            if (isCrafting) {
-                chance = 30;
-            }
-
-            if(world.random.nextInt(chance) == 0) {
-                // ~10% chance per tick → average once every 0.5 seconds
-                double x = pos.getX() + world.random.nextDouble();
-                double y = pos.getY() + 1.0 + world.random.nextDouble() * 0.2;
-                double z = pos.getZ() + world.random.nextDouble();
-
-                world.addParticle(
-                        new DustParticleEffect(color, 1.0F),
-                        x, y, z,
-                        0.0, 0.02, 0.0
-                );
-            }
-
-            return;
+        if (isCrafting) {
+            chance = 30;
         }
 
+        // TODO: Get Colors on client side
+        if(world.random.nextInt(chance) == 0) {
+            // ~10% chance per tick → average once every 0.5 seconds
+            double x = pos.getX() + world.random.nextDouble();
+            double y = pos.getY() + 1.0 + world.random.nextDouble() * 0.2;
+            double z = pos.getZ() + world.random.nextDouble();
 
+            world.addParticle(
+                    new DustParticleEffect(color, 1.0F),
+                    x, y, z,
+                    0.0, 0.02, 0.0
+            );
+        }
+
+        return;
+    }
+
+    public void tick(World world, BlockPos pos, BlockState state, CrystalFluidCauldronBlockEntity entity) {
+        if (world.isClient() && this.hasFluid(world)) {
+            spawnParticles(world, pos);
+            return;
+        }
 
         BlockState blockBelow = world.getBlockState(pos.down());
 

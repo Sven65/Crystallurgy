@@ -3,8 +3,9 @@
 
   "item.crystallurgy.resonance_forge": "Resonance Forge",
   "item.crystallurgy.crystal_seed": "Crystal Seed",
-  "item.crystallurgy.diamond_crystal_seed": "Diamond Crystal Seed",
+
   "item.crystallurgy.crystal_fluid_bucket": "Crystal Fluid Bucket",
+  "item.crystallurgy.cooling_fluid_bucket": "Cooling Fluid Bucket",
 
   "item.crystallurgy.coal_resonator_crystal": "Coal Resonator Crystal",
   "item.crystallurgy.iron_resonator_crystal": "Iron Resonator Crystal",
@@ -16,6 +17,17 @@
   "item.crystallurgy.quartz_resonator_crystal": "Quartz Resonator Crystal",
   "item.crystallurgy.redstone_resonator_crystal": "Redstone Resonator Crystal",
 
+  "item.crystallurgy.unrefined_coal_resonator_crystal": "Unrefined Coal Resonator Crystal",
+  "item.crystallurgy.unrefined_iron_resonator_crystal": "Unrefined Iron Resonator Crystal",
+  "item.crystallurgy.unrefined_gold_resonator_crystal": "Unrefined Gold Resonator Crystal",
+  "item.crystallurgy.unrefined_diamond_resonator_crystal": "Unrefined Diamond Resonator Crystal",
+  "item.crystallurgy.unrefined_netherite_resonator_crystal": "Unrefined Netherite Resonator Crystal",
+  "item.crystallurgy.unrefined_lapis_resonator_crystal": "Unrefined Lapis Resonator Crystal",
+  "item.crystallurgy.unrefined_emerald_resonator_crystal": "Unrefined Emerald Resonator Crystal",
+  "item.crystallurgy.unrefined_quartz_resonator_crystal": "Unrefined Quartz Resonator Crystal",
+  "item.crystallurgy.unrefined_redstone_resonator_crystal": "Unrefined Redstone Resonator Crystal",
 
-  "fluid.crystallurgy.crystal_fluid": "Crystal Fluid"
+
+  "fluid.crystallurgy.crystal_fluid": "Crystal Fluid",
+  "fluid.crystallurgy.cooling_fluid": "Cooling Fluid"
 }

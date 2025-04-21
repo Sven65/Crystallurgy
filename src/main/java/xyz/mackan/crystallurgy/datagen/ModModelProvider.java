@@ -36,6 +36,7 @@ public class ModModelProvider extends FabricModelProvider {
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
         itemModelGenerator.register(ModItems.CRYSTAL_SEED, Models.GENERATED);
         itemModelGenerator.register(ModFluids.CRYSTAL_FLUID_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(ModFluids.COOLING_FLUID_BUCKET, Models.GENERATED);
 
         itemModelGenerator.register(ModItems.COAL_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.IRON_RESONATOR_CRYSTAL, Models.GENERATED);

@@ -26,7 +26,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-// TODO: Make particles during processing
 /* GOAL: Cauldron with custom cooling fluid, surrounded by cooling blocks, which give different cooling scores, which get combined.
  * Recipe includes a min cooling score (maybe max too)
  * Will work like CrystalFluidCauldron in that it uses recipes and takes fluid.
@@ -202,7 +201,7 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
         return world.getBlockState(this.pos).get(ModCauldron.FLUID_LEVEL) > 0;
     }
 
-    private void spawnParticles() {
+    private void spawnParticles(World world, BlockPos pos) {
         int chance = 10;
         Vector3f color = new Vector3f(0.8F, 0.3F, 1.0F);
 
@@ -210,6 +209,7 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
             chance = 30;
         }
 
+        // TODO: Get Colors on client side
         if(world.random.nextInt(chance) == 0) {
             // ~10% chance per tick → average once every 0.5 seconds
             double x = pos.getX() + world.random.nextDouble();
@@ -226,8 +226,8 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
     }
 
     public void tick(World world, BlockPos pos, BlockState state, CoolingFluidCauldronBlockEntity entity) {
-        if (world.isClient()) {
-            spawnParticles();
+        if (world.isClient() && this.hasFluid(world)) {
+            spawnParticles(world, pos);
             return;
         }
 
