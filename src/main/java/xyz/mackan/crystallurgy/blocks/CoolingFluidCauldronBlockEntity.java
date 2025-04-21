@@ -1,5 +1,8 @@
 package xyz.mackan.crystallurgy.blocks;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -10,7 +13,10 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -20,6 +26,8 @@ import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
 import xyz.mackan.crystallurgy.registry.ModCauldron;
+import xyz.mackan.crystallurgy.registry.ModMessages;
+import xyz.mackan.crystallurgy.util.CauldronUtil;
 import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
 import java.util.*;
@@ -151,6 +159,10 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
         // These items are implicitly dropped/lost as per the void return type.
     }
 
+    public boolean getIsCrafting() {
+        return this.isCrafting;
+    }
+
     public void addItemEntityToCauldron(ItemEntity itemEntity) {
         boolean canAccept = this.canAcceptItem(itemEntity.getStack());
 
@@ -201,34 +213,22 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
         return world.getBlockState(this.pos).get(ModCauldron.FLUID_LEVEL) > 0;
     }
 
-    private void spawnParticles(World world, BlockPos pos) {
-        int chance = 10;
-        Vector3f color = new Vector3f(0.8F, 0.3F, 1.0F);
 
-        if (isCrafting) {
-            chance = 30;
-        }
-
-        // TODO: Get Colors on client side
-        if(world.random.nextInt(chance) == 0) {
-            // ~10% chance per tick → average once every 0.5 seconds
-            double x = pos.getX() + world.random.nextDouble();
-            double y = pos.getY() + 1.0 + world.random.nextDouble() * 0.2;
-            double z = pos.getZ() + world.random.nextDouble();
-
-            world.addParticle(
-                    new DustParticleEffect(color, 1.0F),
-                    x, y, z,
-                    0.0, 0.02, 0.0
-            );
-        }
-
-    }
 
     public void tick(World world, BlockPos pos, BlockState state, CoolingFluidCauldronBlockEntity entity) {
         if (world.isClient() && this.hasFluid(world)) {
-            spawnParticles(world, pos);
             return;
+        }
+
+        if (this.hasFluid(world)) {
+            PacketByteBuf buf = PacketByteBufs.create();
+
+            buf.writeBlockPos(getPos());
+            buf.writeItemStack(CauldronUtil.getItemStack(entity));
+
+            for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, getPos())) {
+                ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLES, buf);
+            }
         }
 
         int coolingScore = getCoolingScore(world, pos);

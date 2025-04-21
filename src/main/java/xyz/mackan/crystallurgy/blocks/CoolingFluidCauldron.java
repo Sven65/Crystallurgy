@@ -65,7 +65,6 @@ public class CoolingFluidCauldron extends AbstractCauldronBlock implements Block
             if (blockEntity instanceof CoolingFluidCauldronBlockEntity) {
                 CoolingFluidCauldronBlockEntity cauldronEntity = (CoolingFluidCauldronBlockEntity) blockEntity;
                 cauldronEntity.addItemEntityToCauldron(itemEntity);
-
             }
         }
     }

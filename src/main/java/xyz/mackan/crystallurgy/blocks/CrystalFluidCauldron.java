@@ -53,11 +53,12 @@ public class CrystalFluidCauldron extends AbstractCauldronBlock implements Block
 
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        super.onEntityCollision(state, world, pos, entity);
 
         if (entity instanceof ItemEntity itemEntity) {
+            Crystallurgy.LOGGER.info("ent collision");
+
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof CoolingFluidCauldronBlockEntity cauldronEntity) {
+            if (blockEntity instanceof CrystalFluidCauldronBlockEntity cauldronEntity) {
                 Crystallurgy.LOGGER.info("Adding item");
                 cauldronEntity.addItemEntityToCauldron(itemEntity);
             }

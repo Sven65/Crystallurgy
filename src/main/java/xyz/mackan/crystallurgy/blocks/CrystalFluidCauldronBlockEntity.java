@@ -1,5 +1,8 @@
 package xyz.mackan.crystallurgy.blocks;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
@@ -8,7 +11,10 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -19,13 +25,14 @@ import xyz.mackan.crystallurgy.datagen.ModBlockTagProvider;
 import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
 import xyz.mackan.crystallurgy.registry.ModCauldron;
+import xyz.mackan.crystallurgy.registry.ModMessages;
+import xyz.mackan.crystallurgy.util.CauldronUtil;
 import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-// TODO: Make particles during processing
 // TODO: Make items in inv render at bottom
 public class CrystalFluidCauldronBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
@@ -161,36 +168,28 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         return world.getBlockState(this.pos).get(ModCauldron.FLUID_LEVEL) > 0;
     }
 
-    private void spawnParticles(World world, BlockPos pos) {
-        int chance = 10;
-        Vector3f color = new Vector3f(0.8F, 0.3F, 1.0F);
-
-        if (isCrafting) {
-            chance = 30;
-        }
-
-        // TODO: Get Colors on client side
-        if(world.random.nextInt(chance) == 0) {
-            // ~10% chance per tick → average once every 0.5 seconds
-            double x = pos.getX() + world.random.nextDouble();
-            double y = pos.getY() + 1.0 + world.random.nextDouble() * 0.2;
-            double z = pos.getZ() + world.random.nextDouble();
-
-            world.addParticle(
-                    new DustParticleEffect(color, 1.0F),
-                    x, y, z,
-                    0.0, 0.02, 0.0
-            );
-        }
-
-        return;
+    public boolean getIsCrafting() {
+        return this.isCrafting;
     }
 
+
+
     public void tick(World world, BlockPos pos, BlockState state, CrystalFluidCauldronBlockEntity entity) {
-        if (world.isClient() && this.hasFluid(world)) {
-            spawnParticles(world, pos);
+        if (world.isClient()) {
             return;
         }
+
+        if (this.hasFluid(world)) {
+            PacketByteBuf buf = PacketByteBufs.create();
+
+            buf.writeBlockPos(getPos());
+            buf.writeItemStack(CauldronUtil.getItemStack(entity));
+
+            for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, getPos())) {
+                ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLES, buf);
+            }
+        }
+
 
         BlockState blockBelow = world.getBlockState(pos.down());
 
@@ -336,10 +335,6 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
 
         // Check 2: Is there any empty slot in the inventory?
         boolean hasEmptySlot = items.stream().anyMatch(ItemStack::isEmpty);
-
-        Crystallurgy.LOGGER.info("[can accept] items? {}", items);
-
-        Crystallurgy.LOGGER.info("[can accept] hasEmpty? {}", hasEmptySlot);
 
         // The inventory can accept the item if it can combine with an existing stack OR there is an empty slot.
         return canCombineWithExisting || hasEmptySlot;
