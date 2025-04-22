@@ -196,7 +196,6 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
             this.maxProgress = recipeTicks;
 
             progress++;
-
             world.setBlockState(pos, state.with(ModCauldron.FLUID_LEVEL, getFluidProgress()));
 
             if (hasCraftingFinished()) {
