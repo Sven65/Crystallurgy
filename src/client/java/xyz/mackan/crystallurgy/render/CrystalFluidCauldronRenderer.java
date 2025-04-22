@@ -8,14 +8,10 @@ import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.collection.DefaultedList;
-import xyz.mackan.crystallurgy.Crystallurgy;
-import xyz.mackan.crystallurgy.CrystallurgyClient;
 import xyz.mackan.crystallurgy.blocks.CrystalFluidCauldronBlockEntity;
 
 import java.util.List;
 
-// TODO: Make this get the right items from the cauldron entity.
 public class CrystalFluidCauldronRenderer implements BlockEntityRenderer<CrystalFluidCauldronBlockEntity> {
     private final ItemRenderer itemRenderer;
 
@@ -26,31 +22,20 @@ public class CrystalFluidCauldronRenderer implements BlockEntityRenderer<Crystal
     @Override
     public void render(CrystalFluidCauldronBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         List<ItemStack> items = blockEntity.getRenderItems();
-        NbtCompound nbt = new NbtCompound();
-        blockEntity.readNbt(nbt);
 
-        Crystallurgy.LOGGER.info("NBT is {}", nbt);
-
-        Crystallurgy.LOGGER.info("Render items {}", items);
-        Crystallurgy.LOGGER.info("Cached state {}", blockEntity.getCachedState());
-        Crystallurgy.LOGGER.info("Actual items {}", ((CrystalFluidCauldronBlockEntity) blockEntity.getWorld().getBlockEntity(blockEntity.getPos())).getRenderItems());
-
-        // Loop through both items in the cauldron's inventory
         for (int i = 0; i < items.size(); i++) {
             ItemStack itemStack = items.get(i);
             if (!itemStack.isEmpty()) {
-                matrices.push(); // Corrected push() for matrix transformations
+                matrices.push();
 
-                // Adjust the position for each item
                 matrices.translate(0.5F, 0.5F, 0.5F); // Center the items
                 matrices.translate(0.0F, 0.0F, (i - 0.5F) * 0.25F); // Offset each item vertically
                 matrices.scale(0.75F, 0.75F, 0.75F);  // Scale the items to fit inside the cauldron
 
-                // Render the item inside the cauldron
                 // Render the item
                 itemRenderer.renderItem(itemStack, ModelTransformationMode.GROUND, light, overlay, matrices, vertexConsumers, MinecraftClient.getInstance().world, 0);
 
-                matrices.pop(); // Corrected pop() to revert the transformation
+                matrices.pop();
             }
         }
     }
