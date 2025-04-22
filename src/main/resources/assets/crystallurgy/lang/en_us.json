@@ -7,6 +7,7 @@
   "item.crystallurgy.crystal_fluid_bucket": "Crystal Fluid Bucket",
   "item.crystallurgy.cooling_fluid_bucket": "Cooling Fluid Bucket",
 
+  "item.crystallurgy.crystal_seed_resonator_crystal": "Crystal Seed Resonator Crystal",
   "item.crystallurgy.coal_resonator_crystal": "Coal Resonator Crystal",
   "item.crystallurgy.iron_resonator_crystal": "Iron Resonator Crystal",
   "item.crystallurgy.gold_resonator_crystal": "Gold Resonator Crystal",
@@ -17,6 +18,7 @@
   "item.crystallurgy.quartz_resonator_crystal": "Quartz Resonator Crystal",
   "item.crystallurgy.redstone_resonator_crystal": "Redstone Resonator Crystal",
 
+  "item.crystallurgy.unrefined_crystal_seed_resonator_crystal": "Unrefined Crystal Seed Resonator Crystal",
   "item.crystallurgy.unrefined_coal_resonator_crystal": "Unrefined Coal Resonator Crystal",
   "item.crystallurgy.unrefined_iron_resonator_crystal": "Unrefined Iron Resonator Crystal",
   "item.crystallurgy.unrefined_gold_resonator_crystal": "Unrefined Gold Resonator Crystal",
