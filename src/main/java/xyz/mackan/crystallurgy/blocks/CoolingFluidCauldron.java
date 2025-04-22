@@ -53,17 +53,10 @@ public class CoolingFluidCauldron extends AbstractCauldronBlock implements Block
 
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-
-        super.onEntityCollision(state, world, pos, entity);
-
-        if (entity instanceof ItemEntity) {
-
-            ItemEntity itemEntity = (ItemEntity) entity;
-            ItemStack itemStack = itemEntity.getStack();
+        if (entity instanceof ItemEntity itemEntity) {
 
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof CoolingFluidCauldronBlockEntity) {
-                CoolingFluidCauldronBlockEntity cauldronEntity = (CoolingFluidCauldronBlockEntity) blockEntity;
+            if (blockEntity instanceof CoolingFluidCauldronBlockEntity cauldronEntity) {
                 cauldronEntity.addItemEntityToCauldron(itemEntity);
             }
         }
@@ -73,7 +66,12 @@ public class CoolingFluidCauldron extends AbstractCauldronBlock implements Block
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (hand != Hand.MAIN_HAND) return ActionResult.PASS;
 
+        Crystallurgy.LOGGER.info("Hand check pass");
+
         ItemStack stack = player.getStackInHand(hand);
+
+        Crystallurgy.LOGGER.info("stack in hand {}", hand);
+
         if (stack.isEmpty()) {
             if (!world.isClient()) {
                 // Handle your empty-hand logic here!
@@ -115,14 +113,11 @@ public class CoolingFluidCauldron extends AbstractCauldronBlock implements Block
 
     @Nullable
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> givenType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker) {
-        Crystallurgy.LOGGER.info("CoolCauldron: Checking type {} against expected {}", givenType, expectedType);
-
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
     }
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        Crystallurgy.LOGGER.info("Getting ticker for cool cauldron");
         return checkType(type, ModBlockEntities.COOLING_FLUID_CAULDRON,
                 (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1, blockEntity));
     }

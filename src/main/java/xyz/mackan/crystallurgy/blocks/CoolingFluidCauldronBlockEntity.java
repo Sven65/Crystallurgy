@@ -53,7 +53,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class CoolingFluidCauldronBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
-    private final DefaultedList<ItemEntity> itemEntitiesInCauldron = DefaultedList.ofSize(2);
     // TODO: Try making this block tags
     private Map<Block, Integer> COOLING_SCORES = new HashMap<>() {
         {
@@ -80,6 +79,16 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
         return inventory;
     }
 
+    @Override
+    public void markDirty() {
+        world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_ALL);
+        super.markDirty();
+    }
+
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        return createNbt();
+    }
 
     @Override
     protected void writeNbt(NbtCompound nbt) {
@@ -90,34 +99,23 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
 
     @Override
     public void readNbt(NbtCompound nbt) {
+        inventory.clear();
         super.readNbt(nbt);
         Inventories.readNbt(nbt, inventory);
         progress = nbt.getInt(String.format("%s.progress", Crystallurgy.MOD_ID));
     }
 
     public void addToInventory(ItemStack toAdd) {
-        // 'this' refers to the instance implementing ImplementedInventory
-        // Assuming this method is defined within or accessible to such an instance.
-
-        Crystallurgy.LOGGER.info("Adding itemStack {} to inv", toAdd);
-
+        Crystallurgy.LOGGER.info("add item {}", toAdd);
         if (toAdd.isEmpty()) {
-            Crystallurgy.LOGGER.warn("Can't add to inv, stack is empty");
-
-            return; // Nothing to add
+            return;
         }
 
         // Pass 1: Try to merge with existing stacks
         for (int i = 0; i < this.size(); i++) {
             ItemStack existing = inventory.get(i);
-
-            Crystallurgy.LOGGER.info("Found existing {}", existing);
-
-
             // Check if stacks are compatible and there's space
             if (ItemStack.canCombine(toAdd, existing) && existing.getCount() < existing.getMaxCount()) {
-                Crystallurgy.LOGGER.info("We can combine");
-
                 int space = existing.getMaxCount() - existing.getCount();
                 int toMove = Math.min(toAdd.getCount(), space);
 
@@ -126,12 +124,8 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
                     toAdd.decrement(toMove);
                     markDirty(); // Use this.markDirty() after modification
 
-                    if (world != null && !world.isClient) {
-                        world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
-                    }
-
                     if (toAdd.isEmpty()) {
-                        Crystallurgy.LOGGER.info("Added everything...");
+                        Crystallurgy.LOGGER.info("Inventory is now {}", inventory);
 
                         return; // All items added
                     }
@@ -141,30 +135,23 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
 
         // Pass 2: Place into empty slots
         if (!toAdd.isEmpty()) {
-            Crystallurgy.LOGGER.info("To add is not empty, do pass 2");
-
-            for (int i = 0; i < inventory.size(); i++) { // Use this.size()
-                if (inventory.get(i).isEmpty()) { // Use this.getStack()
-                    Crystallurgy.LOGGER.info("Checked slot {} is empty", i);
-
+            for (int i = 0; i < inventory.size(); i++) {
+                if (inventory.get(i).isEmpty()) {
                     int toMove = Math.min(toAdd.getCount(), getMaxCountPerStack()); // Use this.getMaxCountPerStack()
                     ItemStack stackToPlace = toAdd.split(toMove); // split() reduces toAdd and creates the new stack
                     if (!stackToPlace.isEmpty()) {
-                        Crystallurgy.LOGGER.info("Setting stack at {} to {}", i, stackToPlace);
-
-                        setStack(i, stackToPlace); // Use this.setStack(). setStack handles placing and calls markDirty.
+                        setStack(i, stackToPlace); // Use this.setStack(). setStack ha ndles placing and calls markDirty.
                     }
                     if (toAdd.isEmpty()) {
                         markDirty();
+
+                        Crystallurgy.LOGGER.info("Inventory is now {}", inventory);
+
                         return; // All items added
                     }
                 }
             }
         }
-
-        Crystallurgy.LOGGER.warn("FAILED TO ADD ITEM TO INVENTORY???");
-        // If the method reaches here, toAdd still contains items that couldn't fit.
-        // These items are implicitly dropped/lost as per the void return type.
     }
 
     public boolean getIsCrafting() {
@@ -174,12 +161,9 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
     public void addItemEntityToCauldron(ItemEntity itemEntity) {
         boolean canAccept = this.canAcceptItem(itemEntity.getStack());
 
-        Crystallurgy.LOGGER.info("Can accept? {}", canAccept);
-
         if (canAccept) {
-            Crystallurgy.LOGGER.info("We can accept, add item.");
             this.addToInventory(itemEntity.getStack());
-            itemEntity.setDespawnImmediately();
+            //itemEntity.setDespawnImmediately();
         }
     }
 
@@ -253,8 +237,6 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
                 return;
             }
 
-
-
             int recipeTicks = recipe.get().getTicks();
             this.maxProgress = recipeTicks;
 
@@ -265,7 +247,6 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
             world.setBlockState(pos, state.with(ModCauldron.FLUID_LEVEL, getFluidProgress()));
 
             if (hasCraftingFinished()) {
-                Crystallurgy.LOGGER.info("Cooling finished");
                 this.clearFluid(world, pos);
                 this.craftItem(world, pos);
 
@@ -273,6 +254,7 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
                     itemStack.decrement(1);
                 }
 
+                markDirty();
                 resetProgress();
             }
         }
@@ -299,11 +281,7 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
 
         ItemStack itemStack = recipe.get().getOutput(null);
 
-        Crystallurgy.LOGGER.info("Spawning item{}", itemStack);
-
         ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY() + 3, pos.getZ(), itemStack);
-
-        Crystallurgy.LOGGER.info("Spawning entity{}", itemEntity);
 
         world.spawnEntity(itemEntity);
     }
@@ -335,39 +313,25 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
 
     public void handleEmptyHandInteraction(Hand hand, PlayerEntity player) {
         if (inventory.isEmpty()) {
-            Crystallurgy.LOGGER.warn("[extract] inv empty???");
             return;
         }
 
-        Crystallurgy.LOGGER.info("[extract] inv is {}", inventory);
+        Crystallurgy.LOGGER.info("Inventory is {}", inventory);
 
         Optional<ItemStack> firstNonEmpty = inventory.stream()
                 .filter(stack -> !stack.isEmpty())
                 .findFirst();
 
-        Crystallurgy.LOGGER.info("[Extract] Found first non empty item {}", firstNonEmpty);
+        Crystallurgy.LOGGER.info("firstNonEmpty is {}", firstNonEmpty);
 
-
-        AtomicInteger index = new AtomicInteger(-1);
-
-        Crystallurgy.LOGGER.info("[extract] is present? {}", firstNonEmpty.isPresent());
-        Crystallurgy.LOGGER.info("[extract] item is now? {}", firstNonEmpty);
-
-        if(firstNonEmpty.isPresent()) {
+        if (firstNonEmpty.isPresent()) {
             ItemStack stack = firstNonEmpty.get();
-            Crystallurgy.LOGGER.info("[Extract] Removing non empty item {}", stack);
-            //player.setStackInHand(hand, stack);
+            int index = inventory.indexOf(stack);
             player.getInventory().insertStack(stack);
 
-            index.set(inventory.indexOf(stack));
-            this.removeStack(index.get(), stack.getCount());
-            markDirty();
-        };
+            inventory.set(index, ItemStack.EMPTY);
 
-        Crystallurgy.LOGGER.info("[extract] inv is now {}", inventory);
-
-        if (world != null && !world.isClient) {
-            world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
+            this.markDirty();
         }
 
         this.isCrafting = false;
@@ -390,10 +354,6 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
 
         // Check 2: Is there any empty slot in the inventory?
         boolean hasEmptySlot = items.stream().anyMatch(ItemStack::isEmpty);
-
-        Crystallurgy.LOGGER.info("[can accept] items? {}", items);
-
-        Crystallurgy.LOGGER.info("[can accept] hasEmpty? {}", hasEmptySlot);
 
         // The inventory can accept the item if it can combine with an existing stack OR there is an empty slot.
         return canCombineWithExisting || hasEmptySlot;

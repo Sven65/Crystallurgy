@@ -1,5 +1,6 @@
 package xyz.mackan.crystallurgy.render;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -7,21 +8,21 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import xyz.mackan.crystallurgy.blocks.CrystalFluidCauldronBlockEntity;
+import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
 import java.util.List;
 
-public class CrystalFluidCauldronRenderer implements BlockEntityRenderer<CrystalFluidCauldronBlockEntity> {
+public class FluidCauldronRenderer<T extends BlockEntity & ImplementedInventory> implements BlockEntityRenderer<T> {
     private final ItemRenderer itemRenderer;
 
-    public CrystalFluidCauldronRenderer() {
+    public FluidCauldronRenderer() {
         this.itemRenderer = MinecraftClient.getInstance().getItemRenderer();
     }
 
     @Override
-    public void render(CrystalFluidCauldronBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        List<ItemStack> items = blockEntity.getRenderItems();
+    public void render(T blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        List<ItemStack> items = blockEntity.getItems();
 
         for (int i = 0; i < items.size(); i++) {
             ItemStack itemStack = items.get(i);

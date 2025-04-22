@@ -33,8 +33,6 @@ import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
 import java.util.*;
 
-
-// TODO: Make items in inv render at bottom
 public class CrystalFluidCauldronBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
     public boolean isHeating = false;
@@ -123,7 +121,7 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
 
         if (canAccept) {
             this.addToInventory(itemEntity.getStack());
-            itemEntity.setDespawnImmediately();
+            //itemEntity.setDespawnImmediately();
         }
     }
 
@@ -209,6 +207,7 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
                     itemStack.decrement(1);
                 }
 
+                markDirty();
                 resetProgress();
             }
         }
