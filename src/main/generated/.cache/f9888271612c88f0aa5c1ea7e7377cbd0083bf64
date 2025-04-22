@@ -1,4 +1,4 @@
-// 1.20.1	2025-04-21T16:51:11.7180727	Crystallurgy/Model Definitions
+// 1.20.1	2025-04-22T20:37:21.0506455	Crystallurgy/Model Definitions
 9294e797913e41e64bf939186f96a1c1bc2b5a2b assets\crystallurgy\models\item\coal_resonator_crystal.json
 7bbcdfa7c703a8ceafbf8aee22a3042d1805b418 assets\crystallurgy\models\block\crystal_cauldron_level1.json
 df64f057ecf894038b7a879dfb35acf243616577 assets\crystallurgy\blockstates\resonance_forge.json
@@ -17,8 +17,8 @@ ae9f8d3b67a79502890a490013e3df4eb2f47462 assets\crystallurgy\models\item\unrefin
 4adc6865d8424e73dadb653919c6b7033f6e8d64 assets\crystallurgy\models\block\crystal_cauldron_level2.json
 3a0cfea5245521374ffa467e4f1a8d5f1a0ccb14 assets\crystallurgy\models\item\lapis_resonator_crystal.json
 273c95d422da60026b7f70fda4e0759667944ab7 assets\crystallurgy\models\item\iron_resonator_crystal.json
-b58396a40944151bd0b0dac764cd44110c5712d6 assets\crystallurgy\models\item\redstone_resonator_crystal.json
 8be2b099a9fc8571f82bb8b90b6cb2e1315dff49 assets\crystallurgy\models\item\unrefined_netherite_resonator_crystal.json
+b58396a40944151bd0b0dac764cd44110c5712d6 assets\crystallurgy\models\item\redstone_resonator_crystal.json
 26d3f00c8a764030d8d90b63f933f753b1e9cc0f assets\crystallurgy\models\block\cooling_cauldron_level3.json
 e1d77c39d0c5d64043992751c7837b944df2f727 assets\crystallurgy\models\item\crystal_fluid_bucket.json
 ebccff2a9db597943d552c808f372180187bdf45 assets\crystallurgy\models\block\cooling_cauldron_level0.json

@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 public class ModRecipeProvider extends FabricRecipeProvider {
     // TODO: Balancing
     private final static List<CrystalRecipeContainer> crystalCauldronRecipes = List.of(
-            new CrystalRecipeContainer("seed", ModItems.CRYSTAL_SEED, null, ModItems.UNREFINED_CRYSTAL_SEED, 1, 100),
+            new CrystalRecipeContainer("seed", ModItems.CRYSTAL_SEED, null, ModItems.UNREFINED_CRYSTAL_SEED_RESONATOR_CRYSTAL, 1, 100),
             new CrystalRecipeContainer("coal", ModItems.CRYSTAL_SEED, Items.COAL, ModItems.UNREFINED_COAL_RESONATOR_CRYSTAL, 1, 100),
             new CrystalRecipeContainer("iron", ModItems.CRYSTAL_SEED, Items.IRON_INGOT, ModItems.UNREFINED_IRON_RESONATOR_CRYSTAL, 1, 100),
             new CrystalRecipeContainer("gold", ModItems.CRYSTAL_SEED, Items.GOLD_INGOT, ModItems.UNREFINED_GOLD_RESONATOR_CRYSTAL, 1, 100),
@@ -33,7 +33,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     );
 
     private final static List<CoolingRecipeContainer> coolingCauldronRecipes = List.of(
-            new CoolingRecipeContainer("seed", ModItems.CRYSTAL_SEED, ModItems.UNREFINED_CRYSTAL_SEED, 1, 100, 5),
+            new CoolingRecipeContainer("seed", ModItems.CRYSTAL_SEED, ModItems.UNREFINED_CRYSTAL_SEED_RESONATOR_CRYSTAL, 1, 100, 5),
             new CoolingRecipeContainer("coal", ModItems.UNREFINED_COAL_RESONATOR_CRYSTAL, ModItems.COAL_RESONATOR_CRYSTAL, 1, 100, 5),
             new CoolingRecipeContainer("iron", ModItems.UNREFINED_IRON_RESONATOR_CRYSTAL, ModItems.IRON_RESONATOR_CRYSTAL, 1, 100, 5),
             new CoolingRecipeContainer("gold", ModItems.UNREFINED_GOLD_RESONATOR_CRYSTAL, ModItems.GOLD_RESONATOR_CRYSTAL,1, 100, 5),
@@ -47,6 +47,8 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     );
 
     private final static List<ForgeRecipeContainer> forgeRecipes = List.of(
+            new ForgeRecipeContainer("seed", ModItems.CRYSTAL_SEED_RESONATOR, new ItemStack(Items.CHARCOAL, 64), null, Items.COAL, 1, 100, 100),
+
             new ForgeRecipeContainer("coal", ModItems.COAL_RESONATOR_CRYSTAL, new ItemStack(Items.CHARCOAL, 64), null, Items.COAL, 1, 100, 100),
             new ForgeRecipeContainer("iron", ModItems.IRON_RESONATOR_CRYSTAL, new ItemStack(Items.COAL, 64), null, Items.COAL, 1, 100, 100),
             new ForgeRecipeContainer("gold", ModItems.GOLD_RESONATOR_CRYSTAL, new ItemStack(Items.IRON_BLOCK, 64), null, Items.COAL, 1, 100, 100),

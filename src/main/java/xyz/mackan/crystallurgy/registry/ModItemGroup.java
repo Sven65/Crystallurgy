@@ -17,10 +17,10 @@ public class ModItemGroup {
             .entries(((displayContext, entries) -> {
                 entries.add(ModItems.RESONANCE_FORGE);
                 entries.add(ModItems.CRYSTAL_SEED);
-                entries.add(ModItems.UNREFINED_CRYSTAL_SEED);
                 entries.add(ModFluids.CRYSTAL_FLUID_BUCKET);
                 entries.add(ModFluids.COOLING_FLUID_BUCKET);
 
+                entries.add(ModItems.CRYSTAL_SEED_RESONATOR);
                 entries.add(ModItems.COAL_RESONATOR_CRYSTAL);
                 entries.add(ModItems.IRON_RESONATOR_CRYSTAL);
                 entries.add(ModItems.GOLD_RESONATOR_CRYSTAL);
@@ -31,6 +31,7 @@ public class ModItemGroup {
                 entries.add(ModItems.QUARTZ_RESONATOR_CRYSTAL);
                 entries.add(ModItems.REDSTONE_RESONATOR_CRYSTAL);
 
+                entries.add(ModItems.UNREFINED_CRYSTAL_SEED_RESONATOR_CRYSTAL);
                 entries.add(ModItems.UNREFINED_COAL_RESONATOR_CRYSTAL);
                 entries.add(ModItems.UNREFINED_IRON_RESONATOR_CRYSTAL);
                 entries.add(ModItems.UNREFINED_GOLD_RESONATOR_CRYSTAL);
