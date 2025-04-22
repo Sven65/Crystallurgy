@@ -73,7 +73,7 @@ public class CrystalFluidCauldron extends AbstractCauldronBlock implements Block
         if (stack.isEmpty()) {
             if (!world.isClient()) {
                 // Handle your empty-hand logic here!
-                player.sendMessage(Text.literal("Touched the goo with your bare hands 💀"), false);
+                //player.sendMessage(Text.literal("Touched the goo with your bare hands 💀"), false);
                 // maybe trigger a recipe or mutate state
 
                 BlockEntity be = world.getBlockEntity(pos);

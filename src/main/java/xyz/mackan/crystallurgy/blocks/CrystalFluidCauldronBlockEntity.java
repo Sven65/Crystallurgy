@@ -17,6 +17,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
@@ -132,7 +133,12 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
 
     @Override
     public void markDirty() {
-        world.updateListeners(pos, getCachedState(), getCachedState(), 3);
+        world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_ALL);
+
+        if (world instanceof ServerWorld serverWorld) {
+            serverWorld.getChunkManager().markForUpdate(pos);
+        }
+
         super.markDirty();
     }
 
@@ -168,6 +174,7 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
     @Override
     protected void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
+
         Inventories.writeNbt(nbt, inventory);
         nbt.putInt(String.format("%s.progress", Crystallurgy.MOD_ID), progress);
         Crystallurgy.LOGGER.info("[write nbt] Synced inventory: {}", inventory);
@@ -178,6 +185,8 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         super.readNbt(nbt);
         Inventories.readNbt(nbt, inventory);
         progress = nbt.getInt(String.format("%s.progress", Crystallurgy.MOD_ID));
+
+        Crystallurgy.LOGGER.info("[CLIENT] readNbt called: {}", inventory);
 
         if (world != null && world.isClient) {
             Crystallurgy.LOGGER.info("[client] Synced inventory: {}", inventory);
@@ -198,7 +207,7 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         return Math.max(1, Math.min(3, (int)Math.ceil(fluidLevel * 3)));
     }
 
-    private boolean hasFluid(World world) {
+    public boolean hasFluid(World world) {
         return world.getBlockState(this.pos).get(ModCauldron.FLUID_LEVEL) > 0;
     }
 
@@ -345,10 +354,10 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
             inventory.set(index, ItemStack.EMPTY);
 
             // Now mark it dirty
-            markDirty();
+            this.markDirty();
+
 
             Crystallurgy.LOGGER.info("[extract] Removed item at index {}, new inventory: {}", index, inventory);
-
         }
 
         this.isCrafting = false;

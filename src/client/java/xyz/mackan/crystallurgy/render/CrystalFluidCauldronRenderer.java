@@ -7,6 +7,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.collection.DefaultedList;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.CrystallurgyClient;
@@ -22,14 +23,17 @@ public class CrystalFluidCauldronRenderer implements BlockEntityRenderer<Crystal
         this.itemRenderer = MinecraftClient.getInstance().getItemRenderer();
     }
 
-
-
     @Override
     public void render(CrystalFluidCauldronBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         List<ItemStack> items = blockEntity.getRenderItems();
+        NbtCompound nbt = new NbtCompound();
+        blockEntity.readNbt(nbt);
+
+        Crystallurgy.LOGGER.info("NBT is {}", nbt);
 
         Crystallurgy.LOGGER.info("Render items {}", items);
-
+        Crystallurgy.LOGGER.info("Cached state {}", blockEntity.getCachedState());
+        Crystallurgy.LOGGER.info("Actual items {}", ((CrystalFluidCauldronBlockEntity) blockEntity.getWorld().getBlockEntity(blockEntity.getPos())).getRenderItems());
 
         // Loop through both items in the cauldron's inventory
         for (int i = 0; i < items.size(); i++) {
