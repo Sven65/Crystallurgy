@@ -52,7 +52,6 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
 
     @Override
     public DefaultedList<ItemStack> getItems() {
-        //Crystallurgy.LOGGER.info("returning items to caller {}", inventory);
         return inventory;
     }
 
@@ -90,10 +89,6 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
                     if (toAdd.isEmpty()) {
                         Crystallurgy.LOGGER.info("Added everything...");
 
-                        if (world != null && !world.isClient) {
-                            world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
-                        }
-
                         return; // All items added
                     }
                 }
@@ -118,10 +113,6 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
                     if (toAdd.isEmpty()) {
                         markDirty();
 
-                        if (world != null && !world.isClient) {
-                            world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
-                        }
-
                         return; // All items added
                     }
                 }
@@ -138,9 +129,29 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         return BlockEntityUpdateS2CPacket.create(this);
     }
 
+
+    @Override
+    public void markDirty() {
+        world.updateListeners(pos, getCachedState(), getCachedState(), 3);
+        super.markDirty();
+    }
+
     public void addItemToCauldron(ItemStack itemStack) {
        if (this.canAcceptItem(itemStack)) this.addToInventory(itemStack);
     }
+
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        return createNbt();
+    }
+
+    @Override
+    public boolean onSyncedBlockEvent(int type, int data) {
+        Crystallurgy.LOGGER.info("[client] onSyncedBlockEvent: {}, {}", type, data);
+        return super.onSyncedBlockEvent(type, data);
+    }
+
+
 
     public void addItemEntityToCauldron(ItemEntity itemEntity) {
         boolean canAccept = this.canAcceptItem(itemEntity.getStack());
@@ -151,10 +162,6 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
             Crystallurgy.LOGGER.info("We can accept, add item.");
             this.addToInventory(itemEntity.getStack());
             itemEntity.setDespawnImmediately();
-
-            if (world != null && !world.isClient) {
-                world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
-            }
         }
     }
 
@@ -163,6 +170,7 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         super.writeNbt(nbt);
         Inventories.writeNbt(nbt, inventory);
         nbt.putInt(String.format("%s.progress", Crystallurgy.MOD_ID), progress);
+        Crystallurgy.LOGGER.info("[write nbt] Synced inventory: {}", inventory);
     }
 
     @Override
@@ -170,6 +178,10 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         super.readNbt(nbt);
         Inventories.readNbt(nbt, inventory);
         progress = nbt.getInt(String.format("%s.progress", Crystallurgy.MOD_ID));
+
+        if (world != null && world.isClient) {
+            Crystallurgy.LOGGER.info("[client] Synced inventory: {}", inventory);
+        }
     }
 
 
@@ -303,6 +315,10 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
         return recipe.isPresent();
     }
 
+    public List<ItemStack> getRenderItems() {
+        return List.of(this.inventory.get(0), this.inventory.get(1));
+    }
+
     public void handleEmptyHandInteraction(Hand hand, PlayerEntity player) {
         if (inventory.isEmpty()) {
             Crystallurgy.LOGGER.warn("[extract] inv empty???");
@@ -317,29 +333,23 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
 
         Crystallurgy.LOGGER.info("[Extract] Found first non empty item {}", firstNonEmpty);
 
-
-        AtomicInteger index = new AtomicInteger(-1);
-
-        Crystallurgy.LOGGER.info("[extract] is present? {}", firstNonEmpty.isPresent());
-        Crystallurgy.LOGGER.info("[extract] item is now? {}", firstNonEmpty);
-
-        if(firstNonEmpty.isPresent()) {
+        if (firstNonEmpty.isPresent()) {
             ItemStack stack = firstNonEmpty.get();
+            int index = inventory.indexOf(stack);
+
             Crystallurgy.LOGGER.info("[Extract] Removing non empty item {}", stack);
-            //player.setStackInHand(hand, stack);
+
             player.getInventory().insertStack(stack);
 
-            index.set(inventory.indexOf(stack));
-            this.removeStack(index.get(), stack.getCount());
+            // Actually remove the stack from your block entity
+            inventory.set(index, ItemStack.EMPTY);
+
+            // Now mark it dirty
             markDirty();
 
-            if (world != null && !world.isClient) {
-                world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
-            }
-        };
+            Crystallurgy.LOGGER.info("[extract] Removed item at index {}, new inventory: {}", index, inventory);
 
-        Crystallurgy.LOGGER.info("[extract] inv is now {}", inventory);
-
+        }
 
         this.isCrafting = false;
     }

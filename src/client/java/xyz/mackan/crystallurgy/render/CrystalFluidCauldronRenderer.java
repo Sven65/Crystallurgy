@@ -12,6 +12,8 @@ import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.CrystallurgyClient;
 import xyz.mackan.crystallurgy.blocks.CrystalFluidCauldronBlockEntity;
 
+import java.util.List;
+
 // TODO: Make this get the right items from the cauldron entity.
 public class CrystalFluidCauldronRenderer implements BlockEntityRenderer<CrystalFluidCauldronBlockEntity> {
     private final ItemRenderer itemRenderer;
@@ -24,7 +26,7 @@ public class CrystalFluidCauldronRenderer implements BlockEntityRenderer<Crystal
 
     @Override
     public void render(CrystalFluidCauldronBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        DefaultedList<ItemStack> items = blockEntity.getItems();
+        List<ItemStack> items = blockEntity.getRenderItems();
 
         Crystallurgy.LOGGER.info("Render items {}", items);
 
