@@ -17,6 +17,7 @@ import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -26,8 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import xyz.mackan.crystallurgy.Crystallurgy;
-import xyz.mackan.crystallurgy.blocks.CrystalFluidCauldron;
-import xyz.mackan.crystallurgy.blocks.CrystalFluidCauldronBlockEntity;
+import xyz.mackan.crystallurgy.blocks.*;
+import xyz.mackan.crystallurgy.registry.ModCauldron;
 import xyz.mackan.crystallurgy.registry.ModFluids;
 import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
@@ -42,36 +43,29 @@ public class FluidCauldronRenderer<T extends BlockEntity & ImplementedInventory>
 
     public int getFluidColor(Fluid fluid) {
         FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
-        Sprite sprite = handler.getFluidSprites(null, null, fluid.getDefaultState())[0];
-
         return handler.getFluidColor(null, null, fluid.getDefaultState());
     }
 
+    protected double getFluidHeight(BlockState state) {
+        return (6.0 + (double)state.get(ModCauldron.FLUID_LEVEL) * 3.0) / 16.0;
+    }
 
-    public void renderLiquid(CrystalFluidCauldronBlockEntity entity, float tickDelta, @NotNull MatrixStack matrices, @NotNull VertexConsumerProvider vertexConsumers, int light, int overlay, Fluid fluid) {
+    public <T extends FluidCauldronBlockEntity> void renderLiquid(T entity, float tickDelta, @NotNull MatrixStack matrices, @NotNull VertexConsumerProvider vertexConsumers, int light, int overlay) {
         int liquidLevel = entity.getFluidProgress();
         if (liquidLevel == 0)
             return;
 
         BlockState state = entity.getWorld().getBlockState(entity.getPos());
-        CrystalFluidCauldron block = (CrystalFluidCauldron) state.getBlock();
+
+        Fluid fluid = entity.getFluid();
 
         int color = getFluidColor(fluid);
         int red = color >> 16 & 255;
         int green = color >> 8 & 255;
         int blue = color & 255;
-        int alpha = 190;
-
-        // Assuming WATER_MATERIAL.sprite() is unavailable, use a custom texture
-        // If you need to get a custom texture, replace this line with your texture fetching method
-       //RenderMaterial waterMaterial = getWaterMaterial();  // You need to implement this method or use your own way to get the material
+        int alpha = 255;
 
         Identifier waterTextureId = new Identifier("minecraft", "block/water_still");
-
-//        Sprite waterSprite = MinecraftClient.getInstance()
-//                .getBakedModelManager()
-//                .getAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)
-//                .getSprite(FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(null, null, ModFluids.FLOWING_CRYSTAL_FLUID.getDefaultState())[0].getId());
 
         Sprite[] sprites = FluidRenderHandlerRegistry.INSTANCE.get(Fluids.WATER.getStill()).getFluidSprites(null, null, fluid.getDefaultState());
 
@@ -87,7 +81,7 @@ public class FluidCauldronRenderer<T extends BlockEntity & ImplementedInventory>
         float v1 = waterSprite.getMaxV();
 
         matrices.push();
-        matrices.translate(0, block.getFluidHeight2(state) + 0.001, 0);
+        matrices.translate(0, getFluidHeight(state) + 0.001, 0);
 
         VertexConsumer consumer = vertexConsumers.getBuffer(RenderLayer.getTranslucent());
 
@@ -111,14 +105,9 @@ public class FluidCauldronRenderer<T extends BlockEntity & ImplementedInventory>
 
     @Override
     public void render(T blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (!(blockEntity instanceof CrystalFluidCauldronBlockEntity)) return;
-        CrystalFluidCauldron cauldron = (CrystalFluidCauldron)blockEntity.getCachedState().getBlock();
-
-        // === FLUID RENDERING START ===
-        //renderLiquid((CrystalFluidCauldronBlockEntity) blockEntity, ModFluids.STILL_CRYSTAL_FLUID);
-        renderLiquid((CrystalFluidCauldronBlockEntity) blockEntity,tickDelta, matrices, vertexConsumers, light, overlay, ModFluids.STILL_CRYSTAL_FLUID);
-        // === FLUID RENDERING END ===
-
+        if (blockEntity instanceof FluidCauldronBlockEntity) {
+            renderLiquid((FluidCauldronBlockEntity) blockEntity, tickDelta, matrices, vertexConsumers, light, overlay);
+        }
 
         List<ItemStack> items = blockEntity.getItems();
 

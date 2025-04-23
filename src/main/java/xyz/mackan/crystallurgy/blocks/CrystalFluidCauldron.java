@@ -46,10 +46,6 @@ public class CrystalFluidCauldron extends AbstractCauldronBlock implements Block
         return (6.0 + (double)state.get(ModCauldron.FLUID_LEVEL) * 3.0) / 16.0;
     }
 
-    public double getFluidHeight2(BlockState state) {
-        return this.getFluidHeight(state);
-    }
-
     @Override
     public boolean isFull(BlockState state) {
         return state.get(ModCauldron.FLUID_LEVEL) == 3;

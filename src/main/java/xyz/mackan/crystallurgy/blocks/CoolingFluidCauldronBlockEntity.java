@@ -9,6 +9,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
@@ -30,6 +31,7 @@ import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
 import xyz.mackan.crystallurgy.registry.ModCauldron;
+import xyz.mackan.crystallurgy.registry.ModFluids;
 import xyz.mackan.crystallurgy.registry.ModMessages;
 import xyz.mackan.crystallurgy.util.CauldronUtil;
 import xyz.mackan.crystallurgy.util.ImplementedInventory;
@@ -51,8 +53,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * But, try to give them custom props (maybe with tags) in order to define cooling score somewhere else in a list, sort of like block tags.
  */
-public class CoolingFluidCauldronBlockEntity extends BlockEntity implements ImplementedInventory {
-    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
+public class CoolingFluidCauldronBlockEntity extends FluidCauldronBlockEntity {
     // TODO: Try making this block tags
     private Map<Block, Integer> COOLING_SCORES = new HashMap<>() {
         {
@@ -66,105 +67,17 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
 
     private boolean isCrafting = false;
 
-    private int maxProgress = 100;
-    private int progress = 0;
-
     public CoolingFluidCauldronBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.COOLING_FLUID_CAULDRON, pos, state);
-    }
-
-
-    @Override
-    public DefaultedList<ItemStack> getItems() {
-        return inventory;
-    }
-
-    @Override
-    public void markDirty() {
-        world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_ALL);
-        super.markDirty();
-    }
-
-    @Override
-    public NbtCompound toInitialChunkDataNbt() {
-        return createNbt();
-    }
-
-    @Override
-    protected void writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
-        Inventories.writeNbt(nbt, inventory);
-        nbt.putInt(String.format("%s.progress", Crystallurgy.MOD_ID), progress);
-    }
-
-    @Override
-    public void readNbt(NbtCompound nbt) {
-        inventory.clear();
-        super.readNbt(nbt);
-        Inventories.readNbt(nbt, inventory);
-        progress = nbt.getInt(String.format("%s.progress", Crystallurgy.MOD_ID));
-    }
-
-    public void addToInventory(ItemStack toAdd) {
-        Crystallurgy.LOGGER.info("add item {}", toAdd);
-        if (toAdd.isEmpty()) {
-            return;
-        }
-
-        // Pass 1: Try to merge with existing stacks
-        for (int i = 0; i < this.size(); i++) {
-            ItemStack existing = inventory.get(i);
-            // Check if stacks are compatible and there's space
-            if (ItemStack.canCombine(toAdd, existing) && existing.getCount() < existing.getMaxCount()) {
-                int space = existing.getMaxCount() - existing.getCount();
-                int toMove = Math.min(toAdd.getCount(), space);
-
-                if (toMove > 0) {
-                    existing.increment(toMove); // Modify existing stack in place
-                    toAdd.decrement(toMove);
-                    markDirty(); // Use this.markDirty() after modification
-
-                    if (toAdd.isEmpty()) {
-                        Crystallurgy.LOGGER.info("Inventory is now {}", inventory);
-
-                        return; // All items added
-                    }
-                }
-            }
-        }
-
-        // Pass 2: Place into empty slots
-        if (!toAdd.isEmpty()) {
-            for (int i = 0; i < inventory.size(); i++) {
-                if (inventory.get(i).isEmpty()) {
-                    int toMove = Math.min(toAdd.getCount(), getMaxCountPerStack()); // Use this.getMaxCountPerStack()
-                    ItemStack stackToPlace = toAdd.split(toMove); // split() reduces toAdd and creates the new stack
-                    if (!stackToPlace.isEmpty()) {
-                        setStack(i, stackToPlace); // Use this.setStack(). setStack ha ndles placing and calls markDirty.
-                    }
-                    if (toAdd.isEmpty()) {
-                        markDirty();
-
-                        Crystallurgy.LOGGER.info("Inventory is now {}", inventory);
-
-                        return; // All items added
-                    }
-                }
-            }
-        }
     }
 
     public boolean getIsCrafting() {
         return this.isCrafting;
     }
 
-    public void addItemEntityToCauldron(ItemEntity itemEntity) {
-        boolean canAccept = this.canAcceptItem(itemEntity.getStack());
-
-        if (canAccept) {
-            this.addToInventory(itemEntity.getStack());
-            //itemEntity.setDespawnImmediately();
-        }
+    @Override
+    public Fluid getFluid() {
+        return ModFluids.STILL_COOLING_FLUID;
     }
 
     public int getCoolingScore(World world, BlockPos startPos) {
@@ -186,28 +99,6 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
         }
 
         return coolingScore;
-    }
-
-    private int getFluidProgress() {
-        float normalizedProgress = (float) this.progress / this.maxProgress;
-
-        // Only return 0 when progress is exactly at max
-        if (normalizedProgress >= 0.99999f) {
-            return 0;
-        }
-
-        // Otherwise, map the fluid level to 1-3 based on progress
-        float fluidLevel = 1 - normalizedProgress;
-        return Math.max(1, Math.min(3, (int)Math.ceil(fluidLevel * 3)));
-    }
-
-    private boolean hasFluid(World world) {
-        return world.getBlockState(this.pos).get(ModCauldron.FLUID_LEVEL) > 0;
-    }
-
-    @Override
-    public @Nullable Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     public void tick(World world, BlockPos pos, BlockState state, CoolingFluidCauldronBlockEntity entity) {
@@ -258,20 +149,6 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
                 resetProgress();
             }
         }
-
-
-    }
-
-    public void clearFluid(World world, BlockPos pos) {
-        if (world.isClient()) {
-            return;
-        }
-        BlockState state = world.getBlockState(pos);
-
-        // Check if the block is a cauldron and it contains a fluid
-        if (state.getBlock() instanceof CoolingFluidCauldron && state.get(ModCauldron.FLUID_LEVEL) > 0) {
-            world.setBlockState(pos, ModCauldron.COOLING_CAULDRON.getDefaultState());
-        }
     }
 
     private void craftItem(World world, BlockPos pos) {
@@ -316,13 +193,9 @@ public class CoolingFluidCauldronBlockEntity extends BlockEntity implements Impl
             return;
         }
 
-        Crystallurgy.LOGGER.info("Inventory is {}", inventory);
-
         Optional<ItemStack> firstNonEmpty = inventory.stream()
                 .filter(stack -> !stack.isEmpty())
                 .findFirst();
-
-        Crystallurgy.LOGGER.info("firstNonEmpty is {}", firstNonEmpty);
 
         if (firstNonEmpty.isPresent()) {
             ItemStack stack = firstNonEmpty.get();
