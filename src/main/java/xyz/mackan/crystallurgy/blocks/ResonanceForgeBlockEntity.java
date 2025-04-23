@@ -38,7 +38,7 @@ import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
 import java.util.Optional;
 
-public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory {
+public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory, EnergySyncableBlockEntity {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
 
     public final SimpleEnergyStorage energyStorage = new SimpleEnergyStorage(100000, 1000, 200) {
@@ -47,7 +47,6 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
             markDirty();
             if (!world.isClient()) {
                 sendEnergyPacket();
-
             }
         }
     };

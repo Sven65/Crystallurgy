@@ -10,6 +10,7 @@ import net.minecraft.screen.ArrayPropertyDelegate;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.blocks.FluidSynthesizerBlockEntity;
 import xyz.mackan.crystallurgy.registry.ModScreens;
 import xyz.mackan.crystallurgy.util.FluidStack;

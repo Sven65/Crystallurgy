@@ -42,7 +42,7 @@ import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
 import java.util.Optional;
 
-public class FluidSynthesizerBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory {
+public class FluidSynthesizerBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory, EnergySyncableBlockEntity {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
 
     private static final int FLUID_INPUT_SLOT = 0;
@@ -121,7 +121,7 @@ public class FluidSynthesizerBlockEntity extends BlockEntity implements Extended
         storage.variant.toPacket(data);
         data.writeLong(storage.amount);
         data.writeBlockPos(getPos());
-        
+
         for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, getPos())) {
             ServerPlayNetworking.send(player, ModMessages.FLUID_SYNC, data);
         }
