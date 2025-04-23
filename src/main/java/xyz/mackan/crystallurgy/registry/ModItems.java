@@ -12,6 +12,7 @@ import xyz.mackan.crystallurgy.items.CrystalSeed;
 
 public class ModItems {
     public static final Item RESONANCE_FORGE = new BlockItem(ModBlocks.RESONANCE_FORGE, new FabricItemSettings());
+    public static final Item FLUID_SYNTHESIZER = new BlockItem(ModBlocks.FLUID_SYNTHESIZER, new FabricItemSettings());
 
     public static final Item CRYSTAL_SEED = new CrystalSeed();
 
@@ -42,6 +43,7 @@ public class ModItems {
 
     public static void register() {
         Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "resonance_forge"), RESONANCE_FORGE);
+        Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "fluid_synthesizer"), FLUID_SYNTHESIZER);
         Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "crystal_seed"), CRYSTAL_SEED);
 
         Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "crystal_seed_resonator_crystal"), CRYSTAL_SEED_RESONATOR);

@@ -46,17 +46,21 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
         protected void onFinalCommit() {
             markDirty();
             if (!world.isClient()) {
-                PacketByteBuf data = PacketByteBufs.create();
-                data.writeLong(amount);
-                data.writeBlockPos(getPos());
-
-                for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, getPos())) {
-                    ServerPlayNetworking.send(player, ModMessages.ENERGY_SYNC, data);
-                }
+                sendEnergyPacket();
 
             }
         }
     };
+
+    private void sendEnergyPacket() {
+        PacketByteBuf data = PacketByteBufs.create();
+        data.writeLong(energyStorage.amount);
+        data.writeBlockPos(getPos());
+
+        for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, getPos())) {
+            ServerPlayNetworking.send(player, ModMessages.ENERGY_SYNC, data);
+        }
+    }
 
     private static final int CATALYST_SLOT = 0;
     private static final int RAW_MATERIAL_SLOT = 1;
@@ -132,6 +136,7 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
 
     @Override
     public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
+        sendEnergyPacket();
         return new ResonanceForgeScreenHandler(syncId, playerInventory, this, this.propertyDelegate);
     }
 

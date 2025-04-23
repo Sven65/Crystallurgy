@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegi
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
+import xyz.mackan.crystallurgy.gui.FluidSynthesizerScreen;
 import xyz.mackan.crystallurgy.gui.ResonanceForgeScreen;
 import xyz.mackan.crystallurgy.networking.ModNetworking;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
@@ -45,6 +46,7 @@ public class CrystallurgyClient implements ClientModInitializer {
 				ModFluids.STILL_COOLING_FLUID, ModFluids.FLOWING_COOLING_FLUID);
 
 		HandledScreens.register(ModScreens.RESONANCE_FORGE_SCREEN_HANDLER, ResonanceForgeScreen::new);
+		HandledScreens.register(ModScreens.FLUID_SYNTHESIZER_SCREEN_HANDLER, FluidSynthesizerScreen::new);
 
 		BlockEntityRendererRegistry.INSTANCE.register(
 				ModBlockEntities.CRYSTAL_FLUID_CAULDRON, // The BlockEntityType instance for your cauldron

@@ -1,7 +1,10 @@
 {
   "block.crystallurgy.resonance_forge": "Resonance Forge",
+  "block.crystallurgy.fluid_synthesizer": "Fluid Synthesizer",
 
   "item.crystallurgy.resonance_forge": "Resonance Forge",
+  "item.crystallurgy.fluid_synthesizer": "Fluid Synthesizer",
+
   "item.crystallurgy.crystal_seed": "Crystal Seed",
 
   "item.crystallurgy.crystal_fluid_bucket": "Crystal Fluid Bucket",
@@ -33,5 +36,7 @@
   "fluid.crystallurgy.crystal_fluid": "Crystal Fluid",
   "fluid.crystallurgy.cooling_fluid": "Cooling Fluid",
 
-  "text.crystallurgy.item_group": "Crystallurgy"
+  "text.crystallurgy.item_group": "Crystallurgy",
+  "text.crystallurgy.tooltip.liquid.amount.with.capacity": "%s / %s mB",
+  "text.crystallurgy.tooltip.liquid.amount": "%s mB"
 }
