@@ -121,9 +121,6 @@ public class CoolingFluidCauldronBlockEntity extends FluidCauldronBlockEntity {
 
         if (this.hasRecipe(entity) && this.hasFluid(world)) {
             Optional<CoolingFluidCauldronRecipe> recipe = getCurrentRecipe();
-
-            Crystallurgy.LOGGER.info("Cooling level is {}", coolingScore);
-
             if (coolingScore < recipe.get().getCoolingScore()) {
                 return;
             }
@@ -132,8 +129,6 @@ public class CoolingFluidCauldronBlockEntity extends FluidCauldronBlockEntity {
             this.maxProgress = recipeTicks;
 
             progress++;
-
-            Crystallurgy.LOGGER.info("Progress is {}/{}", progress, maxProgress);
 
             world.setBlockState(pos, state.with(ModCauldron.FLUID_LEVEL, getFluidProgress()));
 

@@ -79,7 +79,7 @@ public class ModModelProvider extends FabricModelProvider {
                         .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
                         .put(TextureKey.SIDE, new Identifier("minecraft:block/cauldron_side"))
                         .put(TextureKey.PARTICLE, new Identifier("minecraft:block/cauldron_side"))
-                        .put(TextureKey.CONTENT, new Identifier("minecraft:block/water_still")),
+                        .put(TextureKey.CONTENT, new Identifier("minecraft:block/cauldron_empty")),
                 blockStateModelGenerator
         );
 
@@ -89,7 +89,7 @@ public class ModModelProvider extends FabricModelProvider {
                         .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
                         .put(TextureKey.SIDE, new Identifier("minecraft:block/cauldron_side"))
                         .put(TextureKey.PARTICLE, new Identifier("minecraft:block/cauldron_side"))
-                        .put(TextureKey.CONTENT, new Identifier("minecraft:block/water_still")),
+                        .put(TextureKey.CONTENT, new Identifier("minecraft:block/cauldron_empty")),
                 blockStateModelGenerator
         );
 
@@ -99,7 +99,7 @@ public class ModModelProvider extends FabricModelProvider {
                         .put(TextureKey.BOTTOM, new Identifier("minecraft:block/cauldron_bottom"))
                         .put(TextureKey.SIDE, new Identifier("minecraft:block/cauldron_side"))
                         .put(TextureKey.PARTICLE, new Identifier("minecraft:block/cauldron_side"))
-                        .put(TextureKey.CONTENT, new Identifier("minecraft:block/water_still")),
+                        .put(TextureKey.CONTENT, new Identifier("minecraft:block/cauldron_empty")),
                 blockStateModelGenerator
         );
 
@@ -121,11 +121,11 @@ public class ModModelProvider extends FabricModelProvider {
         if (name.contains("level0")) {
             parentId = Optional.of(new Identifier("minecraft:block/cauldron"));
         } else if (name.contains("level1")) {
-            parentId = Optional.of(new Identifier("minecraft:block/template_cauldron_level1"));
+            parentId = Optional.of(new Identifier("minecraft:block/cauldron"));
         } else if (name.contains("level2")) {
-            parentId = Optional.of(new Identifier("minecraft:block/template_cauldron_level2"));
+            parentId = Optional.of(new Identifier("minecraft:block/cauldron"));
         } else {
-            parentId = Optional.of(new Identifier("minecraft:block/template_cauldron_full"));
+            parentId = Optional.of(new Identifier("minecraft:block/cauldron"));
         }
 
         Model model = new Model(

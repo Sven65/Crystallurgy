@@ -1,7 +1,6 @@
 package xyz.mackan.crystallurgy.recipe;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
@@ -12,9 +11,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
-import xyz.mackan.crystallurgy.Crystallurgy;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
@@ -136,9 +133,7 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
 
         @Override
         public ResonanceForgeRecipe read(Identifier id, PacketByteBuf buf) {
-            Crystallurgy.LOGGER.info("Reading recipe with ID: {}", id);
             int size = buf.readInt();
-            Crystallurgy.LOGGER.info("size is {}", size);
 
             DefaultedList<Ingredient> inputs = DefaultedList.ofSize(size, Ingredient.EMPTY);
             DefaultedList<Integer> inputCount = DefaultedList.ofSize(size, 1);
@@ -159,7 +154,6 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
 
         @Override
         public void write(PacketByteBuf buf, ResonanceForgeRecipe recipe) {
-            Crystallurgy.LOGGER.info("writing recipe");
             buf.writeInt(recipe.getIngredients().size());
 
             for (Ingredient ing : recipe.getIngredients()) {

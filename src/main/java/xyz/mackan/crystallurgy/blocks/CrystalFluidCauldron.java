@@ -14,7 +14,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.StateManager;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -22,10 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
-import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
 import xyz.mackan.crystallurgy.registry.ModCauldron;
-import xyz.mackan.crystallurgy.registry.ModItems;
 
 import java.util.Map;
 
@@ -55,11 +52,8 @@ public class CrystalFluidCauldron extends AbstractCauldronBlock implements Block
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
 
         if (entity instanceof ItemEntity itemEntity) {
-            Crystallurgy.LOGGER.info("ent collision");
-
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CrystalFluidCauldronBlockEntity cauldronEntity) {
-                Crystallurgy.LOGGER.info("Adding item");
                 cauldronEntity.addItemEntityToCauldron(itemEntity);
             }
         }
@@ -72,13 +66,8 @@ public class CrystalFluidCauldron extends AbstractCauldronBlock implements Block
         ItemStack stack = player.getStackInHand(hand);
         if (stack.isEmpty()) {
             if (!world.isClient()) {
-                // Handle your empty-hand logic here!
-                //player.sendMessage(Text.literal("Touched the goo with your bare hands 💀"), false);
-                // maybe trigger a recipe or mutate state
-
                 BlockEntity be = world.getBlockEntity(pos);
                 if (be instanceof CrystalFluidCauldronBlockEntity cauldronEntity) {
-                    // Call your logic here!
                     cauldronEntity.handleEmptyHandInteraction(hand, player);
                 }
 

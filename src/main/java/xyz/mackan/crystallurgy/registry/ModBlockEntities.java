@@ -34,8 +34,6 @@ public class ModBlockEntities {
     );
 
     public static void register() {
-       Crystallurgy.LOGGER.info("Registering block entities.");
-
        EnergyStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> blockEntity.energyStorage, RESONANCE_FORGE);
     }
 

@@ -38,12 +38,7 @@ public class CoolingFluidCauldronRecipe implements Recipe<SimpleInventory> {
             return false;
         }
 
-
         ItemStack first = inventory.getStack(0);
-
-        if (first == null) {
-            Crystallurgy.LOGGER.warn("First item in cooling recipe is null?");
-        }
 
         Ingredient firstIngredient = recipeItems.get(0);
 
