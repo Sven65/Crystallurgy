@@ -18,11 +18,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ParticleSpawnS2CPacket {
     public static void spawnParticles(World world, BlockPos pos, int chance, Vector3f color) {
-        if(ThreadLocalRandom.current().nextInt(chance) == 0) {
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
+        if(rand.nextInt(chance) == 0) {
             // ~10% chance per tick → average once every 0.5 seconds
-            double x = pos.getX() + world.random.nextDouble();
-            double y = pos.getY() + 1.0 + world.random.nextDouble() * 0.2;
-            double z = pos.getZ() + world.random.nextDouble();
+            double x = pos.getX() + rand.nextDouble();
+            double y = pos.getY() + 1.0 + rand.nextDouble() * 0.2;
+            double z = pos.getZ() + rand.nextDouble();
 
             world.addParticle(
                     new DustParticleEffect(color, 1.0F),
