@@ -2,7 +2,7 @@
   "parent": "minecraft:block/template_cauldron_full",
   "textures": {
     "bottom": "minecraft:block/cauldron_bottom",
-    "content": "crystallurgy:block/crystal_fluid",
+    "content": "minecraft:block/water_still",
     "particle": "minecraft:block/cauldron_side",
     "side": "minecraft:block/cauldron_side",
     "top": "minecraft:block/cauldron_top"

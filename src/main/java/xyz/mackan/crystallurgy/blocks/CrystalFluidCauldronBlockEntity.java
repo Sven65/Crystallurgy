@@ -143,7 +143,7 @@ public class CrystalFluidCauldronBlockEntity extends BlockEntity implements Impl
     }
 
 
-    private int getFluidProgress() {
+    public int getFluidProgress() {
         float normalizedProgress = (float) this.progress / this.maxProgress;
 
         // Only return 0 when progress is exactly at max
