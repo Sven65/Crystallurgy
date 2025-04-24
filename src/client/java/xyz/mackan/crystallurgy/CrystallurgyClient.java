@@ -15,6 +15,7 @@ import xyz.mackan.crystallurgy.registry.ModBlockEntities;
 import xyz.mackan.crystallurgy.registry.ModFluids;
 import xyz.mackan.crystallurgy.registry.ModScreens;
 import xyz.mackan.crystallurgy.render.FluidCauldronRenderer;
+import xyz.mackan.crystallurgy.render.FluidSynthesizerRenderer;
 
 
 public class CrystallurgyClient implements ClientModInitializer {
@@ -57,6 +58,12 @@ public class CrystallurgyClient implements ClientModInitializer {
 		BlockEntityRendererRegistry.INSTANCE.register(
 				ModBlockEntities.COOLING_FLUID_CAULDRON, // The BlockEntityType instance for your cauldron
 				(context) -> new FluidCauldronRenderer() // A factory (lambda) that creates your renderer instance
+				// Note: The 'context' can be used if your renderer's constructor needs access to things like the BlockEntityRenderDispatcher
+		);
+
+		BlockEntityRendererRegistry.INSTANCE.register(
+				ModBlockEntities.FLUID_SYNTHESIZER, // The BlockEntityType instance for your cauldron
+				(context) -> new FluidSynthesizerRenderer() // A factory (lambda) that creates your renderer instance
 				// Note: The 'context' can be used if your renderer's constructor needs access to things like the BlockEntityRenderDispatcher
 		);
 
