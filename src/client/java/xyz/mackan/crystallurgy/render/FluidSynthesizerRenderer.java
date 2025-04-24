@@ -14,50 +14,106 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3i;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
+import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.blocks.FluidSynthesizerBlockEntity;
 
 public class FluidSynthesizerRenderer implements BlockEntityRenderer<FluidSynthesizerBlockEntity> {
+    Identifier OVERLAY_TEXTURE = new Identifier("modid", "textures/gui/overlay.png");
 
     @Override
     public void render(FluidSynthesizerBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        // Get the appropriate render layer, e.g., translucent for fluid
-        RenderLayer renderLayer = RenderLayer.getCutout();
+        Direction facing = blockEntity.getCachedState().get(Properties.HORIZONTAL_FACING);
 
-        // Create the VertexConsumer for the block, using the translucent render layer
-        VertexConsumer consumer = vertexConsumers.getBuffer(renderLayer);
+        // Push the current matrix stack
+        matrices.push();
 
-        // Set size for the fluid texture overlay, for example, rendering a 2x7 water texture
-        float size = 0.5f; // Adjust the size for the overlay
-        float textureX = 4.0f; // X coordinate in the texture atlas (water texture starts at (4, 4))
-        float textureY = 4.0f; // Y coordinate in the texture atlas
-        float maxWidth = 2.0f;  // Maximum width of the texture (2 tiles)
-        float maxHeight = 7.0f; // Maximum height of the texture (7 tiles)
+        // Move to the center of the block
+        matrices.translate(0.5, 0.5, 0.5);
 
-        // Define the normal vector (for flat surface, we use (0, 1, 0))
-        float normalX = 0.0f;
-        float normalY = 1.0f;
-        float normalZ = 0.0f;
+        double zTranslate = -0.501;
 
-        BlockState state = blockEntity.getWorld().getBlockState(blockEntity.getPos());
-
-        FluidVariant inputFluid = blockEntity.inputFluidStorage.variant;
-
-        if (!inputFluid.isBlank()) {
-            Fluid fluid = inputFluid.getFluid();
-
-            int color = getFluidColor(fluid);
-            int red = color >> 16 & 255;
-            int green = color >> 8 & 255;
-            int blue = color & 255;
-            int alpha = 255;
-
-            renderColorBar(matrices, consumer, 4, 4, 2, 4, red, green, blue, alpha, light, overlay, normalX, normalY, normalZ);
+        switch (facing) {
+            case NORTH: zTranslate = -0.501f; break;
+            case EAST: zTranslate = -0.501f; break;
+            case SOUTH: zTranslate = -0.501f; break;
+            case WEST: zTranslate = -0.501f; break;
+            default: break;
         }
 
+        // Rotate to face the front side based on block's facing
 
-        // Call the renderWaterTextureOverlay method to draw the water texture
+        // Move to the desired position on the front face
+
+        switch (facing) {
+            case NORTH: break;
+            case EAST: matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(facing.asRotation())); break;
+            case SOUTH: matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180)); break;
+            case WEST: matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(facing.asRotation())); break;
+            default: break;
+        }
+
+        matrices.translate(0, 0, zTranslate); // Slightly in front of the front face to avoid z-fighting
+
+        // Scale if needed
+        matrices.scale(1.0f, 1.0f, 1.0f); // adjust if necessary
+
+        // Prepare the texture and render layer
+        Identifier texture = new Identifier("modid", "textures/gui/overlay.png");
+        VertexConsumer vc = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture));
+
+        // Render a flat quad (2D texture on face)
+        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+        Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
+
+        // Define a square (quad) on the face
+        // Use Vec3i for normalDirection
+        Vector3f normalDirection = new Vector3f(0, 0, -1); // Default normal
+
+        Crystallurgy.LOGGER.info("Facing {}", facing);
+
+        // Adjust normal for the block's facing direction
+        switch (facing) {
+            case NORTH: normalDirection = new Vector3f(0, 0, 1); break;
+            case EAST: normalDirection = new Vector3f(-1, 0, 0); break;
+            case SOUTH: normalDirection = new Vector3f(0, 0, -1); break;
+            case WEST: normalDirection = new Vector3f(1, 0, 0); break;
+            default: break;
+        }
+
+        // Convert Vec3i to Vector3f for normal
+        Vector3f normalVector = new Vector3f(normalDirection.x(), normalDirection.y(), normalDirection.z());
+
+        vc.vertex(positionMatrix, -0.5f, 0.5f, 0).color(255, 0, 0, 255)
+                .texture(1f, 0f)
+                .overlay(overlay).light(light)
+                .normal(normalMatrix, normalVector.x, normalVector.y, normalVector.z)
+                .next();
+        vc.vertex(positionMatrix, 0.5f, 0.5f, 0).color(255, 0, 0, 255)
+                .texture(0f, 0f)
+                .overlay(overlay).light(light)
+                .normal(normalMatrix, normalVector.x, normalVector.y, normalVector.z)
+                .next();
+        vc.vertex(positionMatrix, 0.5f, -0.5f, 0).color(255, 0, 0, 255)
+                .texture(0f, 1f)
+                .overlay(overlay).light(light)
+                .normal(normalMatrix, normalVector.x, normalVector.y, normalVector.z)
+                .next();
+        vc.vertex(positionMatrix, -0.5f, -0.5f, 0).color(255, 0, 0, 255)
+                .texture(1f, 1f)
+                .overlay(overlay).light(light)
+                .normal(normalMatrix, normalVector.x, normalVector.y, normalVector.z)
+                .next();
+
+        matrices.pop();
     }
 
     public int getFluidColor(Fluid fluid) {
@@ -65,45 +121,5 @@ public class FluidSynthesizerRenderer implements BlockEntityRenderer<FluidSynthe
         return handler.getFluidColor(null, null, fluid.getDefaultState());
     }
 
-    private void renderColorBar(MatrixStack matrices, VertexConsumer consumer, float xStart, float yStart, float width, float height,
-                                float red, float green, float blue, float alpha, int light, int overlay,
-                                float normalX, float normalY, float normalZ) {
-        // Get the position matrix
-        var positionMatrix = matrices.peek().getPositionMatrix();
 
-        // Bottom-left corner (with texture coords)
-        consumer.vertex(positionMatrix, xStart, yStart, 0.0f)
-                .texture(u0, v0) // Texture coordinates using .texture()
-                .color(red, green, blue, alpha)
-                .light(light)
-                .overlay(overlay)
-                .normal(normalX, normalY, normalZ).next();
-
-        // Bottom-right corner (with texture coords)
-        consumer.vertex(positionMatrix, xStart + width, yStart, 0.0f)
-                .texture(u1, v0) // Texture coordinates using .texture()
-                .color(red, green, blue, alpha)
-                .light(light)
-                .overlay(overlay)
-                .normal(normalX, normalY, normalZ).next();
-
-        // Top-right corner (with texture coords)
-        consumer.vertex(positionMatrix, xStart + width, yStart + height, 0.0f)
-                .texture(u1, v1) // Texture coordinates using .texture()
-                .color(red, green, blue, alpha)
-                .light(light)
-                .overlay(overlay)
-                .normal(normalX, normalY, normalZ).next();
-
-        // Top-left corner (with texture coords)
-        consumer.vertex(positionMatrix, xStart, yStart + height, 0.0f)
-                .texture(u0, v1) // Texture coordinates using .texture()
-                .color(red, green, blue, alpha)
-                .light(light)
-                .overlay(overlay)
-                .normal(normalX, normalY, normalZ).next();
-
-
-        matrices.pop();
-    }
 }
