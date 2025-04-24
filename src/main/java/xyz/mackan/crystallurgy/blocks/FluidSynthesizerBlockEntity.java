@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockState;
@@ -16,7 +15,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventories;
-import net.minecraft.item.Item;
+import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import team.reborn.energy.api.base.SimpleEnergyStorage;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.gui.FluidSynthesizerScreenHandler;
+import xyz.mackan.crystallurgy.recipe.FluidSynthesizerRecipe;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
 import xyz.mackan.crystallurgy.registry.ModBlocks;
@@ -42,6 +43,7 @@ import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
 import java.util.Optional;
 
+@SuppressWarnings("UnstableApiUsage")
 public class FluidSynthesizerBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory, EnergySyncableBlockEntity {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
 
@@ -227,27 +229,78 @@ public class FluidSynthesizerBlockEntity extends BlockEntity implements Extended
         }
     }
 
-    private static void extractInputFluid(FluidSynthesizerBlockEntity entity, long amount) {
+    public static void extractInputFluid(FluidSynthesizerBlockEntity entity, long amount) {
+        if (entity.inputFluidStorage.variant == FluidVariant.blank()) return;
+
         try (Transaction transaction = Transaction.openOuter()) {
             entity.inputFluidStorage.extract(entity.inputFluidStorage.variant, amount, transaction);
             transaction.commit();
         }
     }
 
-    private static void extractOutputFluid(FluidSynthesizerBlockEntity entity, long amount) {
+    public static void extractOutputFluid(FluidSynthesizerBlockEntity entity, long amount) {
+        if (entity.outputFluidStorage.variant == FluidVariant.blank()) return;
+
         try (Transaction transaction = Transaction.openOuter()) {
             entity.outputFluidStorage.extract(entity.outputFluidStorage.variant, amount, transaction);
             transaction.commit();
         }
     }
 
-//    private boolean hasEnoughEnergy(ResonanceForgeBlockEntity entity) {
-//        if (!this.hasRecipe(entity)) return false;
-//
-//        Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
-//
-//        return entity.energyStorage.amount >= recipe.get().getEnergyPerTick();
-//    }
+    private boolean hasEnoughItems(int slot) {
+        Optional<FluidSynthesizerRecipe> recipe = getCurrentRecipe();
+
+        if (recipe.isEmpty()) return false;
+        int count = recipe.get().getCount(slot);
+        ItemStack stackInSlot = this.getStack(slot);
+        int slotCount = stackInSlot.isEmpty() ? 64 : stackInSlot.getCount();
+
+        return slotCount >= count;
+    }
+
+
+    private boolean hasRecipe(FluidSynthesizerBlockEntity entity) {
+        Optional<FluidSynthesizerRecipe> recipe = getCurrentRecipe();
+
+        return recipe.isPresent()
+                && hasEnoughItems(MATERIAL_0_SLOT)
+                && hasEnoughItems(MATERIAL_1_SLOT)
+                && canInsertFluidIntoOutputSlot(recipe.get().getOutputFluid());
+    }
+
+    private boolean canInsertFluidIntoOutputSlot(FluidStack fluidOutput) {
+        boolean sameFluid = outputFluidStorage.getResource().equals(fluidOutput.getFluidVariant())
+                || outputFluidStorage.getResource().isBlank();
+
+        // Check if there's enough capacity left to insert the new amount
+        boolean hasSpace = outputFluidStorage.getCapacity() - outputFluidStorage.getAmount() >= fluidOutput.getAmount();
+
+        return sameFluid && hasSpace;
+    }
+
+    private Optional<FluidSynthesizerRecipe> getCurrentRecipe() {
+        SimpleInventory inv = new SimpleInventory(this.size());
+
+        for (int i = 0; i < this.size(); i++) {
+            inv.setStack(i, this.getStack(i));
+        }
+
+
+        Optional<FluidSynthesizerRecipe> recipe = getWorld().getRecipeManager().getFirstMatch(FluidSynthesizerRecipe.Type.INSTANCE, inv, getWorld());
+        if (recipe.isPresent() && recipe.get().matchFluid(getWorld(), new FluidStack(this.inputFluidStorage.variant, this.inputFluidStorage.amount))) {
+            return recipe;
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private boolean hasEnoughEnergy(FluidSynthesizerBlockEntity entity) {
+        if (!this.hasRecipe(entity)) return false;
+
+        Optional<FluidSynthesizerRecipe> recipe = getCurrentRecipe();
+
+        return entity.energyStorage.amount >= recipe.get().getEnergyPerTick();
+    }
 
 
     public void tick(World world, BlockPos pos, BlockState state, FluidSynthesizerBlockEntity entity) {
@@ -259,24 +312,74 @@ public class FluidSynthesizerBlockEntity extends BlockEntity implements Extended
             transferFluidToInputStorage(entity);
         }
 
-        // TODO: Make crafting.
-//        if (hasRecipe(entity) && hasEnoughEnergy(entity) && hasEnoughFluid(entity)) {
-//            entity.progress++;
-//            extractEnergy(entity);
-//        }
+        if (hasBucketInOutputSlot(entity)) {
+            transferFluidFromOutputStorage(entity);
+        }
+
+        if (hasRecipe(entity) && hasEnoughEnergy(entity) && hasEnoughFluid(entity)) {
+            Optional<FluidSynthesizerRecipe> recipe = getCurrentRecipe();
+
+            int recipeTicks = recipe.get().getTicks();
+            this.propertyDelegate.set(1, recipeTicks);
+
+            entity.progress++;
+
+            extractEnergy(entity, recipe.get().getEnergyPerTick());
+            markDirty();
+
+            if (hasCraftingFinished()) {
+                this.craftFluid();
+                this.extractInputFluid(entity, recipe.get().getInputFluid().amount);
+
+                sendFluidPacket("input", inputFluidStorage);
+                sendFluidPacket("output", outputFluidStorage);
+
+                this.resetProgress();
+                markDirty();
+            }
+        } else {
+            this.resetProgress();
+        }
     }
+
+
+    private void craftFluid() {
+        Optional<FluidSynthesizerRecipe> recipe = getCurrentRecipe();
+
+        // Numbers are different because the getCount is the slot in the recipe, not inventory
+        this.removeStack(MATERIAL_0_SLOT, recipe.get().getCount(0));
+        this.removeStack(MATERIAL_1_SLOT, recipe.get().getCount(1));
+
+        FluidStack outputFluid = recipe.get().getOutputFluid();
+
+        this.setOutputFluidLevel(outputFluid.fluidVariant, outputFluidStorage.amount + outputFluid.amount);
+    }
+
+    private boolean hasCraftingFinished() {
+        return progress >= maxProgress;
+    }
+
+    private void resetProgress() {
+        this.progress = 0;
+        this.maxProgress = 0;
+    }
+
 
     private void transferFluidToInputStorage(FluidSynthesizerBlockEntity entity) {
         try (Transaction transaction = Transaction.openOuter()) {
             // TODO: Insert what's actually in the bucket.
-            entity.inputFluidStorage.insert(
-                    FluidVariant.of(Fluids.WATER),
-                    FluidStack.convertDropletsToMb(FluidConstants.BUCKET),
-                    transaction
-            );
+            ItemStack bucketItem = entity.getStack(FLUID_INPUT_SLOT);
 
-            transaction.commit();
-            entity.setStack(FLUID_INPUT_SLOT, new ItemStack(Items.BUCKET));
+            if (bucketItem.getItem() instanceof BucketItem bucket) {
+                entity.inputFluidStorage.insert(
+                        FluidVariant.of(bucket.fluid),
+                        FluidStack.convertDropletsToMb(FluidConstants.BUCKET),
+                        transaction
+                );
+
+                transaction.commit();
+                entity.setStack(FLUID_INPUT_SLOT, new ItemStack(Items.BUCKET));
+            }
         }
     }
 
@@ -288,4 +391,13 @@ public class FluidSynthesizerBlockEntity extends BlockEntity implements Extended
         return entity.inputFluidStorage.amount >= 500; // TODO: Recipe check, this is in millibuckets.
     }
 
+    private void transferFluidFromOutputStorage(FluidSynthesizerBlockEntity entity) {
+        extractOutputFluid(entity, FluidConstants.BUCKET);
+
+        entity.setStack(FLUID_OUTPUT_SLOT, new ItemStack(entity.outputFluidStorage.variant.getFluid().getBucketItem()));
+    }
+
+    private boolean hasBucketInOutputSlot(FluidSynthesizerBlockEntity entity) {
+        return entity.getStack(FLUID_OUTPUT_SLOT).getItem() == Items.BUCKET;
+    }
 }

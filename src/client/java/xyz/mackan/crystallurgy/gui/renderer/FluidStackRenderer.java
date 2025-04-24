@@ -105,7 +105,7 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidStack> {
     public List<Text> getTooltip(FluidStack fluidStack, TooltipContext tooltipFlag) {
         List<Text> tooltip = new ArrayList<>();
         FluidVariant fluidType = fluidStack.getFluidVariant();
-        if (fluidType == null) {
+        if (fluidType == null || fluidType.isBlank()) {
             return tooltip;
         }
 

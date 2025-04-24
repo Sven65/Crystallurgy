@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.mackan.crystallurgy.networking.ModServerNetworking;
 import xyz.mackan.crystallurgy.registry.*;
 
 public class Crystallurgy implements ModInitializer {
@@ -39,5 +40,7 @@ public class Crystallurgy implements ModInitializer {
 
 		ModCauldron.register();
 		ModBlockEntities.register();
+
+		ModServerNetworking.registerC2SPackets();
 	}
 }

@@ -1,18 +1,30 @@
 package xyz.mackan.crystallurgy.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.mixin.transfer.BucketItemAccessor;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.item.BucketItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import team.reborn.energy.api.EnergyStorage;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.gui.renderer.FluidStackRenderer;
+import xyz.mackan.crystallurgy.registry.ModMessages;
 import xyz.mackan.crystallurgy.util.FluidStack;
 import xyz.mackan.crystallurgy.util.GUIElement;
 import xyz.mackan.crystallurgy.util.MouseUtil;
@@ -134,6 +146,59 @@ public class FluidSynthesizerScreen extends HandledScreen<FluidSynthesizerScreen
         renderBackground(context);
         super.render(context, mouseX, mouseY, delta);
         drawMouseoverTooltip(context, mouseX, mouseY);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        int x = (width - backgroundWidth) / 2;
+        int y = (height - backgroundHeight) / 2;
+
+        // For output fluid
+        if (isMouseAboveArea((int) mouseX, (int) mouseY, x, y, 129, 9, outputFluidRenderer)) {
+            ItemStack held = client.player.currentScreenHandler.getCursorStack();
+
+            if ((held.getItem() == Items.BUCKET)) {
+                FluidStack outputFluid = handler.outputFluidStack;
+
+                if (!outputFluid.fluidVariant.isBlank() && outputFluid.amount >= 1000) {
+                    PacketByteBuf buf = PacketByteBufs.create();
+                    buf.writeBlockPos(handler.synthesizerBlockEntity.getPos());
+                    buf.writeString("output");
+                    ClientPlayNetworking.send(ModMessages.EXTRACT_FLUID_TO_CURSOR, buf);
+
+                    Item newItem = outputFluid.fluidVariant.getFluid().getBucketItem();
+
+                    client.player.currentScreenHandler.setCursorStack(new ItemStack(newItem));
+                }
+
+                // Send to server
+                return true;
+            }
+        }
+
+        // For input fluid (if needed)
+        if (isMouseAboveArea((int) mouseX, (int) mouseY, x, y, 51, 9, inputFluidRenderer)) {
+            ItemStack held = client.player.currentScreenHandler.getCursorStack();
+            if ((held.getItem() == Items.BUCKET)) {
+                FluidStack inputFluid = handler.inputFluidStack;
+
+                if (!inputFluid.fluidVariant.isBlank() && inputFluid.amount >= 1000) {
+                    Item newItem = inputFluid.fluidVariant.getFluid().getBucketItem();
+
+                    PacketByteBuf buf = PacketByteBufs.create();
+                    buf.writeBlockPos(handler.synthesizerBlockEntity.getPos());
+                    buf.writeString("input");
+                    ClientPlayNetworking.send(ModMessages.EXTRACT_FLUID_TO_CURSOR, buf);
+
+                    client.player.currentScreenHandler.setCursorStack(new ItemStack(newItem));
+                }
+
+                // Send to server
+                return true;
+            }
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     private boolean isMouseAboveArea(int pMouseX, int pMouseY, int x, int y, int offsetX, int offsetY, FluidStackRenderer renderer) {

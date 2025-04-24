@@ -7,6 +7,7 @@ import net.minecraft.util.Identifier;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
+import xyz.mackan.crystallurgy.recipe.FluidSynthesizerRecipe;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 
 public class ModRecipes {
@@ -34,5 +35,13 @@ public class ModRecipes {
         );
 
         Registry.register(Registries.RECIPE_TYPE, new Identifier(Crystallurgy.MOD_ID, CoolingFluidCauldronRecipe.Type.ID), CoolingFluidCauldronRecipe.Type.INSTANCE);
+
+        Registry.register(
+                Registries.RECIPE_SERIALIZER,
+                new Identifier(Crystallurgy.MOD_ID, FluidSynthesizerRecipe.Serializer.ID),
+                FluidSynthesizerRecipe.Serializer.INSTANCE
+        );
+
+        Registry.register(Registries.RECIPE_TYPE, new Identifier(Crystallurgy.MOD_ID, FluidSynthesizerRecipe.Type.ID), FluidSynthesizerRecipe.Type.INSTANCE);
     }
 }

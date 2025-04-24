@@ -1,6 +1,8 @@
 {
   "block.crystallurgy.resonance_forge": "Resonance Forge",
   "block.crystallurgy.fluid_synthesizer": "Fluid Synthesizer",
+  "block.crystallurgy.crystal_fluid": "Crystal Fluid",
+  "block.crystallurgy.cooling_fluid": "Cooling Fluid",
 
   "item.crystallurgy.resonance_forge": "Resonance Forge",
   "item.crystallurgy.fluid_synthesizer": "Fluid Synthesizer",

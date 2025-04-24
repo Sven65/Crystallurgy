@@ -4,7 +4,9 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ArrayPropertyDelegate;
 import net.minecraft.screen.PropertyDelegate;
@@ -42,15 +44,14 @@ public class FluidSynthesizerScreenHandler extends ScreenHandler {
         this.addSlot(new Slot(inventory, 0, 7, 10) {
             @Override
             public boolean canInsert(ItemStack stack) {
-                // TODO: Only allow fluid buckets (water)
-                return true;
+                return stack.getItem() instanceof BucketItem;
             }
         });
         this.addSlot(new Slot(inventory, 1, 7, 54) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 // Output slot, don't insert.
-                return false;
+                return stack.getItem() == Items.BUCKET;
             }
         });
         this.addSlot(new Slot(inventory, 2, 70, 9));

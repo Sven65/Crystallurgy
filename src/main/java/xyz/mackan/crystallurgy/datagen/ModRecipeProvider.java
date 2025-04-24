@@ -2,7 +2,9 @@ package xyz.mackan.crystallurgy.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -10,7 +12,9 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.registry.ModFluids;
 import xyz.mackan.crystallurgy.registry.ModItems;
+import xyz.mackan.crystallurgy.util.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +64,10 @@ public class ModRecipeProvider extends FabricRecipeProvider {
             new ForgeRecipeContainer("emerald", ModItems.EMERALD_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 64), new ItemStack(Items.LIME_DYE, 1), Items.COAL, 1, 100, 100),
             new ForgeRecipeContainer("quartz", ModItems.QUARTZ_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 64), new ItemStack(Items.WHITE_DYE, 1), Items.COAL, 1, 100, 100),
             new ForgeRecipeContainer("redstone", ModItems.REDSTONE_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 64), new ItemStack(Items.RED_DYE, 1), Items.COAL, 1, 100, 100)
+    );
+
+    private final static List<FluidSynthesizerRecipeContainer> fluidSynthesizerRecipes = List.of(
+            new FluidSynthesizerRecipeContainer("crystal_fluid", ModItems.CRYSTAL_SEED_RESONATOR, new ItemStack(Items.CHARCOAL, 64), new FluidStack(FluidVariant.of(Fluids.WATER), 1000), new FluidStack(FluidVariant.of(ModFluids.STILL_CRYSTAL_FLUID), 1000), 100, 100)
     );
 
     public ModRecipeProvider(FabricDataOutput output) {
@@ -124,15 +132,34 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         });
     }
 
+    public void generateFluidSynthesizerRecipes(Consumer<RecipeJsonProvider> consumer) {
+        fluidSynthesizerRecipes.forEach(recipe -> {
+            List<Ingredient> ingredientList = new ArrayList<>(List.of(
+                    Ingredient.ofItems(recipe.baseItem),
+                    Ingredient.ofStacks(recipe.secondItem)
+            ));
+
+            FluidSynthesizerRecipeJsonBuilder
+                    .create(ingredientList)
+                    .ticks(recipe.ticks)
+                    .energyPerTick(recipe.energyPerTicks)
+                    .inputFluid(recipe.inputFluid)
+                    .outputFluid(recipe.result)
+                    .offerTo(consumer, new Identifier(Crystallurgy.MOD_ID, String.format("fluid_synthesizer_%s", recipe.recipeId)));
+        });
+    }
+
     @Override
     public void generate(Consumer<RecipeJsonProvider> consumer) {
         generateForgeRecipes(consumer);
 
         generateCrystalFluidCauldronRecipes(consumer);
         generateCoolingFluidCauldronRecipes(consumer);
+        generateFluidSynthesizerRecipes(consumer);
     }
 
     private record CrystalRecipeContainer(String recipeId, Item baseItem, @Nullable Item secondItem, Item result, int count, int ticks) {}
     private record CoolingRecipeContainer(String recipeId, Item baseItem, Item result, int count, int ticks, int coolingScore) {}
     private record ForgeRecipeContainer(String recipeId, Item baseItem, ItemStack secondItem, @Nullable ItemStack dyeItem, Item result, int count, int ticks, int energyPerTicks) {}
+    private record FluidSynthesizerRecipeContainer(String recipeId, Item baseItem, ItemStack secondItem, FluidStack inputFluid, FluidStack result, int ticks, int energyPerTicks) {}
 }
