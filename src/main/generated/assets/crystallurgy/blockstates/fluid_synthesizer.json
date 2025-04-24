@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "crystallurgy:block/fluid_synthesizer",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "crystallurgy:block/fluid_synthesizer"
+    },
+    "facing=south": {
+      "model": "crystallurgy:block/fluid_synthesizer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystallurgy:block/fluid_synthesizer",
+      "y": 270
+    }
+  }
+}

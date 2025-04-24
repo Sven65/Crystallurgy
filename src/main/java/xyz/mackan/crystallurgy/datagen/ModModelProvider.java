@@ -28,6 +28,7 @@ public class ModModelProvider extends FabricModelProvider {
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
         blockStateModelGenerator.registerNorthDefaultHorizontalRotation(ModBlocks.RESONANCE_FORGE);
+        blockStateModelGenerator.registerNorthDefaultHorizontalRotation(ModBlocks.FLUID_SYNTHESIZER);
         generateCauldronBlockState("crystal_cauldron", ModCauldron.CRYSTAL_CAULDRON, blockStateModelGenerator);
         generateCauldronBlockState("cooling_cauldron", ModCauldron.COOLING_CAULDRON, blockStateModelGenerator);
     }
