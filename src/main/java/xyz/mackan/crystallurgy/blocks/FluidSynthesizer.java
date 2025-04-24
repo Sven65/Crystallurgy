@@ -14,10 +14,13 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.registry.ModBlockEntities;
 
 public class FluidSynthesizer extends BlockWithEntity implements BlockEntityProvider {
@@ -86,6 +89,39 @@ public class FluidSynthesizer extends BlockWithEntity implements BlockEntityProv
                 player.openHandledScreen(screenHandlerFactory);
             }
         }
+
+        Direction face = hit.getSide();
+        Vec3d hitPos = hit.getPos();
+        BlockPos blockPos = hit.getBlockPos();
+
+        double dx = hitPos.x - blockPos.getX();
+        double dy = hitPos.y - blockPos.getY();
+        double dz = hitPos.z - blockPos.getZ();
+
+        double u = 0, v = 0;
+
+        switch (face) {
+            case UP:
+                u = dx; v = dz;
+                break;
+            case DOWN:
+                u = dx; v = dz;
+                break;
+            case NORTH:
+                u = 1 - dx; v = 1 - dy;
+                break;
+            case SOUTH:
+                u = dx; v = 1 - dy;
+                break;
+            case WEST:
+                u = dz; v = 1 - dy;
+                break;
+            case EAST:
+                u = 1 - dz; v = 1 - dy;
+                break;
+        }
+
+        Crystallurgy.LOGGER.info("UV: {}, {}", u, v);
 
         return ActionResult.SUCCESS;
     }
