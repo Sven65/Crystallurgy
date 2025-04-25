@@ -11,7 +11,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
-import xyz.mackan.crystallurgy.Crystallurgy;
 
 import java.util.List;
 

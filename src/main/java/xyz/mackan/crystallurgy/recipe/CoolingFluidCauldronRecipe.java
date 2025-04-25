@@ -12,8 +12,6 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
-import xyz.mackan.crystallurgy.Crystallurgy;
-
 import java.util.List;
 
 public class CoolingFluidCauldronRecipe implements Recipe<SimpleInventory> {

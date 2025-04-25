@@ -12,13 +12,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.util.Identifier;
 import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.compat.jei.category.CrystalFluidCauldronCategory;
 import xyz.mackan.crystallurgy.compat.jei.category.FluidSynthesizerCategory;
 import xyz.mackan.crystallurgy.compat.jei.category.ResonanceForgeCategory;
 import xyz.mackan.crystallurgy.gui.FluidSynthesizerScreen;
 import xyz.mackan.crystallurgy.gui.ResonanceForgeScreen;
+import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
+import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.recipe.FluidSynthesizerRecipe;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 import xyz.mackan.crystallurgy.registry.ModBlocks;
+import xyz.mackan.crystallurgy.registry.ModCauldron;
 
 import java.util.List;
 
@@ -33,6 +37,8 @@ public class JEIPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.RESONANCE_FORGE), ModJEIRecipeTypes.RESONANCE_FORGE);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.FLUID_SYNTHESIZER), ModJEIRecipeTypes.FLUID_SYNTHESIZER);
+        //registration.addRecipeCatalyst(new ItemStack(ModCauldron.COOLING_CAULDRON), ModJEIRecipeTypes.CRYSTAL_FLUID_CAULDRON);
+        registration.addRecipeCatalyst(new ItemStack(ModCauldron.CRYSTAL_CAULDRON), ModJEIRecipeTypes.CRYSTAL_FLUID_CAULDRON);
     }
 
     @Override
@@ -40,7 +46,8 @@ public class JEIPlugin implements IModPlugin {
         IGuiHelper helper = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(
                 new ResonanceForgeCategory(helper),
-                new FluidSynthesizerCategory(helper)
+                new FluidSynthesizerCategory(helper),
+                new CrystalFluidCauldronCategory(helper)
         );
     }
 
@@ -54,6 +61,9 @@ public class JEIPlugin implements IModPlugin {
 
         List<FluidSynthesizerRecipe> synthesizerRecipes = recipeManager.listAllOfType(FluidSynthesizerRecipe.Type.INSTANCE);
         registration.addRecipes(ModJEIRecipeTypes.FLUID_SYNTHESIZER, synthesizerRecipes);
+
+        List<CrystalFluidCauldronRecipe> crystalFluidCauldronRecipes = recipeManager.listAllOfType(CrystalFluidCauldronRecipe.Type.INSTANCE);
+        registration.addRecipes(ModJEIRecipeTypes.CRYSTAL_FLUID_CAULDRON, crystalFluidCauldronRecipes);
     }
 
     @Override
@@ -61,7 +71,7 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipeClickArea(ResonanceForgeScreen.class, 75, 35, 22, 15,
                 ModJEIRecipeTypes.RESONANCE_FORGE);
 
-        registration.addRecipeClickArea(FluidSynthesizerScreen.class, 75, 35, 22, 15,
+        registration.addRecipeClickArea(FluidSynthesizerScreen.class, 66, 49, 57, 15,
                 ModJEIRecipeTypes.FLUID_SYNTHESIZER);
     }
 }
