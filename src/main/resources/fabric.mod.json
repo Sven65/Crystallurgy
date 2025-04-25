@@ -23,9 +23,6 @@
 		],
 		"fabric-datagen": [
 			"xyz.mackan.crystallurgy.CrystallurgyDataGenerator"
-		],
-		"rei_client": [
-			"xyz.mackan.crystallurgy.compat.rei.CrystallurgyREIClientPlugin"
 		]
 	},
 	"mixins": [
@@ -40,8 +37,5 @@
 		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }
