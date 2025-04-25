@@ -109,7 +109,7 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
 
         background.draw(guiGraphics, 0, 0);
 
-        renderBlockInGui(guiGraphics, ModCauldron.COOLING_CAULDRON.getDefaultState(), 75, 35, 100);
+        renderBlockInGui(guiGraphics, ModCauldron.COOLING_CAULDRON.getDefaultState(), 75, 35, 16);
     }
 
 
@@ -126,8 +126,9 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
 
         // Center and rotate
         matrices.translate(0.5, 0.5, 0.5);
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(225));
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(45));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180)); // flip to face forward
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(45));  // slight tilt
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(45));  // slight tilt
 
         // Enable lighting & depth
         DiffuseLighting.enableGuiDepthLighting();
