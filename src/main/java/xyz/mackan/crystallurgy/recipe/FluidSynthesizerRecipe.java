@@ -52,6 +52,13 @@ public class FluidSynthesizerRecipe implements Recipe<SimpleInventory> {
         return recipeItems.get(0).test(inputSlot1) && recipeItems.get(1).test(inputSlot2);
     }
 
+    @Override
+    public DefaultedList<Ingredient> getIngredients() {
+        DefaultedList<Ingredient> list = DefaultedList.ofSize(this.recipeItems.size());
+        list.addAll(recipeItems);
+        return list;
+    }
+
     public boolean matchFluid(World world, FluidStack checkFluid) {
         // inputFluid is from the recipe.
         if (world.isClient()) {
@@ -83,7 +90,7 @@ public class FluidSynthesizerRecipe implements Recipe<SimpleInventory> {
 
     @Override
     public ItemStack getOutput(DynamicRegistryManager registryManager) {
-        return ItemStack.EMPTY;
+        return new ItemStack(this.outputFluid.fluidVariant.getFluid().getBucketItem());
     }
 
     public FluidStack getInputFluid() {

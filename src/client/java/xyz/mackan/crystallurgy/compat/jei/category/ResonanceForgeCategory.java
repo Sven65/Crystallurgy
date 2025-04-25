@@ -1,4 +1,4 @@
-package xyz.mackan.crystallurgy.compat.jei;
+package xyz.mackan.crystallurgy.compat.jei.category;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -18,6 +18,7 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.blocks.ResonanceForgeBlockEntity;
+import xyz.mackan.crystallurgy.compat.jei.ModJEIRecipeTypes;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 import xyz.mackan.crystallurgy.registry.ModBlocks;
 import xyz.mackan.crystallurgy.util.GUIElement;
@@ -36,7 +37,6 @@ public class ResonanceForgeCategory implements IRecipeCategory<ResonanceForgeRec
 
     public ResonanceForgeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 82);
-        Crystallurgy.LOGGER.info("Background is {}", this.background);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.RESONANCE_FORGE));
     }
 

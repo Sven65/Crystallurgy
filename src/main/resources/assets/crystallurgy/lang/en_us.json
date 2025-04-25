@@ -4,6 +4,9 @@
   "block.crystallurgy.crystal_fluid": "Crystal Fluid",
   "block.crystallurgy.cooling_fluid": "Cooling Fluid",
 
+  "block.crystallurgy.crystal_fluid_block": "Crystal Fluid",
+  "block.crystallurgy.cooling_fluid_block": "Cooling Fluid",
+
   "item.crystallurgy.resonance_forge": "Resonance Forge",
   "item.crystallurgy.fluid_synthesizer": "Fluid Synthesizer",
 
