@@ -6,6 +6,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.gui.DrawContext;
@@ -40,14 +41,19 @@ public class ResonanceForgeCategory implements IRecipeCategory<ResonanceForgeRec
     public Text getTitle() {
         return Text.translatable("block.crystallurgy.resonance_forge");
     }
+
     @Override
     public @Nullable IDrawable getIcon() {
-        return null;
+        return icon;
     }
 
-    @Override
-    public void setRecipe(IRecipeLayoutBuilder iRecipeLayoutBuilder, ResonanceForgeRecipe resonanceForgeRecipe, IFocusGroup iFocusGroup) {
 
+    @Override
+    public void setRecipe(IRecipeLayoutBuilder builder, ResonanceForgeRecipe resonanceForgeRecipe, IFocusGroup iFocusGroup) {
+        builder.addSlot(RecipeIngredientRole.INPUT, 7, 35).addIngredients(resonanceForgeRecipe.getIngredients().get(0));
+        builder.addSlot(RecipeIngredientRole.INPUT, 29, 35).addIngredients(resonanceForgeRecipe.getIngredients().get(1));
+        builder.addSlot(RecipeIngredientRole.INPUT, 51, 35).addIngredients(resonanceForgeRecipe.getIngredients().get(2));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 112, 35).addItemStack(resonanceForgeRecipe.getOutput(null));
     }
 
     @Override

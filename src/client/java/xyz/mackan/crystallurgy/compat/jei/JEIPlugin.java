@@ -6,9 +6,15 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.recipe.RecipeManager;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.gui.ResonanceForgeScreen;
+import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
+
+import java.util.List;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
@@ -23,16 +29,22 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(
                 new ResonanceForgeCategory(helper)
         );
-        IModPlugin.super.registerCategories(registration);
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        IModPlugin.super.registerRecipes(registration);
+        assert MinecraftClient.getInstance().world != null;
+        RecipeManager recipeManager = MinecraftClient.getInstance().world.getRecipeManager();
+
+        Crystallurgy.LOGGER.info("type {}", ResonanceForgeCategory.RESONANCE_FORGE_TYPE);
+
+        List<ResonanceForgeRecipe> forgeRecipes = recipeManager.listAllOfType(ResonanceForgeRecipe.Type.INSTANCE);
+        registration.addRecipes(ResonanceForgeCategory.RESONANCE_FORGE_TYPE, forgeRecipes);
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        IModPlugin.super.registerGuiHandlers(registration);
+        registration.addRecipeClickArea(ResonanceForgeScreen.class, 75, 35, 22, 15,
+                ResonanceForgeCategory.RESONANCE_FORGE_TYPE);
     }
 }
