@@ -40,8 +40,9 @@ import java.util.Optional;
 
 public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory, EnergySyncableBlockEntity {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
+    public static final int ENERGY_CAPACITY = 100000;
 
-    public final SimpleEnergyStorage energyStorage = new SimpleEnergyStorage(100000, 1000, 200) {
+    public final SimpleEnergyStorage energyStorage = new SimpleEnergyStorage(ENERGY_CAPACITY, 1000, 200) {
         @Override
         protected void onFinalCommit() {
             markDirty();

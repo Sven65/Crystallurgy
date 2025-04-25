@@ -40,5 +40,8 @@
 
   "text.crystallurgy.item_group": "Crystallurgy",
   "text.crystallurgy.tooltip.liquid.amount.with.capacity": "%s / %s mB",
-  "text.crystallurgy.tooltip.liquid.amount": "%s mB"
+  "text.crystallurgy.tooltip.liquid.amount": "%s mB",
+
+  "text.crystallurgy.recipe.time": "Time: %ss",
+  "text.crystallurgy.recipe.energy": "Energy: %s FE"
 }
