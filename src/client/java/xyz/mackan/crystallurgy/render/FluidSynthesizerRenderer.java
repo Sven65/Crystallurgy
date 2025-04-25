@@ -36,7 +36,8 @@ public class FluidSynthesizerRenderer implements BlockEntityRenderer<FluidSynthe
         Direction facing = blockEntity.getCachedState().get(Properties.HORIZONTAL_FACING);
 
         if (!blockEntity.inputFluidStorage.variant.isBlank()) {
-            renderFluidBar(matrices, vertexConsumers, 15, overlay, facing, 4, 4, blockEntity.inputFluidStorage.variant);
+            // TODO: Render fluid bars, with the texture and height of the actual fluids in the machine
+            //renderFluidBar(matrices, vertexConsumers, 15, overlay, facing, 4, 4, blockEntity.inputFluidStorage.variant);
         }
     }
 
@@ -100,7 +101,7 @@ public class FluidSynthesizerRenderer implements BlockEntityRenderer<FluidSynthe
         int color = FluidVariantRendering.getColor(fluid);
         Identifier atlas = sprite.getAtlasId();
 
-        Crystallurgy.LOGGER.info("Atlas is {}", atlas);
+
 
 
         // Use this safe layer — suitable for block-style textured rendering
@@ -118,7 +119,6 @@ public class FluidSynthesizerRenderer implements BlockEntityRenderer<FluidSynthe
         float b = (float) (color & 255) / 255.0F;
         float a = 0f;
 
-        Crystallurgy.LOGGER.info("Color is {}", Integer.toHexString(color));
 
         // Prepare the texture and render layer
 
