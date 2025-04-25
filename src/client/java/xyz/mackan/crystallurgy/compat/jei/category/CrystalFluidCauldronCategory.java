@@ -1,5 +1,6 @@
 package xyz.mackan.crystallurgy.compat.jei.category;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.fabric.constants.FabricTypes;
 import mezz.jei.api.fabric.ingredients.fluids.IJeiFluidIngredient;
@@ -17,8 +18,18 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.runtime.IIngredientManager;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayers;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -26,6 +37,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.compat.jei.EmptyBackground;
@@ -96,5 +108,48 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
         MinecraftClient client = MinecraftClient.getInstance();
 
         background.draw(guiGraphics, 0, 0);
+
+        renderBlockInGui(guiGraphics, ModCauldron.COOLING_CAULDRON.getDefaultState(), 75, 35, 100);
+    }
+
+
+    public void renderBlockInGui(DrawContext context, BlockState state, int x, int y, float scale) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        BlockRenderManager blockRenderManager = client.getBlockRenderManager();
+        MatrixStack matrices = context.getMatrices();
+
+        matrices.push();
+
+        // Move to position in GUI
+        matrices.translate(x, y, 100.0);
+        matrices.scale(scale, scale, scale);
+
+        // Center and rotate
+        matrices.translate(0.5, 0.5, 0.5);
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(225));
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(45));
+
+        // Enable lighting & depth
+        DiffuseLighting.enableGuiDepthLighting();
+        RenderSystem.enableDepthTest();
+
+        // Get model & render
+        BakedModel model = blockRenderManager.getModel(state);
+        VertexConsumerProvider.Immediate vertexConsumers = client.getBufferBuilders().getEntityVertexConsumers();
+
+        blockRenderManager.getModelRenderer().render(
+                matrices.peek(),
+                vertexConsumers.getBuffer(RenderLayers.getBlockLayer(state)),
+                state,
+                model,
+                1f, 1f, 1f,
+                0xF000F0,
+                OverlayTexture.DEFAULT_UV
+        );
+
+        vertexConsumers.draw(); // flush
+
+        matrices.pop();
+        RenderSystem.disableDepthTest();
     }
 }
