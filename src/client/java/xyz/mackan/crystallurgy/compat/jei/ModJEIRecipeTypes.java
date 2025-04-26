@@ -2,6 +2,8 @@ package xyz.mackan.crystallurgy.compat.jei;
 
 import mezz.jei.api.recipe.RecipeType;
 import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.compat.jei.category.CoolingFluidCauldronCategory;
+import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.recipe.FluidSynthesizerRecipe;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
@@ -10,4 +12,5 @@ public interface ModJEIRecipeTypes {
     RecipeType<ResonanceForgeRecipe> RESONANCE_FORGE = RecipeType.create(Crystallurgy.MOD_ID, "resonance_forging", ResonanceForgeRecipe.class);
     RecipeType<FluidSynthesizerRecipe> FLUID_SYNTHESIZER = RecipeType.create(Crystallurgy.MOD_ID, "fluid_synthesizing", FluidSynthesizerRecipe.class);
     RecipeType<CrystalFluidCauldronRecipe> CRYSTAL_FLUID_CAULDRON = RecipeType.create(Crystallurgy.MOD_ID, "crystal_fluid_cauldron", CrystalFluidCauldronRecipe.class);
+    RecipeType<CoolingFluidCauldronRecipe> COOLING_FLUID_CAULDRON = RecipeType.create(Crystallurgy.MOD_ID, "cooling_fluid_cauldron", CoolingFluidCauldronRecipe.class);
 }

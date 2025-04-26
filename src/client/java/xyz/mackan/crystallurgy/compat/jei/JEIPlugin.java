@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.util.Identifier;
 import xyz.mackan.crystallurgy.Crystallurgy;
+import xyz.mackan.crystallurgy.compat.jei.category.CoolingFluidCauldronCategory;
 import xyz.mackan.crystallurgy.compat.jei.category.CrystalFluidCauldronCategory;
 import xyz.mackan.crystallurgy.compat.jei.category.FluidSynthesizerCategory;
 import xyz.mackan.crystallurgy.compat.jei.category.ResonanceForgeCategory;
@@ -37,8 +38,8 @@ public class JEIPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.RESONANCE_FORGE), ModJEIRecipeTypes.RESONANCE_FORGE);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.FLUID_SYNTHESIZER), ModJEIRecipeTypes.FLUID_SYNTHESIZER);
-        //registration.addRecipeCatalyst(new ItemStack(ModCauldron.COOLING_CAULDRON), ModJEIRecipeTypes.CRYSTAL_FLUID_CAULDRON);
         registration.addRecipeCatalyst(new ItemStack(ModCauldron.CRYSTAL_CAULDRON), ModJEIRecipeTypes.CRYSTAL_FLUID_CAULDRON);
+        registration.addRecipeCatalyst(new ItemStack(ModCauldron.COOLING_CAULDRON), ModJEIRecipeTypes.COOLING_FLUID_CAULDRON);
     }
 
     @Override
@@ -47,7 +48,8 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(
                 new ResonanceForgeCategory(helper),
                 new FluidSynthesizerCategory(helper),
-                new CrystalFluidCauldronCategory(helper)
+                new CrystalFluidCauldronCategory(helper),
+                new CoolingFluidCauldronCategory(helper)
         );
     }
 
@@ -64,6 +66,9 @@ public class JEIPlugin implements IModPlugin {
 
         List<CrystalFluidCauldronRecipe> crystalFluidCauldronRecipes = recipeManager.listAllOfType(CrystalFluidCauldronRecipe.Type.INSTANCE);
         registration.addRecipes(ModJEIRecipeTypes.CRYSTAL_FLUID_CAULDRON, crystalFluidCauldronRecipes);
+
+        List<CoolingFluidCauldronRecipe> coolingFluidCauldronRecipes = recipeManager.listAllOfType(CoolingFluidCauldronRecipe.Type.INSTANCE);
+        registration.addRecipes(ModJEIRecipeTypes.COOLING_FLUID_CAULDRON, coolingFluidCauldronRecipes);
     }
 
     @Override

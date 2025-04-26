@@ -13,35 +13,33 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayers;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.compat.jei.EmptyBackground;
 import xyz.mackan.crystallurgy.compat.jei.ModJEIRecipeTypes;
 import xyz.mackan.crystallurgy.datagen.ModBlockTagProvider;
+import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.registry.ModCauldron;
 import xyz.mackan.crystallurgy.registry.ModFluids;
@@ -50,49 +48,42 @@ import xyz.mackan.crystallurgy.util.FluidStack;
 import java.text.NumberFormat;
 import java.util.List;
 
-public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFluidCauldronRecipe> {
+public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFluidCauldronRecipe> {
     private static final NumberFormat nf = NumberFormat.getIntegerInstance();
-
-    public static final Identifier BENT_ARROW_TEXTURE = new Identifier(Crystallurgy.MOD_ID, "textures/gui/bent_arrow.png");
-    public static final Identifier STRAIGHT_ARROW_TEXTURE = new Identifier(Crystallurgy.MOD_ID, "textures/gui/arrow.png");
 
     private final IDrawable background;
     private final IDrawable icon;
-    private final List<Block> heaterBlocks;
 
-    private final IDrawable bentArrow;
-    private final IDrawable arrow;
+    private static final int ICON_SIZE = 16;
 
     private int currentHeaterIndex = 0;
     private long lastSwitchTime = 0;
     private static final int SWITCH_INTERVAL_TICKS = 20; // every second
 
-    public CrystalFluidCauldronCategory(IGuiHelper helper) {
+    private final List<Block> coolingBlocks;
+
+
+    public CoolingFluidCauldronCategory(IGuiHelper helper) {
         this.background = new EmptyBackground(176, 82);
-        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModCauldron.CRYSTAL_CAULDRON));
-        this.heaterBlocks = MinecraftClient.getInstance().world.getRegistryManager()
+        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModCauldron.COOLING_CAULDRON));
+
+        this.coolingBlocks = MinecraftClient.getInstance().world.getRegistryManager()
                 .get(RegistryKeys.BLOCK)
-                .getEntryList(ModBlockTagProvider.FLUID_CAULDRON_HEATERS)
+                .getEntryList(ModBlockTagProvider.COOLING_BLOCKS)
                 .map(entryList -> entryList.stream()
                         .map(RegistryEntry::value)
                         .toList())
                 .orElse(List.of());
-
-        this.bentArrow = helper.createDrawable(BENT_ARROW_TEXTURE, 0, 0, 16, 16);
-        this.arrow = helper.createDrawable(STRAIGHT_ARROW_TEXTURE, 0, 0, 16, 16);
-
-        Crystallurgy.LOGGER.info("Bent arrow is {} {}", bentArrow.getHeight(), bentArrow.getHeight());
-        Crystallurgy.LOGGER.info("arrow arrow is {}", arrow);
     }
 
     @Override
-    public RecipeType<CrystalFluidCauldronRecipe> getRecipeType() {
-        return ModJEIRecipeTypes.CRYSTAL_FLUID_CAULDRON;
+    public RecipeType<CoolingFluidCauldronRecipe> getRecipeType() {
+        return ModJEIRecipeTypes.COOLING_FLUID_CAULDRON;
     }
 
     @Override
     public Text getTitle() {
-        return Text.translatable("block.crystallurgy.crystal_fluid_cauldron");
+        return Text.translatable("block.crystallurgy.cooling_fluid_cauldron");
     }
 
     @Override
@@ -101,10 +92,9 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CrystalFluidCauldronRecipe fluidCauldronRecipe, IFocusGroup iFocusGroup) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 7, 16).addFluidStack(ModFluids.STILL_CRYSTAL_FLUID.getStill(), FluidStack.convertMbToDroplets(1000)).addRichTooltipCallback(this::getFluidTooltip);
+    public void setRecipe(IRecipeLayoutBuilder builder, CoolingFluidCauldronRecipe fluidCauldronRecipe, IFocusGroup iFocusGroup) {
+        builder.addSlot(RecipeIngredientRole.INPUT, 7, 16).addFluidStack(ModFluids.STILL_COOLING_FLUID.getStill(), FluidStack.convertMbToDroplets(1000)).addRichTooltipCallback(this::getFluidTooltip);
         builder.addSlot(RecipeIngredientRole.INPUT, 29, 16).addIngredients(fluidCauldronRecipe.getIngredients().get(0));
-        builder.addSlot(RecipeIngredientRole.INPUT, 51, 16).addIngredients(fluidCauldronRecipe.getIngredients().get(1));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 112, 48).addItemStack(fluidCauldronRecipe.getOutput(null));
     }
 
@@ -126,41 +116,45 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
         return background.getHeight();
     }
 
-    @Override
-    public void draw(CrystalFluidCauldronRecipe recipe, IRecipeSlotsView recipeSlotsView, DrawContext guiGraphics, double mouseX, double mouseY) {
-        MinecraftClient client = MinecraftClient.getInstance();
 
+    // TODO: Render cooling blocks around central cauldron in cardinal directions except up
+    @Override
+    public void draw(CoolingFluidCauldronRecipe recipe, IRecipeSlotsView recipeSlotsView, DrawContext guiGraphics, double mouseX, double mouseY) {
         background.draw(guiGraphics, 0, 0);
 
-//        this.bentArrow.draw(guiGraphics, 73, 16);
-//        this.arrow.draw(guiGraphics, 134, 48);
+        // 2) draw central cauldron icon
+        int cx = (this.getWidth()  - ICON_SIZE) / 2;
+        int cy = (this.getHeight() - ICON_SIZE) / 2;
 
-        guiGraphics.drawTexture(BENT_ARROW_TEXTURE, 73, 16, 0, 0, 16, 16);
+        renderBlockInGui(guiGraphics, Blocks.CAULDRON.getDefaultState(), cx, cy, 0, ICON_SIZE);
 
-        BlockState cauldron = ModCauldron.COOLING_CAULDRON.getDefaultState().with(ModCauldron.FLUID_LEVEL, 3);
+        // 3) fetch your ghost‐block state list
 
-        renderBlockInGui(guiGraphics, cauldron, 75 + 8, 35 + 16, 1, 16);
-        renderHeatingBlock(guiGraphics, 75 + 8, 35 + 32, 0, 16);
+        // 4) define the six cardinal offsets (dx, dy)
+        int[][] offsets = {
+                {  0, -ICON_SIZE - 4},   // north
+                { ICON_SIZE + 4,  0},    // east
+                {  0,  ICON_SIZE + 4},   // south
+                {-ICON_SIZE - 4,  0},    // west
+                {  0, -2*(ICON_SIZE + 4)}, // up
+                {  0,  2*(ICON_SIZE + 4)}  // down
+        };
 
+        // 5) for each direction, draw the slot background then render the block
+        for (int i = 0; i < offsets.length; i++) {
+            int x = cx + offsets[i][0];
+            int y = cy + offsets[i][1];
 
-    }
+            // slot‐style backdrop
+            //guiGraphics.drawDrawable(guiHelper.getSlotDrawable(), x, y);
 
-
-    public void renderHeatingBlock(DrawContext guiGraphics, int x, int y, int extraZ, float scale) {
-        long time = MinecraftClient.getInstance().world.getTime();
-        if (time - lastSwitchTime >= SWITCH_INTERVAL_TICKS) {
-            lastSwitchTime = time;
-            currentHeaterIndex = (currentHeaterIndex + 1) % heaterBlocks.size();
+            // render *each* possible cooling‐block state
+            for (Block block : this.coolingBlocks) {
+                BlockState state = block.getDefaultState();
+                // extraZ to control layering, scale to fit in 16×16
+                renderBlockInGui(guiGraphics, state, x + 1, y + 1, 50, 1.0f);
+            }
         }
-
-        Block currentBlock = heaterBlocks.get(currentHeaterIndex);
-        BlockState blockState = currentBlock.getDefaultState();
-
-        if (currentBlock instanceof FluidBlock) {
-            blockState = blockState.with(FluidBlock.LEVEL, 8);
-        }
-
-        renderBlockInGui(guiGraphics, blockState, x, y, extraZ, scale);
     }
 
     public void renderBlockInGui(DrawContext context, BlockState state, int x, int y, int extraZ, float scale) {
@@ -211,4 +205,5 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
         matrices.pop();
         RenderSystem.disableDepthTest();
     }
+
 }
