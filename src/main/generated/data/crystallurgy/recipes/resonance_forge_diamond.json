@@ -1,8 +1,8 @@
 {
   "type": "crystallurgy:resonance_forging",
   "energy": {
-    "energy_per_tick": 100,
-    "ticks": 100
+    "energy_per_tick": 5000,
+    "ticks": 600
   },
   "ingredients": [
     {
@@ -15,6 +15,6 @@
     }
   ],
   "output": {
-    "item": "minecraft:coal"
+    "item": "minecraft:diamond"
   }
 }

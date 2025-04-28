@@ -57,7 +57,7 @@ public class FluidSynthesizerBlockEntity extends BlockEntity implements Extended
     private int maxProgress = 100;
     private int progress = 0;
 
-    public final SimpleEnergyStorage energyStorage = new SimpleEnergyStorage(100000, 1000, 200) {
+    public final SimpleEnergyStorage energyStorage = new SimpleEnergyStorage(100000, 10000, 200000) {
         @Override
         protected void onFinalCommit() {
             markDirty();

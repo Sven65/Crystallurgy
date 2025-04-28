@@ -1,8 +1,8 @@
 {
   "type": "crystallurgy:resonance_forging",
   "energy": {
-    "energy_per_tick": 100,
-    "ticks": 100
+    "energy_per_tick": 500,
+    "ticks": 140
   },
   "ingredients": [
     {
@@ -10,7 +10,7 @@
       "item": "crystallurgy:quartz_resonator_crystal"
     },
     {
-      "count": 64,
+      "count": 16,
       "item": "minecraft:amethyst_shard"
     },
     {
@@ -19,6 +19,7 @@
     }
   ],
   "output": {
-    "item": "minecraft:coal"
+    "count": 8,
+    "item": "minecraft:quartz"
   }
 }

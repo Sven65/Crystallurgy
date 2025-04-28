@@ -51,23 +51,22 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     );
 
     private final static List<ForgeRecipeContainer> forgeRecipes = List.of(
-            new ForgeRecipeContainer("seed", ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, new ItemStack(Items.CHARCOAL, 64), null, Items.COAL, 1, 100, 100),
+            new ForgeRecipeContainer("seed", ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, new ItemStack(Items.CHARCOAL, 64), null, ModItems.CRYSTAL_SEED, 2, 15 * 20, 500),
+            new ForgeRecipeContainer("coal", ModItems.COAL_RESONATOR_CRYSTAL, new ItemStack(Items.CHARCOAL, 64), null, Items.COAL, 1, 5 * 20, 100),
+            new ForgeRecipeContainer("iron", ModItems.IRON_RESONATOR_CRYSTAL, new ItemStack(Items.COAL, 32), null, Items.IRON_INGOT, 1, 10 * 20, 700),
+            new ForgeRecipeContainer("gold", ModItems.GOLD_RESONATOR_CRYSTAL, new ItemStack(Items.IRON_BLOCK, 8), null, Items.GOLD_INGOT, 1, 20 * 20, 1000),
+            new ForgeRecipeContainer("diamond", ModItems.DIAMOND_RESONATOR_CRYSTAL, new ItemStack(Items.COAL_BLOCK, 64), null, Items.DIAMOND, 1, 30 * 20, 5000),
+            new ForgeRecipeContainer("netherite", ModItems.NETHERITE_RESONATOR_CRYSTAL, new ItemStack(Items.DIAMOND_BLOCK, 8), null, Items.NETHERITE_INGOT, 1, 30 * 20, 10000),
 
-            new ForgeRecipeContainer("coal", ModItems.COAL_RESONATOR_CRYSTAL, new ItemStack(Items.CHARCOAL, 64), null, Items.COAL, 1, 100, 100),
-            new ForgeRecipeContainer("iron", ModItems.IRON_RESONATOR_CRYSTAL, new ItemStack(Items.COAL, 64), null, Items.COAL, 1, 100, 100),
-            new ForgeRecipeContainer("gold", ModItems.GOLD_RESONATOR_CRYSTAL, new ItemStack(Items.IRON_BLOCK, 64), null, Items.COAL, 1, 100, 100),
-            new ForgeRecipeContainer("diamond", ModItems.DIAMOND_RESONATOR_CRYSTAL, new ItemStack(Items.COAL_BLOCK, 64), null, Items.COAL, 1, 100, 100),
-            new ForgeRecipeContainer("netherite", ModItems.NETHERITE_RESONATOR_CRYSTAL, new ItemStack(Items.DIAMOND_BLOCK, 64), null, Items.COAL, 1, 100, 100),
 
-
-            new ForgeRecipeContainer("lapis", ModItems.LAPIS_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 64), new ItemStack(Items.BLUE_DYE, 1), Items.COAL, 1, 100, 100),
-            new ForgeRecipeContainer("emerald", ModItems.EMERALD_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 64), new ItemStack(Items.LIME_DYE, 1), Items.COAL, 1, 100, 100),
-            new ForgeRecipeContainer("quartz", ModItems.QUARTZ_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 64), new ItemStack(Items.WHITE_DYE, 1), Items.COAL, 1, 100, 100),
-            new ForgeRecipeContainer("redstone", ModItems.REDSTONE_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 64), new ItemStack(Items.RED_DYE, 1), Items.COAL, 1, 100, 100)
+            new ForgeRecipeContainer("lapis", ModItems.LAPIS_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 16), new ItemStack(Items.BLUE_DYE, 1), Items.LAPIS_LAZULI, 8, 7 * 20, 500),
+            new ForgeRecipeContainer("emerald", ModItems.EMERALD_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 16), new ItemStack(Items.LIME_DYE, 1), Items.EMERALD, 1, 7 * 20, 2500),
+            new ForgeRecipeContainer("quartz", ModItems.QUARTZ_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 16), new ItemStack(Items.WHITE_DYE, 1), Items.QUARTZ, 8, 7 * 20, 500),
+            new ForgeRecipeContainer("redstone", ModItems.REDSTONE_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 16), new ItemStack(Items.RED_DYE, 1), Items.REDSTONE, 8, 7 * 20, 500)
     );
 
     private final static List<FluidSynthesizerRecipeContainer> fluidSynthesizerRecipes = List.of(
-            new FluidSynthesizerRecipeContainer("crystal_fluid", ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, new ItemStack(Items.CHARCOAL, 64), new FluidStack(FluidVariant.of(Fluids.WATER), 1000), new FluidStack(FluidVariant.of(ModFluids.STILL_CRYSTAL_FLUID), 1000), 100, 100)
+            new FluidSynthesizerRecipeContainer("crystal_fluid", ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 16), new FluidStack(FluidVariant.of(Fluids.WATER), 1000), new FluidStack(FluidVariant.of(ModFluids.STILL_CRYSTAL_FLUID), 1000), 100, 100)
     );
 
     public ModRecipeProvider(FabricDataOutput output) {

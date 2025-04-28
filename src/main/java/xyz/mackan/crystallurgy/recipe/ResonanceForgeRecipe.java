@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
+import xyz.mackan.crystallurgy.Crystallurgy;
 
 import java.util.List;
 
@@ -95,7 +96,22 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
     }
 
     public int getCount(int slot) {
+        if (slot >= this.recipeItemCount.size()) return 0;
         return this.recipeItemCount.get(slot);
+    }
+
+    public ItemStack getIngredientAtSlot(int slot) {
+        if (slot >= this.recipeItems.size()) {
+            return ItemStack.EMPTY;
+        }
+
+        Ingredient ingredient = this.recipeItems.get(slot);
+
+        if (ingredient.getMatchingStacks().length == 0) {
+            return ItemStack.EMPTY;
+        }
+
+        return new ItemStack(ingredient.getMatchingStacks()[0].getItem(), this.getCount(slot));
     }
 
     public static class Type implements RecipeType<ResonanceForgeRecipe> {

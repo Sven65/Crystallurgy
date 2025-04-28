@@ -10,8 +10,8 @@
       "item": "crystallurgy:crystal_seed_resonator_crystal"
     },
     {
-      "count": 64,
-      "item": "minecraft:charcoal"
+      "count": 16,
+      "item": "minecraft:amethyst_shard"
     }
   ],
   "inputFluid": {

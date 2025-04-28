@@ -74,8 +74,8 @@ public class FluidSynthesizerCategory implements IRecipeCategory<FluidSynthesize
     public void setRecipe(IRecipeLayoutBuilder builder, FluidSynthesizerRecipe fluidSynthesizerRecipe, IFocusGroup iFocusGroup) {
         FluidStack outputFluid = fluidSynthesizerRecipe.getOutputFluid();
 
-        builder.addSlot(RecipeIngredientRole.INPUT, 70, 9).addIngredients(fluidSynthesizerRecipe.getIngredients().get(0));
-        builder.addSlot(RecipeIngredientRole.INPUT, 104, 9).addIngredients(fluidSynthesizerRecipe.getIngredients().get(1));
+        builder.addSlot(RecipeIngredientRole.INPUT, 70, 9).addItemStack(fluidSynthesizerRecipe.getIngredientAtSlot(0));
+        builder.addSlot(RecipeIngredientRole.INPUT, 104, 9).addItemStack(fluidSynthesizerRecipe.getIngredientAtSlot(1));
         builder.addSlot(RecipeIngredientRole.OUTPUT).addFluidStack(outputFluid.fluidVariant.getFluid(), outputFluid.amount).setPosition(Integer.MAX_VALUE, Integer.MAX_VALUE);
         builder.addSlot(RecipeIngredientRole.OUTPUT, 7, 54).addItemStack(outputFluid.fluidVariant.getFluid().getBucketItem().getDefaultStack());
 
@@ -125,7 +125,7 @@ public class FluidSynthesizerCategory implements IRecipeCategory<FluidSynthesize
         long maxEnergy = ResonanceForgeBlockEntity.ENERGY_CAPACITY;
         int energyBarSize = ENERGY_BAR.height();
 
-        return (int) (maxEnergy != 0 && storedEnergy != 0 ? storedEnergy * energyBarSize / maxEnergy : 0);
+        return Math.min(energyBarSize, (int) (maxEnergy != 0 && storedEnergy != 0 ? storedEnergy * energyBarSize / maxEnergy : 0));
     }
 
     private void drawEnergy(FluidSynthesizerRecipe recipe, DrawContext guiGraphics, double mouseX, double mouseY) {

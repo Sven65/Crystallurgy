@@ -12,6 +12,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -58,9 +59,11 @@ public class ResonanceForgeCategory implements IRecipeCategory<ResonanceForgeRec
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ResonanceForgeRecipe resonanceForgeRecipe, IFocusGroup iFocusGroup) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 7, 35).addIngredients(resonanceForgeRecipe.getIngredients().get(0));
-        builder.addSlot(RecipeIngredientRole.INPUT, 29, 35).addIngredients(resonanceForgeRecipe.getIngredients().get(1));
-        builder.addSlot(RecipeIngredientRole.INPUT, 51, 35).addIngredients(resonanceForgeRecipe.getIngredients().get(2));
+        builder.addSlot(RecipeIngredientRole.INPUT, 7, 35).addItemStack(resonanceForgeRecipe.getIngredientAtSlot(0));
+        builder.addSlot(RecipeIngredientRole.INPUT, 29, 35).addItemStack(resonanceForgeRecipe.getIngredientAtSlot(1));
+
+        builder.addSlot(RecipeIngredientRole.INPUT, 51, 35).addItemStack(resonanceForgeRecipe.getIngredientAtSlot(2));
+
         builder.addSlot(RecipeIngredientRole.OUTPUT, 112, 35).addItemStack(resonanceForgeRecipe.getOutput(null));
     }
 
@@ -85,7 +88,7 @@ public class ResonanceForgeCategory implements IRecipeCategory<ResonanceForgeRec
         long maxEnergy = ResonanceForgeBlockEntity.ENERGY_CAPACITY;
         int energyBarSize = ENERGY_BAR.height();
 
-        return (int) (maxEnergy != 0 && storedEnergy != 0 ? storedEnergy * energyBarSize / maxEnergy : 0);
+        return Math.min(energyBarSize, (int) (maxEnergy != 0 && storedEnergy != 0 ? storedEnergy * energyBarSize / maxEnergy : 0));
     }
 
     private void drawEnergy(ResonanceForgeRecipe recipe, DrawContext guiGraphics, double mouseX, double mouseY) {

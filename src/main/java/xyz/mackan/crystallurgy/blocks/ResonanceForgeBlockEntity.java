@@ -42,7 +42,7 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
     public static final int ENERGY_CAPACITY = 100000;
 
-    public final SimpleEnergyStorage energyStorage = new SimpleEnergyStorage(ENERGY_CAPACITY, 1000, 200) {
+    public final SimpleEnergyStorage energyStorage = new SimpleEnergyStorage(ENERGY_CAPACITY, 10000, 20000) {
         @Override
         protected void onFinalCommit() {
             markDirty();

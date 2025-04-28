@@ -129,6 +129,20 @@ public class FluidSynthesizerRecipe implements Recipe<SimpleInventory> {
         return this.recipeItemCount.get(slot);
     }
 
+    public ItemStack getIngredientAtSlot(int slot) {
+        if (slot >= this.recipeItems.size()) {
+            return ItemStack.EMPTY;
+        }
+
+        Ingredient ingredient = this.recipeItems.get(slot);
+
+        if (ingredient.getMatchingStacks().length == 0) {
+            return ItemStack.EMPTY;
+        }
+
+        return new ItemStack(ingredient.getMatchingStacks()[0].getItem(), this.getCount(slot));
+    }
+
     public static class Type implements RecipeType<FluidSynthesizerRecipe> {
         private Type() {}
         public static final FluidSynthesizerRecipe.Type INSTANCE = new FluidSynthesizerRecipe.Type();

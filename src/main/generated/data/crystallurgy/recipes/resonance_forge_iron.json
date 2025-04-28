@@ -1,8 +1,8 @@
 {
   "type": "crystallurgy:resonance_forging",
   "energy": {
-    "energy_per_tick": 100,
-    "ticks": 100
+    "energy_per_tick": 700,
+    "ticks": 200
   },
   "ingredients": [
     {
@@ -10,11 +10,11 @@
       "item": "crystallurgy:iron_resonator_crystal"
     },
     {
-      "count": 64,
+      "count": 32,
       "item": "minecraft:coal"
     }
   ],
   "output": {
-    "item": "minecraft:coal"
+    "item": "minecraft:iron_ingot"
   }
 }

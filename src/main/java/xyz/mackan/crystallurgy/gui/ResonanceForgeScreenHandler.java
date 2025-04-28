@@ -77,7 +77,7 @@ public class ResonanceForgeScreenHandler extends ScreenHandler {
 
         int energyBarSize = 64;
 
-        return (int) (maxEnergy != 0 && storedEnergy != 0 ? storedEnergy * energyBarSize / maxEnergy : 0);
+        return Math.min(energyBarSize, (int) (maxEnergy != 0 && storedEnergy != 0 ? storedEnergy * energyBarSize / maxEnergy : 0));
     }
 
     @Override
