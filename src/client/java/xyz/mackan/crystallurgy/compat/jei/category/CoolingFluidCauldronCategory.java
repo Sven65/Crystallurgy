@@ -1,6 +1,7 @@
 package xyz.mackan.crystallurgy.compat.jei.category;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import mezz.jei.api.constants.ModIds;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.fabric.constants.FabricTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -44,6 +45,7 @@ import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.registry.ModCauldron;
 import xyz.mackan.crystallurgy.registry.ModFluids;
 import xyz.mackan.crystallurgy.util.FluidStack;
+import xyz.mackan.crystallurgy.util.GUIElement;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -54,12 +56,15 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
     private final IDrawable background;
     private final IDrawable icon;
     public static final Identifier ARROWS_TEXTURE = new Identifier(Crystallurgy.MOD_ID, "textures/gui/arrows.png");
+    public static final Identifier INFO_TEXTURE = new Identifier(ModIds.JEI_ID, "textures/jei/atlas/gui/icons/info.png");
 
     private int currentCoolerIndex = 0;
     private long lastSwitchTime = 0;
     private static final int SWITCH_INTERVAL_TICKS = 20; // every second
 
     private final List<Block> coolingBlocks;
+
+    private final GUIElement infoIcon;
 
 
     public CoolingFluidCauldronCategory(IGuiHelper helper) {
@@ -74,8 +79,7 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
                         .toList())
                 .orElse(List.of());
 
-        Crystallurgy.LOGGER.info("coolingBlocks {}", coolingBlocks);
-
+        this.infoIcon = new GUIElement(this.getWidth() - 16, 8, 8, 8);
     }
 
     @Override
@@ -128,6 +132,8 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
         int cx = 75 + 8;
         int cy = 35 + 16;
 
+
+        guiGraphics.drawTexture(INFO_TEXTURE, this.infoIcon.x(), this.infoIcon.y(), 0, 0, this.infoIcon.width(), this.infoIcon.height(), 8, 8);
 
         guiGraphics.drawTexture(ARROWS_TEXTURE, 73 - 4, 16 + 4, 0, 0, 16, 16);
         guiGraphics.drawTexture(ARROWS_TEXTURE, 93 + 16, 48, 16, 0, 16, 16);
@@ -216,4 +222,15 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
         RenderSystem.disableDepthTest();
     }
 
+    @Override
+    public void getTooltip(ITooltipBuilder tooltip, CoolingFluidCauldronRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+        if (mouseX >= this.infoIcon.x() && mouseX <= this.infoIcon.x() + this.infoIcon.width() && mouseY >= this.infoIcon.y() && mouseY <= this.infoIcon.y() + this.infoIcon.height()) {
+            List<Text> tooltips = List.of(
+                    Text.translatable("text.crystallurgy.tooltip.required_cooling_score", recipe.getCoolingScore()),
+                    Text.translatable("text.crystallurgy.recipe.time", nf.format(recipe.getTicks() / 20))
+            );
+
+            tooltip.addAll(tooltips);
+        }
+    }
 }

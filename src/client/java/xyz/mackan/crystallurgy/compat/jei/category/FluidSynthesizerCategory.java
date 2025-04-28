@@ -82,6 +82,7 @@ public class FluidSynthesizerCategory implements IRecipeCategory<FluidSynthesize
         assignFluidStackRenderers();
     }
 
+
     @Override
     public int getWidth() {
         return background.getWidth();

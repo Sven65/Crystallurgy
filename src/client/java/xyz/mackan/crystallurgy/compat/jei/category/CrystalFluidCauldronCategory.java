@@ -1,6 +1,7 @@
 package xyz.mackan.crystallurgy.compat.jei.category;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import mezz.jei.api.constants.ModIds;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.fabric.constants.FabricTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -42,10 +43,12 @@ import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.compat.jei.EmptyBackground;
 import xyz.mackan.crystallurgy.compat.jei.ModJEIRecipeTypes;
 import xyz.mackan.crystallurgy.datagen.ModBlockTagProvider;
+import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.registry.ModCauldron;
 import xyz.mackan.crystallurgy.registry.ModFluids;
 import xyz.mackan.crystallurgy.util.FluidStack;
+import xyz.mackan.crystallurgy.util.GUIElement;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -54,6 +57,8 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
     private static final NumberFormat nf = NumberFormat.getIntegerInstance();
 
     public static final Identifier ARROWS_TEXTURE = new Identifier(Crystallurgy.MOD_ID, "textures/gui/arrows.png");
+    public static final Identifier INFO_TEXTURE = new Identifier(ModIds.JEI_ID, "textures/jei/atlas/gui/icons/info.png");
+
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -62,6 +67,9 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
     private int currentHeaterIndex = 0;
     private long lastSwitchTime = 0;
     private static final int SWITCH_INTERVAL_TICKS = 20; // every second
+
+    private final GUIElement infoIcon;
+
 
     public CrystalFluidCauldronCategory(IGuiHelper helper) {
         this.background = new EmptyBackground(176, 82);
@@ -73,6 +81,8 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
                         .map(RegistryEntry::value)
                         .toList())
                 .orElse(List.of());
+
+        this.infoIcon = new GUIElement(this.getWidth() - 16, 8, 8, 8);
     }
 
     @Override
@@ -118,12 +128,10 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
 
     @Override
     public void draw(CrystalFluidCauldronRecipe recipe, IRecipeSlotsView recipeSlotsView, DrawContext guiGraphics, double mouseX, double mouseY) {
-        MinecraftClient client = MinecraftClient.getInstance();
-
         background.draw(guiGraphics, 0, 0);
 
-//        this.bentArrow.draw(guiGraphics, 73, 16);
-//        this.arrow.draw(guiGraphics, 134, 48);
+        guiGraphics.drawTexture(INFO_TEXTURE, this.infoIcon.x(), this.infoIcon.y(), 0, 0, this.infoIcon.width(), this.infoIcon.height(), 8, 8);
+
 
         guiGraphics.drawTexture(ARROWS_TEXTURE, 73 - 4, 20, 0, 0, 16, 16);
         guiGraphics.drawTexture(ARROWS_TEXTURE, 93, 48, 16, 0, 16, 16);
@@ -199,5 +207,16 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
 
         matrices.pop();
         RenderSystem.disableDepthTest();
+    }
+
+    @Override
+    public void getTooltip(ITooltipBuilder tooltip, CrystalFluidCauldronRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+        if (mouseX >= this.infoIcon.x() && mouseX <= this.infoIcon.x() + this.infoIcon.width() && mouseY >= this.infoIcon.y() && mouseY <= this.infoIcon.y() + this.infoIcon.height()) {
+            List<Text> tooltips = List.of(
+                    Text.translatable("text.crystallurgy.recipe.time", nf.format(recipe.getTicks() / 20))
+            );
+
+            tooltip.addAll(tooltips);
+        }
     }
 }
