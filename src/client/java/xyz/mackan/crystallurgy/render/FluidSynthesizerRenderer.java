@@ -12,6 +12,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
@@ -29,7 +30,9 @@ import org.joml.Vector3i;
 import xyz.mackan.crystallurgy.Crystallurgy;
 import xyz.mackan.crystallurgy.blocks.FluidSynthesizerBlockEntity;
 
-public class FluidSynthesizerRenderer implements BlockEntityRenderer<FluidSynthesizerBlockEntity> {
+public class FluidSynthesizerRenderer implements BlockEntityRenderer<FluidSynthesizerBlockEntity>  {
+
+    public FluidSynthesizerRenderer(BlockEntityRendererFactory.Context context) {}
 
     @Override
     public void render(FluidSynthesizerBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {

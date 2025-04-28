@@ -4,7 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
@@ -49,23 +49,11 @@ public class CrystallurgyClient implements ClientModInitializer {
 		HandledScreens.register(ModScreens.RESONANCE_FORGE_SCREEN_HANDLER, ResonanceForgeScreen::new);
 		HandledScreens.register(ModScreens.FLUID_SYNTHESIZER_SCREEN_HANDLER, FluidSynthesizerScreen::new);
 
-		BlockEntityRendererRegistry.INSTANCE.register(
-				ModBlockEntities.CRYSTAL_FLUID_CAULDRON, // The BlockEntityType instance for your cauldron
-				(context) -> new FluidCauldronRenderer() // A factory (lambda) that creates your renderer instance
-				// Note: The 'context' can be used if your renderer's constructor needs access to things like the BlockEntityRenderDispatcher
-		);
+		BlockEntityRendererFactories.register(ModBlockEntities.CRYSTAL_FLUID_CAULDRON, FluidCauldronRenderer::new);
+		BlockEntityRendererFactories.register(ModBlockEntities.COOLING_FLUID_CAULDRON, FluidCauldronRenderer::new);
+		BlockEntityRendererFactories.register(ModBlockEntities.FLUID_SYNTHESIZER, FluidSynthesizerRenderer::new);
 
-		BlockEntityRendererRegistry.INSTANCE.register(
-				ModBlockEntities.COOLING_FLUID_CAULDRON, // The BlockEntityType instance for your cauldron
-				(context) -> new FluidCauldronRenderer() // A factory (lambda) that creates your renderer instance
-				// Note: The 'context' can be used if your renderer's constructor needs access to things like the BlockEntityRenderDispatcher
-		);
 
-		BlockEntityRendererRegistry.INSTANCE.register(
-				ModBlockEntities.FLUID_SYNTHESIZER, // The BlockEntityType instance for your cauldron
-				(context) -> new FluidSynthesizerRenderer() // A factory (lambda) that creates your renderer instance
-				// Note: The 'context' can be used if your renderer's constructor needs access to things like the BlockEntityRenderDispatcher
-		);
 
 		ModNetworking.registerS2CPackets();
 	}

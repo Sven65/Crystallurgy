@@ -12,6 +12,7 @@ import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.texture.Sprite;
@@ -38,6 +39,10 @@ public class FluidCauldronRenderer<T extends BlockEntity & ImplementedInventory>
     private final ItemRenderer itemRenderer;
 
     public FluidCauldronRenderer() {
+        this.itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+    }
+
+    public FluidCauldronRenderer(BlockEntityRendererFactory.Context context) {
         this.itemRenderer = MinecraftClient.getInstance().getItemRenderer();
     }
 
