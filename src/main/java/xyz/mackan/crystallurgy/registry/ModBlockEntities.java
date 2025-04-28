@@ -28,6 +28,7 @@ public class ModBlockEntities {
     public static BlockEntityType<CrystalFluidCauldronBlockEntity> CRYSTAL_FLUID_CAULDRON = Registry.register(
             Registries.BLOCK_ENTITY_TYPE,
             new Identifier(Crystallurgy.MOD_ID, "crystal_fluid_cauldron_entity"),
+
             FabricBlockEntityTypeBuilder.create(CrystalFluidCauldronBlockEntity::new,
                     ModCauldron.CRYSTAL_CAULDRON).build()
     );

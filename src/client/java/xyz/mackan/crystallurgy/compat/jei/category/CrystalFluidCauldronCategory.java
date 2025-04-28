@@ -53,15 +53,11 @@ import java.util.List;
 public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFluidCauldronRecipe> {
     private static final NumberFormat nf = NumberFormat.getIntegerInstance();
 
-    public static final Identifier BENT_ARROW_TEXTURE = new Identifier(Crystallurgy.MOD_ID, "textures/gui/bent_arrow.png");
-    public static final Identifier STRAIGHT_ARROW_TEXTURE = new Identifier(Crystallurgy.MOD_ID, "textures/gui/arrow.png");
+    public static final Identifier ARROWS_TEXTURE = new Identifier(Crystallurgy.MOD_ID, "textures/gui/arrows.png");
 
     private final IDrawable background;
     private final IDrawable icon;
     private final List<Block> heaterBlocks;
-
-    private final IDrawable bentArrow;
-    private final IDrawable arrow;
 
     private int currentHeaterIndex = 0;
     private long lastSwitchTime = 0;
@@ -77,12 +73,6 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
                         .map(RegistryEntry::value)
                         .toList())
                 .orElse(List.of());
-
-        this.bentArrow = helper.createDrawable(BENT_ARROW_TEXTURE, 0, 0, 16, 16);
-        this.arrow = helper.createDrawable(STRAIGHT_ARROW_TEXTURE, 0, 0, 16, 16);
-
-        Crystallurgy.LOGGER.info("Bent arrow is {} {}", bentArrow.getHeight(), bentArrow.getHeight());
-        Crystallurgy.LOGGER.info("arrow arrow is {}", arrow);
     }
 
     @Override
@@ -135,16 +125,15 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
 //        this.bentArrow.draw(guiGraphics, 73, 16);
 //        this.arrow.draw(guiGraphics, 134, 48);
 
-        guiGraphics.drawTexture(BENT_ARROW_TEXTURE, 73, 16, 0, 0, 16, 16);
+        guiGraphics.drawTexture(ARROWS_TEXTURE, 73 - 4, 20, 0, 0, 16, 16);
+        guiGraphics.drawTexture(ARROWS_TEXTURE, 93, 48, 16, 0, 16, 16);
+
 
         BlockState cauldron = ModCauldron.COOLING_CAULDRON.getDefaultState().with(ModCauldron.FLUID_LEVEL, 3);
 
         renderBlockInGui(guiGraphics, cauldron, 75 + 8, 35 + 16, 1, 16);
         renderHeatingBlock(guiGraphics, 75 + 8, 35 + 32, 0, 16);
-
-
     }
-
 
     public void renderHeatingBlock(DrawContext guiGraphics, int x, int y, int extraZ, float scale) {
         long time = MinecraftClient.getInstance().world.getTime();

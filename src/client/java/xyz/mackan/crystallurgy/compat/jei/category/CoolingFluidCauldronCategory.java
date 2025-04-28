@@ -16,6 +16,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.DiffuseLighting;
@@ -40,7 +41,6 @@ import xyz.mackan.crystallurgy.compat.jei.EmptyBackground;
 import xyz.mackan.crystallurgy.compat.jei.ModJEIRecipeTypes;
 import xyz.mackan.crystallurgy.datagen.ModBlockTagProvider;
 import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
-import xyz.mackan.crystallurgy.recipe.CrystalFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.registry.ModCauldron;
 import xyz.mackan.crystallurgy.registry.ModFluids;
 import xyz.mackan.crystallurgy.util.FluidStack;
@@ -53,10 +53,9 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
 
     private final IDrawable background;
     private final IDrawable icon;
+    public static final Identifier ARROWS_TEXTURE = new Identifier(Crystallurgy.MOD_ID, "textures/gui/arrows.png");
 
-    private static final int ICON_SIZE = 16;
-
-    private int currentHeaterIndex = 0;
+    private int currentCoolerIndex = 0;
     private long lastSwitchTime = 0;
     private static final int SWITCH_INTERVAL_TICKS = 20; // every second
 
@@ -74,6 +73,9 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
                         .map(RegistryEntry::value)
                         .toList())
                 .orElse(List.of());
+
+        Crystallurgy.LOGGER.info("coolingBlocks {}", coolingBlocks);
+
     }
 
     @Override
@@ -95,7 +97,7 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
     public void setRecipe(IRecipeLayoutBuilder builder, CoolingFluidCauldronRecipe fluidCauldronRecipe, IFocusGroup iFocusGroup) {
         builder.addSlot(RecipeIngredientRole.INPUT, 7, 16).addFluidStack(ModFluids.STILL_COOLING_FLUID.getStill(), FluidStack.convertMbToDroplets(1000)).addRichTooltipCallback(this::getFluidTooltip);
         builder.addSlot(RecipeIngredientRole.INPUT, 29, 16).addIngredients(fluidCauldronRecipe.getIngredients().get(0));
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 112, 48).addItemStack(fluidCauldronRecipe.getOutput(null));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 112 + 16, 48).addItemStack(fluidCauldronRecipe.getOutput(null));
     }
 
     private void getFluidTooltip(IRecipeSlotView slotView, ITooltipBuilder tooltipBuilder) {
@@ -117,44 +119,52 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
     }
 
 
-    // TODO: Render cooling blocks around central cauldron in cardinal directions except up
+    // TODO: Make the render of this better... (may god help the one who attempts this one.)
     @Override
     public void draw(CoolingFluidCauldronRecipe recipe, IRecipeSlotsView recipeSlotsView, DrawContext guiGraphics, double mouseX, double mouseY) {
         background.draw(guiGraphics, 0, 0);
 
-        // 2) draw central cauldron icon
-        int cx = (this.getWidth()  - ICON_SIZE) / 2;
-        int cy = (this.getHeight() - ICON_SIZE) / 2;
+        int ICON_SCALE = 16;
+        int cx = 75 + 8;
+        int cy = 35 + 16;
 
-        renderBlockInGui(guiGraphics, Blocks.CAULDRON.getDefaultState(), cx, cy, 0, ICON_SIZE);
 
-        // 3) fetch your ghost‐block state list
+        guiGraphics.drawTexture(ARROWS_TEXTURE, 73 - 4, 16 + 4, 0, 0, 16, 16);
+        guiGraphics.drawTexture(ARROWS_TEXTURE, 93 + 16, 48, 16, 0, 16, 16);
 
-        // 4) define the six cardinal offsets (dx, dy)
-        int[][] offsets = {
-                {  0, -ICON_SIZE - 4},   // north
-                { ICON_SIZE + 4,  0},    // east
-                {  0,  ICON_SIZE + 4},   // south
-                {-ICON_SIZE - 4,  0},    // west
-                {  0, -2*(ICON_SIZE + 4)}, // up
-                {  0,  2*(ICON_SIZE + 4)}  // down
+        renderBlockInGui(guiGraphics, Blocks.CAULDRON.getDefaultState(), cx, cy, 100, ICON_SCALE);
+
+        int[][] directions = {
+            {0, 1},   // North (positive Y direction)
+            {1, 0},   // East (positive X direction)
+            //{0, -1},  // South (negative Y direction)
+            {-1, 0},  // West (negative X direction)
+            //{0, 1},   // Up (positive Y direction)
+            //{0, -1}   // Down (negative Y direction)
         };
 
-        // 5) for each direction, draw the slot background then render the block
-        for (int i = 0; i < offsets.length; i++) {
-            int x = cx + offsets[i][0];
-            int y = cy + offsets[i][1];
-
-            // slot‐style backdrop
-            //guiGraphics.drawDrawable(guiHelper.getSlotDrawable(), x, y);
-
-            // render *each* possible cooling‐block state
-            for (Block block : this.coolingBlocks) {
-                BlockState state = block.getDefaultState();
-                // extraZ to control layering, scale to fit in 16×16
-                renderBlockInGui(guiGraphics, state, x + 1, y + 1, 50, 1.0f);
-            }
+        for (int[] direction : directions) {
+            int x = cx + (direction[0] * ICON_SCALE);
+            int y = cy + (direction[1] * ICON_SCALE);
+            renderCoolingBlock(guiGraphics, x, y, 0, 16);
         }
+    }
+
+    public void renderCoolingBlock(DrawContext guiGraphics, int x, int y, int extraZ, float scale) {
+        long time = MinecraftClient.getInstance().world.getTime();
+        if (time - lastSwitchTime >= SWITCH_INTERVAL_TICKS) {
+            lastSwitchTime = time;
+            currentCoolerIndex = (currentCoolerIndex + 1) % coolingBlocks.size();
+        }
+
+        Block currentBlock = coolingBlocks.get(currentCoolerIndex);
+        BlockState blockState = currentBlock.getDefaultState();
+
+        if (currentBlock instanceof FluidBlock) {
+            blockState = blockState.with(FluidBlock.LEVEL, 8);
+        }
+
+        renderBlockInGui(guiGraphics, blockState, x, y, extraZ, scale);
     }
 
     public void renderBlockInGui(DrawContext context, BlockState state, int x, int y, int extraZ, float scale) {
