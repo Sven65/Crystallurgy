@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "crystallurgy:crystal_seed_resonator_crystal",
     "crystallurgy:coal_resonator_crystal",
     "crystallurgy:iron_resonator_crystal",
     "crystallurgy:gold_resonator_crystal",

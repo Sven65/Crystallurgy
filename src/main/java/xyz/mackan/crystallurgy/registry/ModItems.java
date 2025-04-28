@@ -16,16 +16,16 @@ public class ModItems {
 
     public static final Item CRYSTAL_SEED = new CrystalSeed();
 
-    public static final Item CRYSTAL_SEED_RESONATOR      = new CatalystCrystalItem(1);
-    public static final Item COAL_RESONATOR_CRYSTAL      = new CatalystCrystalItem(64);
-    public static final Item IRON_RESONATOR_CRYSTAL      = new CatalystCrystalItem(64);
-    public static final Item GOLD_RESONATOR_CRYSTAL      = new CatalystCrystalItem(64);
-    public static final Item DIAMOND_RESONATOR_CRYSTAL   = new CatalystCrystalItem(64);
-    public static final Item NETHERITE_RESONATOR_CRYSTAL = new CatalystCrystalItem(64);
-    public static final Item LAPIS_RESONATOR_CRYSTAL     = new CatalystCrystalItem(64);
-    public static final Item EMERALD_RESONATOR_CRYSTAL   = new CatalystCrystalItem(64);
-    public static final Item QUARTZ_RESONATOR_CRYSTAL    = new CatalystCrystalItem(64);
-    public static final Item REDSTONE_RESONATOR_CRYSTAL  = new CatalystCrystalItem(64);
+    public static final Item CRYSTAL_SEED_RESONATOR_CRYSTAL = new CatalystCrystalItem(1);
+    public static final Item COAL_RESONATOR_CRYSTAL         = new CatalystCrystalItem(64);
+    public static final Item IRON_RESONATOR_CRYSTAL         = new CatalystCrystalItem(64);
+    public static final Item GOLD_RESONATOR_CRYSTAL         = new CatalystCrystalItem(64);
+    public static final Item DIAMOND_RESONATOR_CRYSTAL      = new CatalystCrystalItem(64);
+    public static final Item NETHERITE_RESONATOR_CRYSTAL    = new CatalystCrystalItem(64);
+    public static final Item LAPIS_RESONATOR_CRYSTAL        = new CatalystCrystalItem(64);
+    public static final Item EMERALD_RESONATOR_CRYSTAL      = new CatalystCrystalItem(64);
+    public static final Item QUARTZ_RESONATOR_CRYSTAL       = new CatalystCrystalItem(64);
+    public static final Item REDSTONE_RESONATOR_CRYSTAL     = new CatalystCrystalItem(64);
 
     public static final Item UNREFINED_CRYSTAL_SEED_RESONATOR_CRYSTAL = new CatalystCrystalItem(1);
     public static final Item UNREFINED_COAL_RESONATOR_CRYSTAL         = new CatalystCrystalItem(1);
@@ -46,7 +46,7 @@ public class ModItems {
         Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "fluid_synthesizer"), FLUID_SYNTHESIZER);
         Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "crystal_seed"), CRYSTAL_SEED);
 
-        Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "crystal_seed_resonator_crystal"), CRYSTAL_SEED_RESONATOR);
+        Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "crystal_seed_resonator_crystal"), CRYSTAL_SEED_RESONATOR_CRYSTAL);
         Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "coal_resonator_crystal"), COAL_RESONATOR_CRYSTAL);
         Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "iron_resonator_crystal"), IRON_RESONATOR_CRYSTAL);
         Registry.register(Registries.ITEM, new Identifier(Crystallurgy.MOD_ID, "gold_resonator_crystal"), GOLD_RESONATOR_CRYSTAL);

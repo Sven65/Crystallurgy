@@ -21,7 +21,7 @@ public class ModItemGroup {
                 entries.add(ModFluids.CRYSTAL_FLUID_BUCKET);
                 entries.add(ModFluids.COOLING_FLUID_BUCKET);
 
-                entries.add(ModItems.CRYSTAL_SEED_RESONATOR);
+                entries.add(ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL);
                 entries.add(ModItems.COAL_RESONATOR_CRYSTAL);
                 entries.add(ModItems.IRON_RESONATOR_CRYSTAL);
                 entries.add(ModItems.GOLD_RESONATOR_CRYSTAL);

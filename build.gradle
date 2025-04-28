@@ -24,6 +24,13 @@ repositories {
 	}
 }
 
+fabricApi {
+	configureDataGeneration {
+		client = false
+	}
+}
+
+
 loom {
 	accessWidenerPath = file("src/main/resources/crystallurgy.accesswidener")
 
@@ -36,11 +43,10 @@ loom {
 		}
 	}
 
-}
-
-fabricApi {
-	configureDataGeneration {
-		client = false
+	runs {
+		named("datagen") {
+			property("fabric.debug.disableModIds", "jei")
+		}
 	}
 }
 

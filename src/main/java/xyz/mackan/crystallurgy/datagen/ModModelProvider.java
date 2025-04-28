@@ -39,6 +39,7 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.register(ModFluids.CRYSTAL_FLUID_BUCKET, Models.GENERATED);
         itemModelGenerator.register(ModFluids.COOLING_FLUID_BUCKET, Models.GENERATED);
 
+        itemModelGenerator.register(ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.COAL_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.IRON_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.GOLD_RESONATOR_CRYSTAL, Models.GENERATED);
@@ -50,6 +51,7 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.register(ModItems.QUARTZ_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.REDSTONE_RESONATOR_CRYSTAL, Models.GENERATED);
 
+        itemModelGenerator.register(ModItems.UNREFINED_CRYSTAL_SEED_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.UNREFINED_COAL_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.UNREFINED_IRON_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.UNREFINED_GOLD_RESONATOR_CRYSTAL, Models.GENERATED);
