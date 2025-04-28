@@ -214,7 +214,7 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
             vertexConsumers.draw(); // flush
 
         } else {
-            // TODO: Render fluids in gui
+            // TODO: Render fluid blocks in gui
         }
 
 

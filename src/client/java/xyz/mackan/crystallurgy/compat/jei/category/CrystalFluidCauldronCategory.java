@@ -201,7 +201,7 @@ public class CrystalFluidCauldronCategory implements IRecipeCategory<CrystalFlui
             vertexConsumers.draw(); // flush
 
         } else {
-            // TODO: Render fluids in gui
+            // TODO: Render fluid blocks in gui
         }
 
 

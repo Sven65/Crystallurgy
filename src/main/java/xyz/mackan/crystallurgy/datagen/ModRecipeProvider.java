@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class ModRecipeProvider extends FabricRecipeProvider {
-    // TODO: Balancing
     private final static List<CrystalRecipeContainer> crystalCauldronRecipes = List.of(
             new CrystalRecipeContainer("seed", ModItems.CRYSTAL_SEED, null, ModItems.UNREFINED_CRYSTAL_SEED_RESONATOR_CRYSTAL, 1, 100),
             new CrystalRecipeContainer("coal", ModItems.CRYSTAL_SEED, Items.COAL, ModItems.UNREFINED_COAL_RESONATOR_CRYSTAL, 1, 100),

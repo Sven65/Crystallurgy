@@ -64,7 +64,6 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.register(ModItems.UNREFINED_REDSTONE_RESONATOR_CRYSTAL, Models.GENERATED);
     }
 
-    // TODO: Make this not be white, aka actually have color
     private void generateCauldronBlockState(String name, Block cauldronBlock, BlockStateModelGenerator blockStateModelGenerator) {
         Identifier level0 = createCauldronModel(String.format("%s_level0", name),
                 TextureMap.cauldron(new Identifier("minecraft:block/cauldron_inner"))
