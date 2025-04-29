@@ -1,0 +1,15 @@
+{
+  "type": "crystallurgy:crystal_fluid_cauldron_recipe",
+  "ingredients": [
+    {
+      "item": "crystallurgy:crystal_seed"
+    },
+    {
+      "item": "minecraft:emerald"
+    }
+  ],
+  "output": {
+    "item": "crystallurgy:unrefined_emerald_resonator_crystal"
+  },
+  "ticks": 100
+}

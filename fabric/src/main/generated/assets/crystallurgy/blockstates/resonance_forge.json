@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "crystallurgy:block/resonance_forge",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "crystallurgy:block/resonance_forge"
+    },
+    "facing=south": {
+      "model": "crystallurgy:block/resonance_forge",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystallurgy:block/resonance_forge",
+      "y": 270
+    }
+  }
+}

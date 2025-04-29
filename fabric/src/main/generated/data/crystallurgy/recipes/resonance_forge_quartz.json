@@ -1,0 +1,25 @@
+{
+  "type": "crystallurgy:resonance_forging",
+  "energy": {
+    "energy_per_tick": 500,
+    "ticks": 140
+  },
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "crystallurgy:quartz_resonator_crystal"
+    },
+    {
+      "count": 16,
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:white_dye"
+    }
+  ],
+  "output": {
+    "count": 8,
+    "item": "minecraft:quartz"
+  }
+}

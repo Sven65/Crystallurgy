@@ -1,0 +1,5 @@
+// 1.20.1	2025-04-29T14:34:53.953634	Crystallurgy/Tags for minecraft:block
+bae0099f082bc762b15cd9328f93554a04b138a2 data/minecraft/tags/blocks/needs_iron_tool.json
+bb7b9c8de671771405d4180db7cdca7cf82ee76b data/crystallurgy/tags/blocks/fluid_cauldron_heaters.json
+c3f29422af3ccb1de525883d0fe80aafee98515d data/crystallurgy/tags/blocks/cooling_blocks.json
+bae0099f082bc762b15cd9328f93554a04b138a2 data/minecraft/tags/blocks/mineable/pickaxe.json

@@ -1,0 +1,15 @@
+{
+  "type": "crystallurgy:crystal_fluid_cauldron_recipe",
+  "ingredients": [
+    {
+      "item": "crystallurgy:crystal_seed"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    }
+  ],
+  "output": {
+    "item": "crystallurgy:unrefined_gold_resonator_crystal"
+  },
+  "ticks": 100
+}

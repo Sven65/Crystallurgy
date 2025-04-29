@@ -1,0 +1,13 @@
+{
+  "type": "crystallurgy:cooling_fluid_cauldron_recipe",
+  "cooling_score": 5,
+  "ingredients": [
+    {
+      "item": "crystallurgy:crystal_seed"
+    }
+  ],
+  "output": {
+    "item": "crystallurgy:unrefined_crystal_seed_resonator_crystal"
+  },
+  "ticks": 100
+}
