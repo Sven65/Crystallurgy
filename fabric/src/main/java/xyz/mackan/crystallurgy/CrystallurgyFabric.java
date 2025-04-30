@@ -1,8 +1,6 @@
 package xyz.mackan.crystallurgy;
 
 import net.fabricmc.api.ModInitializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import xyz.mackan.crystallurgy.registry.*;
 
 public class CrystallurgyFabric implements ModInitializer {
@@ -29,7 +27,9 @@ public class CrystallurgyFabric implements ModInitializer {
         CrystallurgyCommon.init();
 
         FabricModItems.register();
+        FabricModBlocks.register();
+        FabricModItemGroup.register();
 
-        ModItemGroup.register();
+        FabricModItemGroup.register();
     }
 }

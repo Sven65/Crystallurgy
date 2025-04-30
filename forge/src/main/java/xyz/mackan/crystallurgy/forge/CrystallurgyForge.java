@@ -5,6 +5,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import xyz.mackan.crystallurgy.Constants;
 import xyz.mackan.crystallurgy.CrystallurgyCommon;
+import xyz.mackan.crystallurgy.api.IModEnergyStorage;
+import xyz.mackan.crystallurgy.forge.registry.ForgeModBlocks;
+import xyz.mackan.crystallurgy.forge.registry.ForgeModItemGroup;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModItems;
 
 @Mod(Constants.MOD_ID)
@@ -18,9 +21,7 @@ public final class CrystallurgyForge {
         CrystallurgyCommon.init();
 
         ForgeModItems.register(modEventBus);
-    }
-
-    public void init() {
-        CrystallurgyCommon.LOGGER.info("Called forge init");
+        ForgeModBlocks.register(modEventBus);
+        ForgeModItemGroup.register(modEventBus);
     }
 }

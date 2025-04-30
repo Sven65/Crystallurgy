@@ -8,10 +8,12 @@ import xyz.mackan.crystallurgy.Constants;
 import xyz.mackan.crystallurgy.registry.ModItems;
 
 public class ForgeModItems {
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "crystallurgy");
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MOD_ID);
     public static void register(IEventBus modEventBus) {
-        //Registry.register(Registries.ITEM, Constants.id("resonance_forge"), RESONANCE_FORGE);
-        //Registry.register(Registries.ITEM, Constants.id("fluid_synthesizer"), FLUID_SYNTHESIZER);
+        ITEMS.register("resonance_forge", () -> ModItems.RESONANCE_FORGE);
+        ITEMS.register("fluid_synthesizer", () -> ModItems.FLUID_SYNTHESIZER);
+
+
 
         ITEMS.register("crystal_seed", () -> ModItems.CRYSTAL_SEED);
 
