@@ -1,0 +1,9 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "crystallurgy:block/fluid_synthesizer_top",
+    "front": "crystallurgy:block/fluid_synthesizer_front",
+    "side": "crystallurgy:block/fluid_synthesizer_side",
+    "bottom": "crystallurgy:block/fluid_synthesizer_side"
+  }
+}

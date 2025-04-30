@@ -16,16 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-          "xyz.mackan.crystallurgy.Crystallurgy"
+          "xyz.mackan.crystallurgy.CrystallurgyFabric"
 		],
 		"client": [
 			"xyz.mackan.crystallurgy.CrystallurgyClient"
-		],
-		"fabric-datagen": [
-			"xyz.mackan.crystallurgy.CrystallurgyDataGenerator"
-		],
-		"jei_mod_plugin": [
-			"xyz.mackan.crystallurgy.compat.jei.JEIPlugin"
 		]
 	},
 	"mixins": [
