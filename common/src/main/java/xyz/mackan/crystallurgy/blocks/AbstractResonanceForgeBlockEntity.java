@@ -1,65 +1,31 @@
 package xyz.mackan.crystallurgy.blocks;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.PropertyDelegate;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import team.reborn.energy.api.base.SimpleEnergyStorage;
-import xyz.mackan.crystallurgy.Crystallurgy;
-import xyz.mackan.crystallurgy.gui.ResonanceForgeScreenHandler;
+import xyz.mackan.crystallurgy.Constants;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
-import xyz.mackan.crystallurgy.registry.ModBlockEntities;
-import xyz.mackan.crystallurgy.registry.ModBlocks;
-import xyz.mackan.crystallurgy.registry.ModMessages;
 import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
 import java.util.Optional;
 
-public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory, EnergySyncableBlockEntity {
+public abstract class AbstractResonanceForgeBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
-    public static final int ENERGY_CAPACITY = 100000;
 
-    public final SimpleEnergyStorage energyStorage = new SimpleEnergyStorage(ENERGY_CAPACITY, 10000, 20000) {
-        @Override
-        protected void onFinalCommit() {
-            markDirty();
-            if (!world.isClient()) {
-                sendEnergyPacket();
-            }
-        }
-    };
-
-    private void sendEnergyPacket() {
-        PacketByteBuf data = PacketByteBufs.create();
-        data.writeLong(energyStorage.amount);
-        data.writeBlockPos(getPos());
-
-        for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, getPos())) {
-            ServerPlayNetworking.send(player, ModMessages.ENERGY_SYNC, data);
-        }
+    public AbstractResonanceForgeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, PropertyDelegate propertyDelegate) {
+        super(type, pos, state);
+        this.propertyDelegate = propertyDelegate;
     }
 
     private static final int CATALYST_SLOT = 0;
@@ -72,122 +38,17 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
     private int maxProgress = 100;
     private int progress = 0;
 
-    public ResonanceForgeBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.RESONANCE_FORGE, pos, state);
-        this.propertyDelegate = new PropertyDelegate() {
-            @Override
-            public int get(int index) {
-                return switch (index) {
-                    case 0 -> ResonanceForgeBlockEntity.this.progress;
-                    case 1 -> ResonanceForgeBlockEntity.this.maxProgress;
-                    default -> 0;
-                };
-            }
+    protected abstract void sendEnergyPacket();
 
-            @Override
-            public void set(int index, int value) {
-                switch(index) {
-                    case 0 -> ResonanceForgeBlockEntity.this.progress = value;
-                    case 1 -> ResonanceForgeBlockEntity.this.maxProgress = value;
-                };
-            }
+    protected abstract void setEnergyLevel(long energyLevel);
 
-            @Override
-            public int size() {
-                return 2;
-            }
-        };
-    }
+    protected abstract void extractEnergy(AbstractResonanceForgeBlockEntity entity, long amount);
 
-    @Override
-    public void writeScreenOpeningData(ServerPlayerEntity serverPlayerEntity, PacketByteBuf packetByteBuf) {
-        packetByteBuf.writeBlockPos(this.pos);
-    }
-
-    @Override
-    public Text getDisplayName() {
-        return Text.translatable(ModBlocks.RESONANCE_FORGE.getTranslationKey());
-    }
-
-    public void setEnergyLevel(long energyLevel) {
-        this.energyStorage.amount = energyLevel;
-    }
-
-    @Override
-    public DefaultedList<ItemStack> getItems() {
-        return inventory;
-    }
-
-    @Override
-    protected void writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
-        Inventories.writeNbt(nbt, inventory);
-        nbt.putInt(String.format("%s.progress", Crystallurgy.MOD_ID), progress);
-        nbt.putLong(String.format("%s.stored_energy", Crystallurgy.MOD_ID), energyStorage.amount);
-    }
-
-    @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
-        Inventories.readNbt(nbt, inventory);
-        progress = nbt.getInt(String.format("%s.progress", Crystallurgy.MOD_ID));
-        energyStorage.amount = nbt.getLong(String.format("%s.stored_energy", Crystallurgy.MOD_ID));
-    }
-
-    @Override
-    public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-        sendEnergyPacket();
-        return new ResonanceForgeScreenHandler(syncId, playerInventory, this, this.propertyDelegate);
-    }
-
-    public void tick(World world, BlockPos pos, BlockState state, ResonanceForgeBlockEntity entity) {
-        if (world.isClient()) {
-            return;
-        }
-
-        if (isOutputSlotEmptyOrReceivable()) {
-            if (this.hasRecipe(entity) & hasEnoughEnergy(entity)) {
-                Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
-
-                int recipeTicks = recipe.get().getTicks();
-
-                this.propertyDelegate.set(1, recipeTicks);
-
-                progress++;
-                extractEnergy(entity, recipe.get().getEnergyPerTick());
-                markDirty(world, pos, state);
-
-                if (hasCraftingFinished()) {
-                    this.craftItem();
-                    this.resetProgress();
-                }
-            } else {
-                this.resetProgress();
-            }
-        } else {
-            this.resetProgress();
-            markDirty(world, pos, state);
-        }
-    }
-
-    private static void extractEnergy(ResonanceForgeBlockEntity entity, long amount) {
-        try (Transaction transaction = Transaction.openOuter()) {
-            entity.energyStorage.extract(amount, transaction);
-            transaction.commit();
-        }
-    }
-
-    private boolean hasEnoughEnergy(ResonanceForgeBlockEntity entity) {
-        if (!this.hasRecipe(entity)) return false;
-
-        Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
-
-        return entity.energyStorage.amount >= recipe.get().getEnergyPerTick();
-    }
+    protected abstract boolean hasEnoughEnergy(AbstractResonanceForgeBlockEntity entity);
 
     @Override
     public boolean canInsert(int slot, ItemStack stack, @Nullable Direction side) {
-        Direction localDir = this.getWorld().getBlockState(this.pos).get(ResonanceForge.FACING);
+        Direction localDir = this.getWorld().getBlockState(this.pos).get(AbstractResonanceForge.FACING);
 
         if (side == Direction.UP || side == Direction.DOWN) {
             return false;
@@ -222,7 +83,7 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
 
     @Override
     public boolean canExtract(int slot, ItemStack stack, Direction side) {
-        Direction localDir = this.getWorld().getBlockState(this.pos).get(ResonanceForge.FACING);
+        Direction localDir = this.getWorld().getBlockState(this.pos).get(AbstractResonanceForge.FACING);
 
         if(side == Direction.UP) {
             return false;
@@ -250,6 +111,56 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
     private void resetProgress() {
         this.progress = 0;
         this.maxProgress = 100;
+    }
+
+
+    @Override
+    public DefaultedList<ItemStack> getItems() {
+        return inventory;
+    }
+
+    @Override
+    protected void writeNbt(NbtCompound nbt) {
+        super.writeNbt(nbt);
+        Inventories.writeNbt(nbt, inventory);
+        nbt.putInt(String.format("%s.progress", Constants.MOD_ID), progress);
+    }
+
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        Inventories.readNbt(nbt, inventory);
+        progress = nbt.getInt(String.format("%s.progress", Constants.MOD_ID));
+    }
+
+    public void tick(World world, BlockPos pos, BlockState state, AbstractResonanceForgeBlockEntity entity) {
+        if (world.isClient()) {
+            return;
+        }
+
+        if (isOutputSlotEmptyOrReceivable()) {
+            if (this.hasRecipe(entity) & hasEnoughEnergy(entity)) {
+                Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
+
+                int recipeTicks = recipe.get().getTicks();
+
+                this.propertyDelegate.set(1, recipeTicks);
+
+                progress++;
+                extractEnergy(entity, recipe.get().getEnergyPerTick());
+                markDirty(world, pos, state);
+
+                if (hasCraftingFinished()) {
+                    this.craftItem();
+                    this.resetProgress();
+                }
+            } else {
+                this.resetProgress();
+            }
+        } else {
+            this.resetProgress();
+            markDirty(world, pos, state);
+        }
     }
 
     private void craftItem() {
@@ -293,7 +204,7 @@ public class ResonanceForgeBlockEntity extends BlockEntity implements ExtendedSc
         return slotCount >= count;
     }
 
-    private boolean hasRecipe(ResonanceForgeBlockEntity entity) {
+    private boolean hasRecipe(AbstractResonanceForgeBlockEntity entity) {
         Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
 
         return recipe.isPresent()
