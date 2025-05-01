@@ -13,7 +13,7 @@ public class FabricModBlockEntities {
             Registries.BLOCK_ENTITY_TYPE,
             Constants.id("resonance_forge"),
             FabricBlockEntityTypeBuilder.create(ResonanceForgeBlockEntity::new,
-                    ModBlocks.RESONANCE_FORGE).build()
+                    FabricModBlocks.RESONANCE_FORGE).build()
     );
 
     public static void register() {

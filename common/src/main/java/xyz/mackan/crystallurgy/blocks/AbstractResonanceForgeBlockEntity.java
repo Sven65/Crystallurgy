@@ -22,6 +22,7 @@ import java.util.Optional;
 
 public abstract class AbstractResonanceForgeBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
+    public static final int ENERGY_CAPACITY = 100000;
 
     public AbstractResonanceForgeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, PropertyDelegate propertyDelegate) {
         super(type, pos, state);

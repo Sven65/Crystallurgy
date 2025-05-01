@@ -7,9 +7,6 @@ import xyz.mackan.crystallurgy.items.CrystalSeed;
 import xyz.mackan.crystallurgy.items.UnstackableItem;
 
 public class ModItems {
-    public static final Item RESONANCE_FORGE = new BlockItem(ModBlocks.RESONANCE_FORGE, new Item.Settings());
-    public static final Item FLUID_SYNTHESIZER = new BlockItem(ModBlocks.FLUID_SYNTHESIZER, new Item.Settings());
-
     public static final Item CRYSTAL_SEED = new CrystalSeed();
 
     public static final Item CRYSTAL_SEED_RESONATOR_CRYSTAL = new CatalystCrystalItem(1);
