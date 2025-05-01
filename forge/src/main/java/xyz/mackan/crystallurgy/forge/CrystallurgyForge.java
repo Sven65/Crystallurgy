@@ -5,10 +5,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import xyz.mackan.crystallurgy.Constants;
 import xyz.mackan.crystallurgy.CrystallurgyCommon;
-import xyz.mackan.crystallurgy.forge.registry.ForgeModBlocks;
-import xyz.mackan.crystallurgy.forge.registry.ForgeModItemGroup;
-import xyz.mackan.crystallurgy.forge.registry.ForgeModItems;
-import xyz.mackan.crystallurgy.forge.registry.ForgeModRecipes;
+import xyz.mackan.crystallurgy.forge.registry.*;
 
 @Mod(Constants.MOD_ID)
 public final class CrystallurgyForge {
@@ -20,9 +17,11 @@ public final class CrystallurgyForge {
 
         CrystallurgyCommon.init();
 
-        ForgeModItems.register(modEventBus);
         ForgeModBlocks.register(modEventBus);
-        ForgeModItemGroup.register(modEventBus);
+        ForgeModItems.register(modEventBus);
         ForgeModRecipes.register(modEventBus);
+        ForgeModBlockEntities.register(modEventBus);
+
+        ForgeModItemGroup.register(modEventBus);
     }
 }

@@ -19,8 +19,8 @@ public class ForgeModItemGroup {
             .displayName(Text.translatable("text.crystallurgy.item_group"))
             .icon(() -> new ItemStack(ModItems.DIAMOND_RESONATOR_CRYSTAL)) // Tab icon (using an item as the icon)
             .entries(((displayContext, entries) -> {
-                entries.add(ModItems.RESONANCE_FORGE);
-                entries.add(ModItems.FLUID_SYNTHESIZER);
+                entries.add(ForgeModItems.RESONANCE_FORGE);
+                //entries.add(ModItems.FLUID_SYNTHESIZER);
                 entries.add(ModItems.CRYSTAL_SEED);
                 //entries.add(ModFluids.CRYSTAL_FLUID_BUCKET);
                 //entries.add(ModFluids.COOLING_FLUID_BUCKET);

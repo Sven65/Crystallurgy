@@ -1,5 +1,6 @@
 package xyz.mackan.crystallurgy.forge.registry;
 
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -9,11 +10,12 @@ import xyz.mackan.crystallurgy.registry.ModItems;
 
 public class ForgeModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MOD_ID);
+
+    public static final Item RESONANCE_FORGE = new BlockItem(ForgeModBlocks.RESONANCE_FORGE.get(), new Item.Settings());
+
     public static void register(IEventBus modEventBus) {
-        ITEMS.register("resonance_forge", () -> ModItems.RESONANCE_FORGE);
-        ITEMS.register("fluid_synthesizer", () -> ModItems.FLUID_SYNTHESIZER);
-
-
+        ITEMS.register("resonance_forge", () -> RESONANCE_FORGE);
+        //ITEMS.register("fluid_synthesizer", () -> ModItems.FLUID_SYNTHESIZER);
 
         ITEMS.register("crystal_seed", () -> ModItems.CRYSTAL_SEED);
 
