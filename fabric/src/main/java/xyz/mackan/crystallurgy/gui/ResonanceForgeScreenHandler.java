@@ -12,6 +12,7 @@ import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import xyz.mackan.crystallurgy.block.ResonanceForgeBlockEntity;
+import xyz.mackan.crystallurgy.datagen.ModItemTagProvider;
 import xyz.mackan.crystallurgy.registry.FabricModScreens;
 
 

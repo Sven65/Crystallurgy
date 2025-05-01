@@ -14,8 +14,8 @@ public class FabricModItemGroup {
             .icon(() -> new ItemStack(ModItems.DIAMOND_RESONATOR_CRYSTAL))
             .displayName(Text.translatable("text.crystallurgy.item_group"))
             .entries(((displayContext, entries) -> {
-                entries.add(ModItems.RESONANCE_FORGE);
-                entries.add(ModItems.FLUID_SYNTHESIZER);
+                entries.add(FabricModItems.RESONANCE_FORGE);
+                //entries.add(FabricModItems.FLUID_SYNTHESIZER);
                 entries.add(ModItems.CRYSTAL_SEED);
                 //entries.add(ModFluids.CRYSTAL_FLUID_BUCKET);
                 //entries.add(ModFluids.COOLING_FLUID_BUCKET);

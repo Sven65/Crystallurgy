@@ -25,13 +25,13 @@ public class CrystallurgyFabric implements ModInitializer {
          */
 
         CrystallurgyCommon.init();
-
+        FabricModScreens.register();
         FabricModBlocks.register();
         FabricModItems.register();
         FabricModRecipes.register();
 
-        FabricModItemGroup.register();
-        FabricModScreens.register();
+        FabricModBlockEntities.register();
+
 
         FabricModItemGroup.register();
     }

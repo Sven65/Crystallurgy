@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"xyz.mackan.crystallurgy.CrystallurgyClient"
+		],
+		"fabric-datagen": [
+			"xyz.mackan.crystallurgy.CrystallurgyDataGenerator"
 		]
 	},
 	"mixins": [
