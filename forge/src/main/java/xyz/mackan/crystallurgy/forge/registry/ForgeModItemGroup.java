@@ -15,11 +15,11 @@ import xyz.mackan.crystallurgy.registry.ModItems;
 @Mod.EventBusSubscriber(modid = Constants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ForgeModItemGroup {
     public static final DeferredRegister<ItemGroup> ITEM_GROUPS = DeferredRegister.create(RegistryKeys.ITEM_GROUP, Constants.MOD_ID);
-    public static RegistryObject<ItemGroup> CRYSTALLURGY_TAB = ITEM_GROUPS.register("example", () -> ItemGroup.builder()
+    public static RegistryObject<ItemGroup> CRYSTALLURGY_TAB = ITEM_GROUPS.register(Constants.MOD_ID, () -> ItemGroup.builder()
             .displayName(Text.translatable("text.crystallurgy.item_group"))
             .icon(() -> new ItemStack(ModItems.DIAMOND_RESONATOR_CRYSTAL)) // Tab icon (using an item as the icon)
             .entries(((displayContext, entries) -> {
-                entries.add(ForgeModItems.RESONANCE_FORGE);
+                entries.add(ForgeModItems.RESONANCE_FORGE.get());
                 //entries.add(ModItems.FLUID_SYNTHESIZER);
                 entries.add(ModItems.CRYSTAL_SEED);
                 //entries.add(ModFluids.CRYSTAL_FLUID_BUCKET);

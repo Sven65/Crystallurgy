@@ -16,11 +16,12 @@ public final class CrystallurgyForge {
         CrystallurgyCommon.LOGGER.info("Hello Forge World");
 
         CrystallurgyCommon.init();
-
+        ForgeModScreens.register(modEventBus);
         ForgeModBlocks.register(modEventBus);
         ForgeModItems.register(modEventBus);
         ForgeModRecipes.register(modEventBus);
         ForgeModBlockEntities.register(modEventBus);
+        ForgeModItemTags.register();
 
         ForgeModItemGroup.register(modEventBus);
     }

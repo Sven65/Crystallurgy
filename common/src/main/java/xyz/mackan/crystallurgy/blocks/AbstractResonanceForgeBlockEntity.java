@@ -23,10 +23,13 @@ import java.util.Optional;
 public abstract class AbstractResonanceForgeBlockEntity extends BlockEntity implements ImplementedInventory {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
     public static final int ENERGY_CAPACITY = 100000;
+    public static final int MAX_ENERGY_EXTRACT = 20000;
+    public static final int MAX_ENERGY_INSERT = 10000;
 
-    public AbstractResonanceForgeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, PropertyDelegate propertyDelegate) {
+
+
+    public AbstractResonanceForgeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        this.propertyDelegate = propertyDelegate;
     }
 
     private static final int CATALYST_SLOT = 0;
@@ -34,18 +37,18 @@ public abstract class AbstractResonanceForgeBlockEntity extends BlockEntity impl
     private static final int DYE_SLOT = 2;
     private static final int OUTPUT_SLOT = 3;
 
-    protected final PropertyDelegate propertyDelegate;
+    protected PropertyDelegate propertyDelegate;
 
-    private int maxProgress = 100;
-    private int progress = 0;
+    protected int maxProgress = 100;
+    protected int progress = 0;
 
     protected abstract void sendEnergyPacket();
 
     protected abstract void setEnergyLevel(long energyLevel);
 
-    protected abstract void extractEnergy(AbstractResonanceForgeBlockEntity entity, long amount);
+    protected abstract <T extends AbstractResonanceForgeBlockEntity> void extractEnergy(T entity, long amount);
 
-    protected abstract boolean hasEnoughEnergy(AbstractResonanceForgeBlockEntity entity);
+    protected abstract <T extends AbstractResonanceForgeBlockEntity> boolean hasEnoughEnergy(T entity);
 
     @Override
     public boolean canInsert(int slot, ItemStack stack, @Nullable Direction side) {
@@ -205,7 +208,7 @@ public abstract class AbstractResonanceForgeBlockEntity extends BlockEntity impl
         return slotCount >= count;
     }
 
-    private boolean hasRecipe(AbstractResonanceForgeBlockEntity entity) {
+    protected boolean hasRecipe(AbstractResonanceForgeBlockEntity entity) {
         Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
 
         return recipe.isPresent()
@@ -215,7 +218,7 @@ public abstract class AbstractResonanceForgeBlockEntity extends BlockEntity impl
                 && canInsertItemIntoOutputSlot(recipe.get().getOutput(null).getItem());
     }
 
-    private Optional<ResonanceForgeRecipe> getCurrentRecipe() {
+    protected Optional<ResonanceForgeRecipe> getCurrentRecipe() {
         SimpleInventory inv = new SimpleInventory(this.size());
 
         for (int i = 0; i < this.size(); i++) {

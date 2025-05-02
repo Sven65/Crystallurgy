@@ -1,6 +1,7 @@
 package xyz.mackan.crystallurgy;
 
 import net.fabricmc.api.ModInitializer;
+import xyz.mackan.crystallurgy.networking.ModServerNetworking;
 import xyz.mackan.crystallurgy.registry.*;
 
 public class CrystallurgyFabric implements ModInitializer {
@@ -32,7 +33,8 @@ public class CrystallurgyFabric implements ModInitializer {
 
         FabricModBlockEntities.register();
 
-
         FabricModItemGroup.register();
+
+        ModServerNetworking.registerC2SPackets();
     }
 }
