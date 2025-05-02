@@ -4,7 +4,7 @@ plugins {
 
 loom {
     forge {
-        mixinConfig "crystallurgy.mixins.json"
+        //mixinConfig "crystallurgy.mixins.json"
     }
 }
 

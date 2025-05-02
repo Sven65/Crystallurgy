@@ -24,7 +24,6 @@ public class ResonanceForgeBlock extends AbstractResonanceForge {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!world.isClient) {
-            // TODO: Register the screens for this so error goes away
             NamedScreenHandlerFactory screenHandlerFactory = ((ResonanceForgeBlockEntity) world.getBlockEntity(pos));
 
             if (screenHandlerFactory != null) {
