@@ -6,11 +6,13 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.blocks.AbstractResonanceForge;
 
@@ -23,10 +25,10 @@ public class ResonanceForgeBlock extends AbstractResonanceForge {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!world.isClient) {
-            NamedScreenHandlerFactory screenHandlerFactory = ((ResonanceForgeBlockEntity) world.getBlockEntity(pos));
+            BlockEntity entity = world.getBlockEntity(pos);
 
-            if (screenHandlerFactory != null) {
-                player.openHandledScreen(screenHandlerFactory);
+            if (entity instanceof ResonanceForgeBlockEntity) {
+                NetworkHooks.openScreen(((ServerPlayerEntity) player), (ResonanceForgeBlockEntity)entity, pos);
             }
         }
 
