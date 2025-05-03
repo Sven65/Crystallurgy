@@ -20,6 +20,7 @@ public final class CrystallurgyForge {
         ForgeModBlocks.register(modEventBus);
         ForgeModItems.register(modEventBus);
         ForgeModRecipes.register(modEventBus);
+        ForgeModFluids.register(modEventBus);
         ForgeModBlockEntities.register(modEventBus);
         ForgeModItemTags.register();
 

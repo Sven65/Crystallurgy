@@ -22,8 +22,8 @@ public class ForgeModItemGroup {
                 entries.add(ForgeModItems.RESONANCE_FORGE.get());
                 //entries.add(ModItems.FLUID_SYNTHESIZER);
                 entries.add(ModItems.CRYSTAL_SEED);
-                //entries.add(ModFluids.CRYSTAL_FLUID_BUCKET);
-                //entries.add(ModFluids.COOLING_FLUID_BUCKET);
+                entries.add(ForgeModFluids.CRYSTAL_FLUID_BUCKET.get());
+                entries.add(ForgeModFluids.COOLING_FLUID_BUCKET.get());
 
                 entries.add(ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL);
                 entries.add(ModItems.COAL_RESONATOR_CRYSTAL);
