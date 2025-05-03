@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
+import xyz.mackan.crystallurgy.gui.FluidSynthesizerScreen;
 import xyz.mackan.crystallurgy.gui.ResonanceForgeScreen;
 import xyz.mackan.crystallurgy.networking.ModNetworking;
 import xyz.mackan.crystallurgy.registry.FabricModFluids;
@@ -43,6 +44,7 @@ public class CrystallurgyClient implements ClientModInitializer {
 				FabricModFluids.STILL_COOLING_FLUID, FabricModFluids.FLOWING_COOLING_FLUID);
 
 		HandledScreens.register(FabricModScreens.RESONANCE_FORGE_SCREEN_HANDLER, ResonanceForgeScreen::new);
+		HandledScreens.register(FabricModScreens.FLUID_SYNTHESIZER_SCREEN_HANDLER, FluidSynthesizerScreen::new);
 
 		ModNetworking.registerS2CPackets();
 	}

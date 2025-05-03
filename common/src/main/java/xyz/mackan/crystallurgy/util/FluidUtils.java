@@ -14,6 +14,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import org.jetbrains.annotations.Nullable;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 
 import java.util.Objects;
 
@@ -55,7 +56,7 @@ public class FluidUtils {
 
     // Parts Stolen from fabric.
     public static DecodedFluid fromPacket(PacketByteBuf buf) {
-        Fluid fluid = new EmptyFluid();
+        Fluid fluid = Fluids.EMPTY;
 
         if (!buf.readBoolean()) {
             return new DecodedFluid(fluid, 0);
@@ -85,6 +86,11 @@ public class FluidUtils {
                 buf.writeVarInt(Registries.FLUID.getRawId(this.fluid));
                 buf.writeInt(this.amount);
             }
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Fluid: %s, amount: %s", this.fluid, this.amount);
         }
     }
 }

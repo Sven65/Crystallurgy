@@ -83,4 +83,9 @@ public class FluidStack {
         long amount = buf.readLong();
         return new FluidStack(variant, amount);
     }
+
+    // This is only here because I can't be arsed to rip this whole thing out yet.
+    public FluidUtils.DecodedFluid toDecoded() {
+        return new FluidUtils.DecodedFluid(this.getFluidVariant().getFluid(), (int) this.amount);
+    }
 }

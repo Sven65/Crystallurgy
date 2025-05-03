@@ -36,8 +36,8 @@ public abstract class AbstractFluidSynthesizerBlockEntity extends BlockEntity im
 
     protected PropertyDelegate propertyDelegate;
 
-    private int maxProgress = 100;
-    private int progress = 0;
+    protected int maxProgress = 100;
+    protected int progress = 0;
 
     protected abstract void sendEnergyPacket();
     protected abstract void sendFluidPacket(String slot, Fluid fluid, int amount);
@@ -47,11 +47,11 @@ public abstract class AbstractFluidSynthesizerBlockEntity extends BlockEntity im
     protected abstract <T extends AbstractFluidSynthesizerBlockEntity> boolean hasEnoughEnergy(T entity);
 
     protected abstract void setInputFluidLevel(Fluid fluid, long fluidLevel);
-    protected abstract <T extends AbstractFluidSynthesizerBlockEntity> void extractInputFluid(T entity, long amount);
+    public abstract <T extends AbstractFluidSynthesizerBlockEntity> void extractInputFluid(T entity, long amount);
     protected abstract <T extends AbstractFluidSynthesizerBlockEntity> boolean hasEnoughInputFluid(T entity);
 
     protected abstract void setOutputFluidLevel(Fluid fluid, long fluidLevel);
-    protected abstract <T extends AbstractFluidSynthesizerBlockEntity> void extractOutputFluid(T entity, long amount);
+    public abstract <T extends AbstractFluidSynthesizerBlockEntity> long extractOutputFluid(T entity, long amount);
 
     protected abstract <T extends AbstractFluidSynthesizerBlockEntity> void transferFluidToInputStorage(T entity);
     protected abstract <T extends AbstractFluidSynthesizerBlockEntity> void transferFluidFromOutputStorage(T entity);

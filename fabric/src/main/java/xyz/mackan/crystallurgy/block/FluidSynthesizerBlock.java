@@ -15,10 +15,10 @@ import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidSynthesizer;
 import xyz.mackan.crystallurgy.registry.FabricModBlockEntities;
 
-public class FluidSynthesizer extends AbstractFluidSynthesizer {
+public class FluidSynthesizerBlock extends AbstractFluidSynthesizer {
     @Override
     public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new ResonanceForgeBlockEntity(pos, state);
+        return new FluidSynthesizerBlockEntity(pos, state);
     }
 
     @Override

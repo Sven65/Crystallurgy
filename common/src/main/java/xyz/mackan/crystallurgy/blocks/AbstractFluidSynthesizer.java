@@ -56,8 +56,8 @@ public abstract class AbstractFluidSynthesizer extends BlockWithEntity implement
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
 
-            if (blockEntity instanceof AbstractFluidSynthesizer) {
-                ItemScatterer.spawn(world, pos, (AbstractFluidSynthesizer)blockEntity);
+            if (blockEntity instanceof AbstractFluidSynthesizerBlockEntity) {
+                ItemScatterer.spawn(world, pos, (AbstractFluidSynthesizerBlockEntity)blockEntity);
                 world.updateComparators(pos, this);
             }
 

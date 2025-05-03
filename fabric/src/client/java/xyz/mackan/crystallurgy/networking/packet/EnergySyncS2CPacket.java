@@ -6,6 +6,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import xyz.mackan.crystallurgy.block.EnergySyncableBlockEntity;
+import xyz.mackan.crystallurgy.gui.FluidSynthesizerScreenHandler;
 import xyz.mackan.crystallurgy.gui.ResonanceForgeScreenHandler;
 
 public class EnergySyncS2CPacket {
@@ -19,11 +20,10 @@ public class EnergySyncS2CPacket {
             if(client.player.currentScreenHandler instanceof ResonanceForgeScreenHandler screenHandler &&
                     screenHandler.forgeBlockEntity.getPos().equals(position)) {
                 blockEntity.setEnergyLevel(energy);
+            } else if(client.player.currentScreenHandler instanceof FluidSynthesizerScreenHandler screenHandler &&
+                    screenHandler.synthesizerBlockEntity.getPos().equals(position)) {
+                blockEntity.setEnergyLevel(energy);
             }
-//            else if(client.player.currentScreenHandler instanceof FluidSynthesizerScreenHandler screenHandler &&
-//                    screenHandler.synthesizerBlockEntity.getPos().equals(position)) {
-//                blockEntity.setEnergyLevel(energy);
-//            }
         }
     }
 }

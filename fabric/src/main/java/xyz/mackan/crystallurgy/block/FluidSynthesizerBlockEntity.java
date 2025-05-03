@@ -9,14 +9,17 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.BucketItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -25,14 +28,17 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 import team.reborn.energy.api.base.SimpleEnergyStorage;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidSynthesizerBlockEntity;
+import xyz.mackan.crystallurgy.gui.FluidSynthesizerScreenHandler;
 import xyz.mackan.crystallurgy.recipe.FluidSynthesizerRecipe;
+import xyz.mackan.crystallurgy.registry.FabricModBlockEntities;
 import xyz.mackan.crystallurgy.registry.FabricModBlocks;
 import xyz.mackan.crystallurgy.registry.ModMessages;
 import xyz.mackan.crystallurgy.util.FluidStack;
-import xyz.mackan.crystallurgy.util.FluidUtils;
 
+import java.util.Objects;
 import java.util.Optional;
 
+@SuppressWarnings("UnstableApiUsage")
 public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEntity implements ExtendedScreenHandlerFactory, EnergySyncableBlockEntity {
     public final SimpleEnergyStorage energyStorage = new SimpleEnergyStorage(ENERGY_CAPACITY, MAX_ENERGY_INSERT, MAX_ENERGY_EXTRACT) {
         @Override
@@ -59,7 +65,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         protected void onFinalCommit() {
             markDirty();
             if(!world.isClient()) {
-                sendFluidPacket("input", this.getBlankVariant().getFluid(), (int) this.amount);
+                sendFluidPacket("input", this);
             }
         }
     };
@@ -79,14 +85,39 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         protected void onFinalCommit() {
             markDirty();
             if(!world.isClient()) {
-                sendFluidPacket("output", this.variant.getFluid(), (int) this.amount);
+                sendFluidPacket("output", this);
             }
         }
     };
 
-    public FluidSynthesizerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
+    public FluidSynthesizerBlockEntity(BlockPos pos, BlockState state) {
+        super(FabricModBlockEntities.FLUID_SYNTHESIZER, pos, state);
+
+        this.propertyDelegate = new PropertyDelegate() {
+            @Override
+            public int get(int index) {
+                return switch (index) {
+                    case 0 -> FluidSynthesizerBlockEntity.this.progress;
+                    case 1 -> FluidSynthesizerBlockEntity.this.maxProgress;
+                    default -> 0;
+                };
+            }
+
+            @Override
+            public void set(int index, int value) {
+                switch(index) {
+                    case 0 -> FluidSynthesizerBlockEntity.this.progress = value;
+                    case 1 -> FluidSynthesizerBlockEntity.this.maxProgress = value;
+                };
+            }
+
+            @Override
+            public int size() {
+                return 2;
+            }
+        };
     }
+
 
 
     @Override
@@ -109,7 +140,13 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         PacketByteBuf data = PacketByteBufs.create();
         data.writeString(slot);
 
-        new FluidUtils.DecodedFluid(fluid, amount).writePacket(data);
+        if (Objects.equals(slot, "input")) {
+            inputFluidStorage.variant.toPacket(data);
+            data.writeLong(inputFluidStorage.amount);
+        } else if (Objects.equals(slot, "output")) {
+            outputFluidStorage.variant.toPacket(data);
+            data.writeLong(outputFluidStorage.amount);
+        }
 
         data.writeBlockPos(getPos());
 
@@ -147,13 +184,13 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
     }
 
     @Override
-    protected void setInputFluidLevel(Fluid fluid, long fluidLevel) {
+    public void setInputFluidLevel(Fluid fluid, long fluidLevel) {
         this.inputFluidStorage.variant = FluidVariant.of(fluid);
         this.inputFluidStorage.amount = fluidLevel;
     }
 
     @Override
-    protected <T extends AbstractFluidSynthesizerBlockEntity> void extractInputFluid(T entity, long amount) {
+    public <T extends AbstractFluidSynthesizerBlockEntity> void extractInputFluid(T entity, long amount) {
         if (entity instanceof FluidSynthesizerBlockEntity fluidSynthesizerBlockEntity) {
             if (fluidSynthesizerBlockEntity.inputFluidStorage.variant == FluidVariant.blank()) return;
 
@@ -169,24 +206,28 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         if (entity instanceof FluidSynthesizerBlockEntity fluidSynthesizerBlockEntity) {
             return fluidSynthesizerBlockEntity.inputFluidStorage.amount >= 500; // TODO: Recipe check, this is in millibuckets
         }
+        return false;
     }
 
     @Override
-    protected void setOutputFluidLevel(Fluid fluid, long fluidLevel) {
+    public void setOutputFluidLevel(Fluid fluid, long fluidLevel) {
         this.outputFluidStorage.variant = FluidVariant.of(fluid);
         this.outputFluidStorage.amount = fluidLevel;
     }
 
     @Override
-    protected <T extends AbstractFluidSynthesizerBlockEntity> void extractOutputFluid(T entity, long amount) {
+    public <T extends AbstractFluidSynthesizerBlockEntity> long extractOutputFluid(T entity, long amount) {
         if (entity instanceof FluidSynthesizerBlockEntity fluidSynthesizerBlockEntity) {
-            if (fluidSynthesizerBlockEntity.outputFluidStorage.variant == FluidVariant.blank()) return;
+            if (fluidSynthesizerBlockEntity.outputFluidStorage.variant == FluidVariant.blank()) return 0;
 
             try (Transaction transaction = Transaction.openOuter()) {
                 fluidSynthesizerBlockEntity.outputFluidStorage.extract(fluidSynthesizerBlockEntity.outputFluidStorage.variant, amount, transaction);
                 transaction.commit();
+
+                return (int) amount;
             }
         }
+        return 0;
     }
 
     @Override
@@ -213,9 +254,12 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
     @Override
     protected <T extends AbstractFluidSynthesizerBlockEntity> void transferFluidFromOutputStorage(T entity) {
         if (entity instanceof FluidSynthesizerBlockEntity fluidSynthesizerBlockEntity) {
-            extractOutputFluid(entity, FluidConstants.BUCKET);
+            Item fluidBucket = fluidSynthesizerBlockEntity.outputFluidStorage.variant.getFluid().getBucketItem();
+            long extractedAmount = extractOutputFluid(entity, FluidConstants.BUCKET);
 
-            entity.setStack(FLUID_OUTPUT_SLOT, new ItemStack(fluidSynthesizerBlockEntity.outputFluidStorage.variant.getFluid().getBucketItem()));
+            if (extractedAmount > 0) {
+                entity.setStack(FLUID_OUTPUT_SLOT, new ItemStack(fluidBucket));
+            }
         }
     }
 
@@ -227,9 +271,10 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         this.removeStack(MATERIAL_0_SLOT, recipe.get().getCount(0));
         this.removeStack(MATERIAL_1_SLOT, recipe.get().getCount(1));
 
-        FluidStack outputFluid = recipe.get().getOutputFluid();
+        Fluid outputFluid = recipe.get().getOutputFluid();
+        int outputFluidAmount = recipe.get().getOutputFluidAmount();
 
-        this.setOutputFluidLevel(outputFluid.fluidVariant.getFluid(), outputFluidStorage.amount + outputFluid.amount);
+        this.setOutputFluidLevel(outputFluid, outputFluidStorage.amount + outputFluidAmount);
     }
 
     @Override
@@ -245,12 +290,24 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
 
     @Override
     protected Optional<FluidSynthesizerRecipe> getCurrentRecipe() {
-        return Optional.empty();
+        SimpleInventory inv = new SimpleInventory(this.size());
+
+        for (int i = 0; i < this.size(); i++) {
+            inv.setStack(i, this.getStack(i));
+        }
+
+
+        Optional<FluidSynthesizerRecipe> recipe = getWorld().getRecipeManager().getFirstMatch(FluidSynthesizerRecipe.Type.INSTANCE, inv, getWorld());
+        if (recipe.isPresent() && recipe.get().matchFluid(getWorld(), this.inputFluidStorage.variant.getFluid(), (int) this.inputFluidStorage.amount)) {
+            return recipe;
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
     protected void onCrafingFinished(AbstractFluidSynthesizerBlockEntity entity, Optional<FluidSynthesizerRecipe> recipe) {
-        this.extractInputFluid(entity, recipe.get().getInputFluid().amount);
+        this.extractInputFluid(entity, recipe.get().getInputFluidAmount());
 
         sendFluidPacket("input", inputFluidStorage);
         sendFluidPacket("output", outputFluidStorage);
@@ -270,7 +327,30 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
     @Override
     public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
         sendEnergyPacket();
-        return null;
-        //return new ResonanceForgeScreenHandler(syncId, playerInventory, this, this.propertyDelegate);
+        sendFluidPacket("input", inputFluidStorage);
+        sendFluidPacket("output", outputFluidStorage);
+        return new FluidSynthesizerScreenHandler(syncId, playerInventory, this, this.propertyDelegate);
+    }
+
+    @Override
+    protected void writeNbt(NbtCompound nbt) {
+        super.writeNbt(nbt);
+
+        nbt.put("synthesizer_input_fluid.variant", inputFluidStorage.variant.toNbt());
+        nbt.putLong("synthesizer_input_fluid.level", inputFluidStorage.amount);
+
+        nbt.put("synthesizer_output_fluid.variant", outputFluidStorage.variant.toNbt());
+        nbt.putLong("synthesizer_output_fluid.level", outputFluidStorage.amount);
+    }
+
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+
+        inputFluidStorage.variant = FluidVariant.fromNbt((NbtCompound) nbt.get("synthesizer_input_fluid.variant"));
+        inputFluidStorage.amount = nbt.getLong("synthesizer_input_fluid.level");
+
+        outputFluidStorage.variant = FluidVariant.fromNbt((NbtCompound) nbt.get("synthesizer_output_fluid.variant"));
+        outputFluidStorage.amount = nbt.getLong("synthesizer_output_fluid.level");
     }
 }
