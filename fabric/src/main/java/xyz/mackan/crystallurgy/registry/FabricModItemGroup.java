@@ -17,8 +17,8 @@ public class FabricModItemGroup {
                 entries.add(FabricModItems.RESONANCE_FORGE);
                 //entries.add(FabricModItems.FLUID_SYNTHESIZER);
                 entries.add(ModItems.CRYSTAL_SEED);
-                //entries.add(ModFluids.CRYSTAL_FLUID_BUCKET);
-                //entries.add(ModFluids.COOLING_FLUID_BUCKET);
+                entries.add(FabricModFluids.CRYSTAL_FLUID_BUCKET);
+                entries.add(FabricModFluids.COOLING_FLUID_BUCKET);
 
                 entries.add(ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL);
                 entries.add(ModItems.COAL_RESONATOR_CRYSTAL);
