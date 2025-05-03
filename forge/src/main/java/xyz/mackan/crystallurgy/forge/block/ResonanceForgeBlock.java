@@ -5,7 +5,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -15,6 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.blocks.AbstractResonanceForge;
+import xyz.mackan.crystallurgy.forge.registry.ForgeModBlockEntities;
 
 public class ResonanceForgeBlock extends AbstractResonanceForge {
     @Override
@@ -37,6 +37,7 @@ public class ResonanceForgeBlock extends AbstractResonanceForge {
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return super.getTicker(world, state, type);
+        return checkType(type, ForgeModBlockEntities.RESONANCE_FORGE.get(),
+                (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1, blockEntity));
     }
 }

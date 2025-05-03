@@ -15,6 +15,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Constants;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 import xyz.mackan.crystallurgy.util.ImplementedInventory;
 

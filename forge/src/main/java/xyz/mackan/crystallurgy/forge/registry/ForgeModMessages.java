@@ -6,6 +6,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import xyz.mackan.crystallurgy.Constants;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.forge.networking.ForgeEnergySyncS2CPacket;
 
 public class ForgeModMessages {

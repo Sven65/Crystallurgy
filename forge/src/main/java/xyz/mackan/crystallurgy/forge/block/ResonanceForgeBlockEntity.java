@@ -11,6 +11,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -18,6 +19,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Constants;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.blocks.AbstractResonanceForgeBlockEntity;
 import xyz.mackan.crystallurgy.forge.gui.ResonanceForgeScreenHandler;
 import xyz.mackan.crystallurgy.forge.networking.ForgeEnergySyncS2CPacket;
@@ -25,7 +27,10 @@ import xyz.mackan.crystallurgy.forge.registry.ForgeModBlockEntities;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModBlocks;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModMessages;
 import xyz.mackan.crystallurgy.forge.util.ModEnergyStorage;
+import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 import xyz.mackan.crystallurgy.registry.ModMessages;
+
+import java.util.Optional;
 
 public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity implements NamedScreenHandlerFactory {
     public final ModEnergyStorage ENERGY_STORAGE = new ModEnergyStorage(this.ENERGY_CAPACITY, MAX_ENERGY_INSERT, MAX_ENERGY_EXTRACT) {
@@ -35,7 +40,6 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
 
             if (!world.isClient()) {
                 // Sync with packet
-                ForgeModMessages.sendToClients(new ForgeEnergySyncS2CPacket(this.energy, getPos()));
                 sendEnergyPacket();
             }
         }
@@ -80,7 +84,7 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
 
     @Override
     protected void sendEnergyPacket() {
-
+        ForgeModMessages.sendToClients(new ForgeEnergySyncS2CPacket(this.ENERGY_STORAGE.getEnergyStored(), getPos()));
     }
 
     @Override
@@ -97,6 +101,13 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
 
     @Override
     protected boolean hasEnoughEnergy(AbstractResonanceForgeBlockEntity entity) {
+        if (!this.hasRecipe(entity)) return false;
+        Optional<ResonanceForgeRecipe> recipe = getCurrentRecipe();
+
+        if (entity instanceof ResonanceForgeBlockEntity resonanceForgeEntity) {
+            return resonanceForgeEntity.ENERGY_STORAGE.getEnergyStored() >= recipe.get().getEnergyPerTick();
+        }
+
         return false;
     }
 
@@ -130,11 +141,11 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ENERGY) {
             return lazyEnergyHandler.cast();
         }
 
-        return super.getCapability(cap);
+        return super.getCapability(cap, side);
     }
 }

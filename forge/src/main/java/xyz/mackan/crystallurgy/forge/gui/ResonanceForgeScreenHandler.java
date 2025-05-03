@@ -54,6 +54,11 @@ public class ResonanceForgeScreenHandler extends AbstractResonanceForgeScreenHan
 
     @Override
     public int getScaledEnergyBar() {
-        return 0;
+        long storedEnergy = this.forgeBlockEntity.ENERGY_STORAGE.getEnergyStored();
+        long maxEnergy = this.forgeBlockEntity.ENERGY_STORAGE.getMaxEnergyStored();
+
+        int energyBarSize = 64;
+
+        return Math.min(energyBarSize, (int) (maxEnergy != 0 && storedEnergy != 0 ? storedEnergy * energyBarSize / maxEnergy : 0));
     }
 }
