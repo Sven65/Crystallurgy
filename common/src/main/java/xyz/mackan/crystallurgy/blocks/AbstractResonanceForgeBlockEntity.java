@@ -28,7 +28,6 @@ public abstract class AbstractResonanceForgeBlockEntity extends BlockEntity impl
     public static final int MAX_ENERGY_INSERT = 10000;
 
 
-
     public AbstractResonanceForgeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }

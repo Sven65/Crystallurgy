@@ -6,6 +6,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
+import net.minecraftforge.fluids.FluidStack;
 import xyz.mackan.crystallurgy.fluid.AbstractCrystalFluid;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModFluids;
 

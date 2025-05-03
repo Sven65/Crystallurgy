@@ -8,11 +8,11 @@ import xyz.mackan.crystallurgy.Constants;
 
 public class FabricModItems {
     public static final Item RESONANCE_FORGE = new BlockItem(FabricModBlocks.RESONANCE_FORGE, new Item.Settings());
-    //public static final Item FLUID_SYNTHESIZER = new BlockItem(FabricModBlocks.FLUID_SYNTHESIZER, new Item.Settings());
+    public static final Item FLUID_SYNTHESIZER = new BlockItem(FabricModBlocks.FLUID_SYNTHESIZER, new Item.Settings());
 
     public static void register() {
         Registry.register(Registries.ITEM, Constants.id("resonance_forge"), RESONANCE_FORGE);
-        //Registry.register(Registries.ITEM, Constants.id("fluid_synthesizer"), FLUID_SYNTHESIZER);
+        Registry.register(Registries.ITEM, Constants.id("fluid_synthesizer"), FLUID_SYNTHESIZER);
 
         Registry.register(Registries.ITEM, Constants.id("crystal_seed"), ModItems.CRYSTAL_SEED);
 

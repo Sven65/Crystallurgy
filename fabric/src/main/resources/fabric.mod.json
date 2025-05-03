@@ -3,7 +3,7 @@
 	"id": "crystallurgy",
 	"version": "${version}",
 	"name": "Crystallurgy",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Crystallurgy is a Minecraft tech mod using RF energy and catalyst crystals to synthesize ores from raw materials. It offers a fresh approach to automation and resource management.",
 	"authors": [
 		"Mackan"
 	],
@@ -11,7 +11,7 @@
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/crystallurgy/icon.png",
 	"environment": "*",
 	"entrypoints": {
