@@ -4,6 +4,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.*;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -13,12 +14,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.mackan.crystallurgy.Constants;
 import xyz.mackan.crystallurgy.blocks.AbstractResonanceForgeBlockEntity;
 import xyz.mackan.crystallurgy.forge.gui.ResonanceForgeScreenHandler;
+import xyz.mackan.crystallurgy.forge.networking.ForgeEnergySyncS2CPacket;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModBlockEntities;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModBlocks;
+import xyz.mackan.crystallurgy.forge.registry.ForgeModMessages;
 import xyz.mackan.crystallurgy.forge.util.ModEnergyStorage;
 import xyz.mackan.crystallurgy.registry.ModMessages;
 
@@ -30,9 +35,13 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
 
             if (!world.isClient()) {
                 // Sync with packet
+                ForgeModMessages.sendToClients(new ForgeEnergySyncS2CPacket(this.energy, getPos()));
+                sendEnergyPacket();
             }
         }
     };
+
+    private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
 
     public ResonanceForgeBlockEntity(BlockPos pos, BlockState state) {
         super(ForgeModBlockEntities.RESONANCE_FORGE.get(), pos, state);
@@ -71,25 +80,19 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
 
     @Override
     protected void sendEnergyPacket() {
-        PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        data.writeLong(ENERGY_STORAGE.getEnergyStored());
-        data.writeBlockPos(getPos());
 
-//        ((ServerWorld) world).getEntityLookup().
-//
-//        for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, getPos())) {
-//            ServerPlayNetworking.send(player, ModMessages.ENERGY_SYNC, data);
-//        }
     }
 
     @Override
-    protected void setEnergyLevel(long energyLevel) {
-
+    public void setEnergyLevel(long energyLevel) {
+        this.ENERGY_STORAGE.setEnergy((int) energyLevel);
     }
 
     @Override
     protected void extractEnergy(AbstractResonanceForgeBlockEntity entity, long amount) {
-
+        if (entity instanceof ResonanceForgeBlockEntity pEntity) {
+            pEntity.ENERGY_STORAGE.extractEnergy((int) amount, false);
+        }
     }
 
     @Override
@@ -102,13 +105,36 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
         return Text.translatable(ForgeModBlocks.RESONANCE_FORGE.get().getTranslationKey());
     }
 
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        lazyEnergyHandler = LazyOptional.of(() -> ENERGY_STORAGE);
+    }
 
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        lazyEnergyHandler.invalidate();
+    }
 
+    @Override
+    protected void writeNbt(NbtCompound nbt) {
+        super.writeNbt(nbt);
+        nbt.putInt(String.format("%s.stored_energy", Constants.MOD_ID), ENERGY_STORAGE.getEnergyStored());
+    }
 
-//    @Override
-//    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
-//        if (cap == ForgeCapabilities.ENERGY) {
-//            // ?
-//        }
-//    }
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        ENERGY_STORAGE.setEnergy(nbt.getInt(String.format("%s.stored_energy", Constants.MOD_ID)));
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
+        if (cap == ForgeCapabilities.ENERGY) {
+            return lazyEnergyHandler.cast();
+        }
+
+        return super.getCapability(cap);
+    }
 }

@@ -24,5 +24,7 @@ public final class CrystallurgyForge {
         ForgeModItemTags.register();
 
         ForgeModItemGroup.register(modEventBus);
+
+        ForgeModMessages.register();
     }
 }
