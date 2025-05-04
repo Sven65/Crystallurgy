@@ -39,8 +39,8 @@ public class ForgeEnergySyncS2CPacket {
             if(entity instanceof EnergySyncableBlockEntity blockEntity) {
                 blockEntity.setEnergyLevel(energy);
 
-                if(MinecraftClient.getInstance().player.currentScreenHandler instanceof ResonanceForgeScreenHandler menu &&
-                        menu.forgeBlockEntity.getPos().equals(pos)) {
+                if(MinecraftClient.getInstance().player.currentScreenHandler instanceof ResonanceForgeScreenHandler screenHandler &&
+                        screenHandler.forgeBlockEntity.getPos().equals(pos)) {
                     blockEntity.setEnergyLevel(energy);
                 } else if(MinecraftClient.getInstance().player.currentScreenHandler instanceof FluidSynthesizerScreenHandler screenHandler &&
                         screenHandler.synthesizerBlockEntity.getPos().equals(pos)) {

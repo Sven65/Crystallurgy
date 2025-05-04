@@ -14,6 +14,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.mackan.crystallurgy.Constants;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.recipe.FluidSynthesizerRecipe;
 import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
@@ -95,7 +96,7 @@ public abstract class AbstractFluidSynthesizerBlockEntity extends BlockEntity im
 
     protected boolean hasRecipe(AbstractFluidSynthesizerBlockEntity entity) {
         Optional<FluidSynthesizerRecipe> recipe = getCurrentRecipe();
-
+        
         return recipe.isPresent()
                 && hasEnoughItems(MATERIAL_0_SLOT)
                 && hasEnoughItems(MATERIAL_1_SLOT)

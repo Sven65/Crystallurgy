@@ -22,6 +22,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import xyz.mackan.crystallurgy.CrystallurgyCommon;
@@ -88,11 +89,14 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidStack> {
 
         FluidState state = fluid.getFluid().getDefaultState();
 
+
         Sprite[] sprites = ForgeHooksClient.getFluidSprites(MinecraftClient.getInstance().world, new BlockPos(0,0,0), state);
         Sprite sprite = sprites[0];
 
         BlockColors blockColors = MinecraftClient.getInstance().getBlockColors();
-        int color = blockColors.getColor(state.getBlockState(), MinecraftClient.getInstance().world, new BlockPos(0,0,0), 0);
+        //int color = blockColors.getColor(state.getBlockState(), MinecraftClient.getInstance().world, new BlockPos(0,0,0), 0);
+
+        int color = IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor();
 
         final int drawHeight = (int) (fluid.getAmount() / (maxCapacity * 1F) * height);
         final int iconHeight = sprite.getContents().getHeight();

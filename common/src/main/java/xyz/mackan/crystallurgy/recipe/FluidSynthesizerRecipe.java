@@ -15,6 +15,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.util.FluidUtils;
 
 import java.util.List;
@@ -80,7 +81,6 @@ public class FluidSynthesizerRecipe implements Recipe<SimpleInventory> {
         if (!this.inputFluid.equals(checkFluid)) {
             return false;
         }
-
 
         if (inputFluidAmount <= checkAmount) {
             return true;

@@ -44,7 +44,7 @@ import xyz.mackan.crystallurgy.recipe.FluidSynthesizerRecipe;
 
 import java.util.Optional;
 
-public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEntity implements NamedScreenHandlerFactory {
+public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEntity implements NamedScreenHandlerFactory, EnergySyncableBlockEntity {
     public final ModEnergyStorage ENERGY_STORAGE = new ModEnergyStorage(ENERGY_CAPACITY, MAX_ENERGY_INSERT, MAX_ENERGY_EXTRACT) {
         @Override
         public void onEnergyChanged() {
@@ -245,7 +245,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
 
     @Override
     protected boolean canInsertFluidIntoOutputSlot(Fluid fluidOutput, int fluidOutputAmount) {
-        boolean sameFluid = outputFluidStorage.getFluid().equals(fluidOutput)
+        boolean sameFluid = outputFluidStorage.getFluid().getFluid().equals(fluidOutput)
                 || outputFluidStorage.getFluid().isEmpty();
 
         // Check if there's enough capacity left to insert the new amount
