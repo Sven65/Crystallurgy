@@ -18,13 +18,20 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.mackan.crystallurgy.Constants;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidSynthesizerBlockEntity;
+import xyz.mackan.crystallurgy.forge.gui.FluidSynthesizerScreenHandler;
 import xyz.mackan.crystallurgy.forge.gui.ResonanceForgeScreenHandler;
 import xyz.mackan.crystallurgy.forge.networking.ForgeEnergySyncS2CPacket;
 import xyz.mackan.crystallurgy.forge.networking.ForgeFluidSyncS2CPacket;
@@ -50,7 +57,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         }
     };
 
-    public final FluidTank inputFluidStorage = new FluidTank(20000, 256) {
+    public final FluidTank inputFluidStorage = new FluidTank(20000) {
         @Override
         protected void onContentsChanged() {
             markDirty();
@@ -66,7 +73,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         }
     };
 
-    public final FluidTank outputFluidStorage = new FluidTank(20000, 256) {
+    public final FluidTank outputFluidStorage = new FluidTank(20000) {
         @Override
         protected void onContentsChanged() {
             markDirty();
@@ -81,7 +88,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
     private LazyOptional<IFluidHandler> lazyOutputFluidHandler = LazyOptional.empty();
 
     public FluidSynthesizerBlockEntity(BlockPos pos, BlockState state) {
-        super(ForgeModBlockEntities.RESONANCE_FORGE.get(), pos, state);
+        super(ForgeModBlockEntities.FLUID_SYNTHESIZER.get(), pos, state);
 
         this.propertyDelegate = new PropertyDelegate() {
             @Override
@@ -273,11 +280,6 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
     }
 
     @Override
-    public void writeScreenOpeningData(ServerPlayerEntity serverPlayerEntity, PacketByteBuf packetByteBuf) {
-        packetByteBuf.writeBlockPos(this.pos);
-    }
-
-    @Override
     public Text getDisplayName() {
         return Text.translatable(ForgeModBlocks.FLUID_SYNTHESIZER.get().getTranslationKey());
     }
@@ -292,18 +294,61 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
     }
 
     @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        lazyEnergyHandler.invalidate();
+        lazyInputFluidHandler.invalidate();
+        lazyOutputFluidHandler.invalidate();
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        lazyEnergyHandler = LazyOptional.of(() -> ENERGY_STORAGE);
+        lazyInputFluidHandler = LazyOptional.of(() -> inputFluidStorage);
+        lazyOutputFluidHandler = LazyOptional.of(() -> outputFluidStorage);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if(cap == ForgeCapabilities.ENERGY) {
+            return lazyEnergyHandler.cast();
+        }
+
+        // TODO: Make this work with both in and out
+        if(cap == ForgeCapabilities.FLUID_HANDLER) {
+            return lazyInputFluidHandler.cast();
+        }
+
+        return super.getCapability(cap, side);
+    }
+
+    @Override
     protected void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
 
-        inputFluidStorage.writeToNBT(nbt);
-        outputFluidStorage.writeToNBT(nbt);
+        nbt.putInt(String.format("%s.stored_energy", Constants.MOD_ID), ENERGY_STORAGE.getEnergyStored());
+
+        NbtCompound inputFluidNbt = new NbtCompound();
+        NbtCompound outputFluidNbt = new NbtCompound();
+
+        nbt.put("input_fluid", inputFluidStorage.writeToNBT(inputFluidNbt));
+        nbt.put("output_fluid", outputFluidStorage.writeToNBT(outputFluidNbt));
     }
+
+
 
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
 
+        ENERGY_STORAGE.setEnergy(nbt.getInt(String.format("%s.stored_energy", Constants.MOD_ID)));
         inputFluidStorage.readFromNBT(nbt);
-        outputFluidStorage.readFromNBT(nbt);
+
+        NbtCompound inputFluidNbt = nbt.getCompound("input_fluid");
+        NbtCompound outputFluidNbt = nbt.getCompound("output_fluid");
+
+        inputFluidStorage.readFromNBT(inputFluidNbt);
+        outputFluidStorage.readFromNBT(outputFluidNbt);
     }
 }

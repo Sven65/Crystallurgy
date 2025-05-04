@@ -33,7 +33,7 @@ import xyz.mackan.crystallurgy.registry.ModMessages;
 import java.util.Optional;
 
 public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity implements NamedScreenHandlerFactory {
-    public final ModEnergyStorage ENERGY_STORAGE = new ModEnergyStorage(this.ENERGY_CAPACITY, MAX_ENERGY_INSERT, MAX_ENERGY_EXTRACT) {
+    public final ModEnergyStorage ENERGY_STORAGE = new ModEnergyStorage(ENERGY_CAPACITY, MAX_ENERGY_INSERT, MAX_ENERGY_EXTRACT) {
         @Override
         public void onEnergyChanged() {
             markDirty();

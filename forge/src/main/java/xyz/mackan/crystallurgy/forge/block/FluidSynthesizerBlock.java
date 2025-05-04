@@ -13,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidSynthesizer;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModBlockEntities;
 
@@ -27,8 +28,8 @@ public class FluidSynthesizerBlock extends AbstractFluidSynthesizer {
         if (!world.isClient) {
             BlockEntity entity = world.getBlockEntity(pos);
 
-            if (entity instanceof ResonanceForgeBlockEntity) {
-                NetworkHooks.openScreen(((ServerPlayerEntity) player), (ResonanceForgeBlockEntity)entity, pos);
+            if (entity instanceof FluidSynthesizerBlockEntity) {
+                NetworkHooks.openScreen(((ServerPlayerEntity) player), (FluidSynthesizerBlockEntity)entity, pos);
             }
         }
 

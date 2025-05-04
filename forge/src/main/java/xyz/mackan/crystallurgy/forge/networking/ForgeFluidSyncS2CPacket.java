@@ -5,8 +5,11 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.network.NetworkEvent;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.forge.block.FluidSynthesizerBlockEntity;
+import xyz.mackan.crystallurgy.forge.gui.FluidSynthesizerScreenHandler;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ForgeFluidSyncS2CPacket {
@@ -36,12 +39,19 @@ public class ForgeFluidSyncS2CPacket {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
             if(MinecraftClient.getInstance().world.getBlockEntity(pos) instanceof FluidSynthesizerBlockEntity blockEntity) {
-                //blockEntity.setFluid(this.fluidStack);
+                if (Objects.equals(this.slot, "input")) {
+                    blockEntity.setInputFluidLevel(this.fluidStack.getFluid(), this.fluidStack.getAmount());
+                } else if (Objects.equals(this.slot, "output")) {
+                    blockEntity.setOutputFluidLevel(this.fluidStack.getFluid(), this.fluidStack.getAmount());
+                }
 
-//                if(MinecraftClient.getInstance().player.currentScreenHandler instanceof GemInfusingStationMenu menu &&
-//                        menu.getBlockEntity().getBlockPos().equals(pos)) {
-//                    menu.setFluid(this.fluidStack);
-//                }
+                if(MinecraftClient.getInstance().player.currentScreenHandler instanceof FluidSynthesizerScreenHandler menu && menu.synthesizerBlockEntity.getPos().equals(pos)) {
+                    if (Objects.equals(this.slot, "input")) {
+                        menu.setInputFluid(this.fluidStack.getFluid(), this.fluidStack.getAmount());
+                    } else if (Objects.equals(this.slot, "output")) {
+                        menu.setOutputFluid(this.fluidStack.getFluid(), this.fluidStack.getAmount());
+                    }
+                }
             }
         });
         return true;

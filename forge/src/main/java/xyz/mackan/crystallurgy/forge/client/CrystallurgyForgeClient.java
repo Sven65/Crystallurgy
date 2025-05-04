@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import xyz.mackan.crystallurgy.Constants;
 import xyz.mackan.crystallurgy.CrystallurgyCommon;
+import xyz.mackan.crystallurgy.forge.client.gui.FluidSynthesizerScreen;
 import xyz.mackan.crystallurgy.forge.client.gui.ResonanceForgeScreen;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModScreens;
 
@@ -19,6 +20,7 @@ public class CrystallurgyForgeClient {
 
         event.enqueueWork(() -> {
             HandledScreens.register(ForgeModScreens.RESONANCE_FORGE_SCREEN.get(), ResonanceForgeScreen::new);
+            HandledScreens.register(ForgeModScreens.FLUID_SYNTHESIZER_SCREEN_HANDLER.get(), FluidSynthesizerScreen::new);
         });
     }
 }

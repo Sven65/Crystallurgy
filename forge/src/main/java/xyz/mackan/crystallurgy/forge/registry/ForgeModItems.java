@@ -16,9 +16,10 @@ public class ForgeModItems {
     public static RegistryObject<BlockItem> RESONANCE_FORGE =
             ITEMS.register("resonance_forge", () -> new BlockItem(ForgeModBlocks.RESONANCE_FORGE.get(), new Item.Settings()));
 
-    public static void register(IEventBus modEventBus) {
-        //ITEMS.register("fluid_synthesizer", () -> ModItems.FLUID_SYNTHESIZER);
+    public static RegistryObject<BlockItem> FLUID_SYNTHESIZER =
+            ITEMS.register("fluid_synthesizer", () -> new BlockItem(ForgeModBlocks.FLUID_SYNTHESIZER.get(), new Item.Settings()));
 
+    public static void register(IEventBus modEventBus) {
         ITEMS.register("crystal_seed", () -> ModItems.CRYSTAL_SEED);
 
         ITEMS.register("crystal_seed_resonator_crystal", () -> ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL);

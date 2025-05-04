@@ -20,7 +20,7 @@ public class ForgeModItemGroup {
             .icon(() -> new ItemStack(ModItems.DIAMOND_RESONATOR_CRYSTAL)) // Tab icon (using an item as the icon)
             .entries(((displayContext, entries) -> {
                 entries.add(ForgeModItems.RESONANCE_FORGE.get());
-                //entries.add(ModItems.FLUID_SYNTHESIZER);
+                entries.add(ForgeModItems.FLUID_SYNTHESIZER.get());
                 entries.add(ModItems.CRYSTAL_SEED);
                 entries.add(ForgeModFluids.CRYSTAL_FLUID_BUCKET.get());
                 entries.add(ForgeModFluids.COOLING_FLUID_BUCKET.get());

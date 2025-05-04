@@ -18,7 +18,7 @@ public class ForgeModBlockEntities {
     public static final RegistryObject<BlockEntityType<ResonanceForgeBlockEntity>> RESONANCE_FORGE = BLOCK_ENTITIES.register("resonance_forge", () ->
             BlockEntityType.Builder.create(ResonanceForgeBlockEntity::new, ForgeModBlocks.RESONANCE_FORGE.get()).build(null));
 
-    public static final RegistryObject<BlockEntityType<ResonanceForgeBlockEntity>> FLUID_SYNTHESIZER = BLOCK_ENTITIES.register("fluid_synthesizer", () ->
+    public static final RegistryObject<BlockEntityType<FluidSynthesizerBlockEntity>> FLUID_SYNTHESIZER = BLOCK_ENTITIES.register("fluid_synthesizer", () ->
             BlockEntityType.Builder.create(FluidSynthesizerBlockEntity::new, ForgeModBlocks.FLUID_SYNTHESIZER.get()).build(null));
 
     public static void register(IEventBus eventBus) {
