@@ -165,9 +165,11 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
             if (fluidSynthesizerBlockEntity.inputFluidStorage.getFluid().getFluid() == Fluids.EMPTY) return;
 
             FluidStack drainStack = this.inputFluidStorage.getFluid();
-            drainStack.setAmount((int) amount);
+            drainStack.setAmount(this.inputFluidStorage.getFluidAmount() - 1000);
 
-            this.inputFluidStorage.drain(drainStack, IFluidHandler.FluidAction.EXECUTE);
+            this.inputFluidStorage.setFluid(drainStack);
+
+            this.sendFluidPacket("input", this.inputFluidStorage);
         }
     }
 
@@ -190,9 +192,12 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
             if (fluidSynthesizerBlockEntity.outputFluidStorage.isEmpty()) return 0;
 
             FluidStack drainStack = this.outputFluidStorage.getFluid();
-            drainStack.setAmount((int) amount);
+            drainStack.setAmount(this.outputFluidStorage.getFluidAmount() - 1000);
 
             this.outputFluidStorage.drain(drainStack, IFluidHandler.FluidAction.EXECUTE);
+
+            this.sendFluidPacket("output", this.inputFluidStorage);
+
             return amount;
         }
         return 0;
