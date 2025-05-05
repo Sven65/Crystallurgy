@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 
 import java.util.List;
 
@@ -39,7 +40,6 @@ public class CoolingFluidCauldronRecipe implements Recipe<SimpleInventory> {
         ItemStack first = inventory.getStack(0);
 
         Ingredient firstIngredient = recipeItems.get(0);
-
         return firstIngredient.test(first);
     }
 

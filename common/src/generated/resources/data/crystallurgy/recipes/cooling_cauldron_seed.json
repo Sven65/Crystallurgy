@@ -3,11 +3,11 @@
   "cooling_score": 5,
   "ingredients": [
     {
-      "item": "crystallurgy:crystal_seed"
+      "item": "crystallurgy:unrefined_crystal_seed_resonator_crystal"
     }
   ],
   "output": {
-    "item": "crystallurgy:unrefined_crystal_seed_resonator_crystal"
+    "item": "crystallurgy:crystal_seed_resonator_crystal"
   },
   "ticks": 100
 }

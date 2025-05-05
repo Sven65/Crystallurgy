@@ -35,7 +35,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     );
 
     private final static List<CoolingRecipeContainer> coolingCauldronRecipes = List.of(
-            new CoolingRecipeContainer("seed", ModItems.CRYSTAL_SEED, ModItems.UNREFINED_CRYSTAL_SEED_RESONATOR_CRYSTAL, 1, 100, 5),
+            new CoolingRecipeContainer("seed", ModItems.UNREFINED_CRYSTAL_SEED_RESONATOR_CRYSTAL, ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, 1, 100, 5),
             new CoolingRecipeContainer("coal", ModItems.UNREFINED_COAL_RESONATOR_CRYSTAL, ModItems.COAL_RESONATOR_CRYSTAL, 1, 100, 5),
             new CoolingRecipeContainer("iron", ModItems.UNREFINED_IRON_RESONATOR_CRYSTAL, ModItems.IRON_RESONATOR_CRYSTAL, 1, 100, 5),
             new CoolingRecipeContainer("gold", ModItems.UNREFINED_GOLD_RESONATOR_CRYSTAL, ModItems.GOLD_RESONATOR_CRYSTAL,1, 100, 5),

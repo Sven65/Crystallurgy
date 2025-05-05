@@ -22,6 +22,7 @@ import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidCauldronBlock;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidCauldronBlockEntity;
+import xyz.mackan.crystallurgy.forge.registry.ForgeModBlockEntities;
 import xyz.mackan.crystallurgy.registry.ModProperties;
 
 import java.util.Map;
@@ -74,5 +75,11 @@ public class CoolingFluidCauldronBlock extends AbstractFluidCauldronBlock implem
     @Override
     public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new CoolingFluidCauldronBlockEntity(pos, state);
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        return checkType(type, ForgeModBlockEntities.COOLING_FLUID_CAULDRON.get(),
+                (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1, blockEntity));
     }
 }

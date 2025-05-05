@@ -26,7 +26,7 @@ public class ModModelProvider extends FabricModelProvider {
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
         blockStateModelGenerator.registerNorthDefaultHorizontalRotation(FabricModBlocks.RESONANCE_FORGE);
-        //blockStateModelGenerator.registerNorthDefaultHorizontalRotation(FabricModBlocks.FLUID_SYNTHESIZER);
+        blockStateModelGenerator.registerNorthDefaultHorizontalRotation(FabricModBlocks.FLUID_SYNTHESIZER);
         //generateCauldronBlockState("crystal_cauldron", ModCauldron.CRYSTAL_CAULDRON, blockStateModelGenerator);
         //generateCauldronBlockState("cooling_cauldron", ModCauldron.COOLING_CAULDRON, blockStateModelGenerator);
     }
@@ -34,8 +34,8 @@ public class ModModelProvider extends FabricModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
         itemModelGenerator.register(ModItems.CRYSTAL_SEED, Models.GENERATED);
-        //itemModelGenerator.register(ModFluids.CRYSTAL_FLUID_BUCKET, Models.GENERATED);
-        //itemModelGenerator.register(ModFluids.COOLING_FLUID_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(ModFluids.CRYSTAL_FLUID_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(ModFluids.COOLING_FLUID_BUCKET, Models.GENERATED);
 
         itemModelGenerator.register(ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.COAL_RESONATOR_CRYSTAL, Models.GENERATED);
