@@ -1,4 +1,4 @@
-// 1.20.1	2025-05-05T17:04:09.8142191	Crystallurgy/Model Definitions
+// 1.20.1	2025-05-05T17:06:28.5766373	Crystallurgy/Model Definitions
 4de3399055184707f8ea60f963df29211bb0586c assets\crystallurgy\models\item\diamond_resonator_crystal.json
 df92670c36701ed489cbb6b90ecce76bcb217926 assets\crystallurgy\models\item\unrefined_emerald_resonator_crystal.json
 24e79e6021e46a045fb5cf960d651309afc28eba assets\crystallurgy\models\item\resonance_forge.json
@@ -22,8 +22,8 @@ ebccff2a9db597943d552c808f372180187bdf45 assets\crystallurgy\models\block\crysta
 5258ac1266a73a06b202df0fc2d7eec865b71819 assets\crystallurgy\blockstates\fluid_synthesizer.json
 d1cf97a426ce1c74e4bb90b94f56f51b6f9da914 assets\crystallurgy\blockstates\cooling_fluid_cauldron.json
 ebccff2a9db597943d552c808f372180187bdf45 assets\crystallurgy\models\block\cooling_cauldron_level0.json
-ebccff2a9db597943d552c808f372180187bdf45 assets\crystallurgy\models\block\crystal_cauldron_level0.json
 61d012437ccef2b933113c622b153c4ef1b00f6e assets\crystallurgy\models\item\unrefined_iron_resonator_crystal.json
+ebccff2a9db597943d552c808f372180187bdf45 assets\crystallurgy\models\block\crystal_cauldron_level0.json
 ebccff2a9db597943d552c808f372180187bdf45 assets\crystallurgy\models\block\cooling_cauldron_level3.json
 df64f057ecf894038b7a879dfb35acf243616577 assets\crystallurgy\blockstates\resonance_forge.json
 9c44143206bc6db11796a7b35e5a6f9f57edf85f assets\crystallurgy\models\item\quartz_resonator_crystal.json
