@@ -11,7 +11,7 @@ import xyz.mackan.crystallurgy.Constants;
 public class FabricModLootTables {
     public static void register() {
         LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
-            if (id.equals(LootTables.SIMPLE_DUNGEON_CHEST)) {
+            if (id.getPath().startsWith("chests/")) {
                 LootPool pool = LootPool.builder()
                         .with(LootTableEntry.builder(Constants.id("inject/dungeon_additions")))
                         .build();

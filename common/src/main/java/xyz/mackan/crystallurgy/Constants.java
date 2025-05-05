@@ -2,6 +2,7 @@ package xyz.mackan.crystallurgy;
 
 import net.minecraft.util.Identifier;
 
+
 public class Constants {
     public static final String MOD_ID = "crystallurgy";
 

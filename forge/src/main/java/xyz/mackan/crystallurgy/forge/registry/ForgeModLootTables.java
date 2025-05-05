@@ -15,7 +15,7 @@ public class ForgeModLootTables {
     public static void onLootTableLoad(LootTableLoadEvent event) {
         Identifier id = event.getName();
 
-        if (id.equals(LootTables.SIMPLE_DUNGEON_CHEST)) {
+        if (id.getPath().startsWith("chests/")) {
             LootPool pool = LootPool.builder()
                     .with(LootTableEntry.builder(Constants.id("inject/dungeon_additions")))
                     .build();
