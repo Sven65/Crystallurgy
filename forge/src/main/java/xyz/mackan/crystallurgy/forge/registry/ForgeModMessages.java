@@ -10,6 +10,7 @@ import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.forge.client.networking.ExtractFluidToCursorC2SPacket;
 import xyz.mackan.crystallurgy.forge.networking.ForgeEnergySyncS2CPacket;
 import xyz.mackan.crystallurgy.forge.networking.ForgeFluidSyncS2CPacket;
+import xyz.mackan.crystallurgy.forge.networking.ForgeSpawnParticleS2CPacket;
 
 public class ForgeModMessages {
     private static SimpleChannel INSTANCE;
@@ -46,6 +47,12 @@ public class ForgeModMessages {
                 .decoder(ExtractFluidToCursorC2SPacket::new)
                 .encoder(ExtractFluidToCursorC2SPacket::toBytes)
                 .consumerMainThread(ExtractFluidToCursorC2SPacket::handle)
+                .add();
+
+        net.messageBuilder(ForgeSpawnParticleS2CPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ForgeSpawnParticleS2CPacket::new)
+                .encoder(ForgeSpawnParticleS2CPacket::toBytes)
+                .consumerMainThread(ForgeSpawnParticleS2CPacket::handle)
                 .add();
     }
 

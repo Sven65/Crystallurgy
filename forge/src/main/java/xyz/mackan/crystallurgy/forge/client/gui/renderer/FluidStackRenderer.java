@@ -93,9 +93,6 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidStack> {
         Sprite[] sprites = ForgeHooksClient.getFluidSprites(MinecraftClient.getInstance().world, new BlockPos(0,0,0), state);
         Sprite sprite = sprites[0];
 
-        BlockColors blockColors = MinecraftClient.getInstance().getBlockColors();
-        //int color = blockColors.getColor(state.getBlockState(), MinecraftClient.getInstance().world, new BlockPos(0,0,0), 0);
-
         int color = IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor();
 
         final int drawHeight = (int) (fluid.getAmount() / (maxCapacity * 1F) * height);

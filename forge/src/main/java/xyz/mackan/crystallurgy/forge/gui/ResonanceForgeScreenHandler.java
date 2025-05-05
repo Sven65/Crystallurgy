@@ -7,10 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ArrayPropertyDelegate;
 import net.minecraft.screen.PropertyDelegate;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import xyz.mackan.crystallurgy.forge.block.ResonanceForgeBlockEntity;
-import xyz.mackan.crystallurgy.forge.registry.ForgeModItemTags;
+import xyz.mackan.crystallurgy.forge.registry.ForgeModTags;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModScreens;
 import xyz.mackan.crystallurgy.gui.AbstractResonanceForgeScreenHandler;
 
@@ -33,7 +32,7 @@ public class ResonanceForgeScreenHandler extends AbstractResonanceForgeScreenHan
         this.addSlot(new Slot(inventory, 0, 7, 35) {
             @Override
             public boolean canInsert(ItemStack stack) {
-                return stack.isIn(ForgeModItemTags.RESONATOR_CRYSTALS);
+                return stack.isIn(ForgeModTags.RESONATOR_CRYSTALS);
             }
         });
         this.addSlot(new Slot(inventory, 1, 29, 35));
