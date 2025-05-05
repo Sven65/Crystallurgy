@@ -63,9 +63,6 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipes(ModJEIRecipeTypes.RESONANCE_FORGE, forgeRecipes);
 
         List<FluidSynthesizerRecipe> synthesizerRecipes = recipeManager.listAllOfType(FluidSynthesizerRecipe.Type.INSTANCE);
-
-        CrystallurgyCommon.LOGGER.info("Synth recipe count: {}", synthesizerRecipes.size());
-
         registration.addRecipes(ModJEIRecipeTypes.FLUID_SYNTHESIZER, synthesizerRecipes);
 
         List<CrystalFluidCauldronRecipe> crystalFluidCauldronRecipes = recipeManager.listAllOfType(CrystalFluidCauldronRecipe.Type.INSTANCE);

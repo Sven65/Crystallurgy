@@ -190,8 +190,6 @@ public class FluidSynthesizerRecipe implements Recipe<SimpleInventory> {
             FluidUtils.DecodedFluid inputFluid = FluidUtils.fromJson(inputFluidObject);
             FluidUtils.DecodedFluid outputFluid = FluidUtils.fromJson(outputFluidObject);
 
-            CrystallurgyCommon.LOGGER.info("output? {}", outputFluid);
-
             for (int i = 0; i < ingredients.size(); i++) {
                 int count = ingredients.get(i).getAsJsonObject().get("count").getAsInt();
 
