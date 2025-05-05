@@ -7,6 +7,7 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.RandomChanceLootCondition;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.util.Identifier;
 import xyz.mackan.crystallurgy.Constants;
@@ -24,7 +25,8 @@ public class ModLootTableProvider extends SimpleFabricLootTableProvider {
         LootPool pool = LootPool.builder()
                 .rolls(ConstantLootNumberProvider.create(1))
                 .with(ItemEntry.builder(ModItems.CRYSTAL_SEED))
-                .conditionally(RandomChanceLootCondition.builder(0.3f)) // 30% chance
+                    .apply(SetCountLootFunction.builder(ConstantLootNumberProvider.create(2)))
+                    .conditionally(RandomChanceLootCondition.builder(0.3f)) // 30% chance
                 .build();
 
         // Create the full loot table builder

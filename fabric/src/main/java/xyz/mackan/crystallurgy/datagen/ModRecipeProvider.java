@@ -65,7 +65,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     );
 
     private final static List<FluidSynthesizerRecipeContainer> fluidSynthesizerRecipes = List.of(
-            new FluidSynthesizerRecipeContainer("crystal_fluid", new ItemStack(ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, 1), new ItemStack(Items.AMETHYST_SHARD, 16), new FluidStack(FluidVariant.of(Fluids.WATER), 1000), new FluidStack(FluidVariant.of(FabricModFluids.STILL_CRYSTAL_FLUID), 1000), 100, 100),
+            new FluidSynthesizerRecipeContainer("crystal_fluid", new ItemStack(ModItems.CRYSTAL_SEED, 1), new ItemStack(Items.AMETHYST_SHARD, 16), new FluidStack(FluidVariant.of(Fluids.WATER), 1000), new FluidStack(FluidVariant.of(FabricModFluids.STILL_CRYSTAL_FLUID), 1000), 100, 100),
             new FluidSynthesizerRecipeContainer("cooling_fluid", new ItemStack(Items.BLUE_ICE, 16), ItemStack.EMPTY, new FluidStack(FluidVariant.of(Fluids.WATER), 1000), new FluidStack(FluidVariant.of(FabricModFluids.STILL_COOLING_FLUID), 1000), 100, 100)
     );
 

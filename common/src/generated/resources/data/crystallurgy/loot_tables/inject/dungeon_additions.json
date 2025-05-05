@@ -15,6 +15,13 @@
           "name": "crystallurgy:crystal_seed"
         }
       ],
+      "functions": [
+        {
+          "add": false,
+          "count": 2.0,
+          "function": "minecraft:set_count"
+        }
+      ],
       "rolls": 1.0
     }
   ]
