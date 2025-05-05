@@ -1,4 +1,4 @@
-// 1.20.1	2025-05-05T17:06:28.5756355	Crystallurgy/Recipes
+// 1.20.1	2025-05-05T18:49:28.4631688	Crystallurgy/Recipes
 34220cc89f0ebb09a961c166221a9be70960e40e data\crystallurgy\recipes\cauldron_coal_unfinished_crystal.json
 08ed1741c61aee376604f0a311cef3b670a4e5c4 data\crystallurgy\recipes\resonance_forge_lapis.json
 013526a5b3ec3265425e2fd4a2a0c69045d41b52 data\crystallurgy\recipes\cauldron_redstone_unfinished_crystal.json
@@ -26,6 +26,7 @@ c98339bb5e98e4f21a2ece13988ff6cdbb5a4a7d data\crystallurgy\recipes\resonance_for
 a963e08a42227ccf1c33254872385f4b91000418 data\crystallurgy\recipes\resonance_forge_gold.json
 8717c4243b0a06c6f71acde8e53774534c00918b data\crystallurgy\recipes\cooling_cauldron_redstone.json
 ca0ecb58c721d6486bc928a801d89c3af97b4094 data\crystallurgy\recipes\cauldron_emerald_unfinished_crystal.json
-8d6a50182c4deacb0cd1249f98b10c104e1883ba data\crystallurgy\recipes\resonance_forge_quartz.json
 13cc2d673e513039fa88410cc2bf32fabfbdfc01 data\crystallurgy\recipes\cauldron_quartz_unfinished_crystal.json
+8d6a50182c4deacb0cd1249f98b10c104e1883ba data\crystallurgy\recipes\resonance_forge_quartz.json
+0a34ba6b69607da279b2ae6debdf1a423cd8f047 data\crystallurgy\recipes\fluid_synthesizer_crystal_fluid.json
 fd0e2349f85a2d0a7310154486ebb8d97149933a data\crystallurgy\recipes\resonance_forge_diamond.json

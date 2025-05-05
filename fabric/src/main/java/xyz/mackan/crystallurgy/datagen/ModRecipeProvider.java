@@ -12,6 +12,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Constants;
+import xyz.mackan.crystallurgy.registry.FabricModFluids;
 import xyz.mackan.crystallurgy.registry.ModItems;
 import xyz.mackan.crystallurgy.util.FluidStack;
 
@@ -64,7 +65,8 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     );
 
     private final static List<FluidSynthesizerRecipeContainer> fluidSynthesizerRecipes = List.of(
-            //new FluidSynthesizerRecipeContainer("crystal_fluid", ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 16), new FluidStack(FluidVariant.of(Fluids.WATER), 1000), new FluidStack(FluidVariant.of(ModFluids.STILL_CRYSTAL_FLUID), 1000), 100, 100)
+            new FluidSynthesizerRecipeContainer("crystal_fluid", ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 16), new FluidStack(FluidVariant.of(Fluids.WATER), 1000), new FluidStack(FluidVariant.of(FabricModFluids.STILL_CRYSTAL_FLUID), 1000), 100, 100)
+            // TODO: Add cooling fluid
     );
 
     public ModRecipeProvider(FabricDataOutput output) {

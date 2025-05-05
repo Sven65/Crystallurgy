@@ -11,6 +11,7 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
@@ -189,6 +190,8 @@ public class FluidSynthesizerRecipe implements Recipe<SimpleInventory> {
             FluidUtils.DecodedFluid inputFluid = FluidUtils.fromJson(inputFluidObject);
             FluidUtils.DecodedFluid outputFluid = FluidUtils.fromJson(outputFluidObject);
 
+            CrystallurgyCommon.LOGGER.info("output? {}", outputFluid);
+
             for (int i = 0; i < ingredients.size(); i++) {
                 int count = ingredients.get(i).getAsJsonObject().get("count").getAsInt();
 
@@ -215,14 +218,18 @@ public class FluidSynthesizerRecipe implements Recipe<SimpleInventory> {
             int ticks = buf.readInt();
             int energyPerTick = buf.readInt();
 
-            FluidUtils.DecodedFluid decodedInputFluid = FluidUtils.fromPacket(buf);
-            FluidUtils.DecodedFluid decodedOutputFluid = FluidUtils.fromPacket(buf);
+            int inputFluidId = buf.readVarInt();
+            int inputFluidAmount = buf.readInt();
 
+            int outputFluidId = buf.readVarInt();
+            int outputFluidAmount = buf.readInt();
 
+            Fluid inputFluid = Registries.FLUID.get(inputFluidId);
+            Fluid outputFluid = Registries.FLUID.get(outputFluidId);
 
             // TODO: Read fluid
 
-            return new FluidSynthesizerRecipe(id, inputs, inputCount, energyPerTick, ticks, decodedInputFluid.fluid(), decodedInputFluid.amount(), decodedOutputFluid.fluid(), decodedOutputFluid.amount());
+            return new FluidSynthesizerRecipe(id, inputs, inputCount, energyPerTick, ticks, inputFluid, inputFluidAmount, outputFluid, outputFluidAmount);
         }
 
         @Override
@@ -238,8 +245,11 @@ public class FluidSynthesizerRecipe implements Recipe<SimpleInventory> {
             buf.writeInt(recipe.ticks);
             buf.writeInt(recipe.energyPerTick);
 
-            new FluidUtils.DecodedFluid(recipe.inputFluid, recipe.inputFluidAmount).writePacket(buf);
-            new FluidUtils.DecodedFluid(recipe.outputFluid, recipe.outputFluidAmount).writePacket(buf);
+            buf.writeVarInt(Registries.FLUID.getRawId(recipe.inputFluid));
+            buf.writeInt(recipe.inputFluidAmount);
+
+            buf.writeVarInt(Registries.FLUID.getRawId(recipe.outputFluid));
+            buf.writeInt(recipe.outputFluidAmount);
         }
     }
 

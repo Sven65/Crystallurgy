@@ -45,6 +45,9 @@ import xyz.mackan.crystallurgy.recipe.FluidSynthesizerRecipe;
 import java.util.Optional;
 
 public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEntity implements NamedScreenHandlerFactory, EnergySyncableBlockEntity {
+    public static final int INPUT_FLUID_CAPACITY = 20000;
+    public static final int OUTPUT_FLUID_CAPACITY = 20000;
+
     public final ModEnergyStorage ENERGY_STORAGE = new ModEnergyStorage(ENERGY_CAPACITY, MAX_ENERGY_INSERT, MAX_ENERGY_EXTRACT) {
         @Override
         public void onEnergyChanged() {
@@ -57,7 +60,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         }
     };
 
-    public final FluidTank inputFluidStorage = new FluidTank(20000) {
+    public final FluidTank inputFluidStorage = new FluidTank(INPUT_FLUID_CAPACITY) {
         @Override
         protected void onContentsChanged() {
             markDirty();
@@ -73,7 +76,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         }
     };
 
-    public final FluidTank outputFluidStorage = new FluidTank(20000) {
+    public final FluidTank outputFluidStorage = new FluidTank(OUTPUT_FLUID_CAPACITY) {
         @Override
         protected void onContentsChanged() {
             markDirty();

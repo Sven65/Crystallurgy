@@ -21,6 +21,11 @@ public class FluidStack {
         this.amount = amount;
     }
 
+    public FluidStack(Fluid fluid, long amount) {
+        this.fluidVariant = FluidVariant.of(fluid);
+        this.amount = amount;
+    }
+
     public FluidVariant getFluidVariant() {
         return fluidVariant;
     }
