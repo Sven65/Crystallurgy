@@ -49,7 +49,7 @@ public class ForgeModMessages {
                 .consumerMainThread(ExtractFluidToCursorC2SPacket::handle)
                 .add();
 
-        net.messageBuilder(ForgeSpawnParticleS2CPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+        net.messageBuilder(ForgeSpawnParticleS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ForgeSpawnParticleS2CPacket::new)
                 .encoder(ForgeSpawnParticleS2CPacket::toBytes)
                 .consumerMainThread(ForgeSpawnParticleS2CPacket::handle)

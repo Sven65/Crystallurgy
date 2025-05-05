@@ -1,5 +1,8 @@
 package xyz.mackan.crystallurgy.block;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -7,13 +10,18 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.registry.FabricModBlockEntities;
 import xyz.mackan.crystallurgy.registry.FabricModFluids;
+import xyz.mackan.crystallurgy.registry.ModMessages;
 import xyz.mackan.crystallurgy.registry.ModProperties;
+import xyz.mackan.crystallurgy.util.CauldronUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -72,8 +80,14 @@ public class CoolingFluidCauldronBlockEntity extends AbstractFluidCauldronBlockE
         }
 
         if (this.hasFluid(world)) {
-            // TODO: Fix this packet
-            //ForgeModMessages.sendToClients(new ForgeSpawnParticleS2CPacket(getPos(), CauldronUtil.getItemStack(entity)));
+            PacketByteBuf buf = PacketByteBufs.create();
+
+            buf.writeBlockPos(getPos());
+            buf.writeItemStack(CauldronUtil.getItemStack(entity));
+
+            for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, getPos())) {
+                ServerPlayNetworking.send(player, ModMessages.SPAWN_PARTICLES, buf);
+            }
         }
 
         int coolingScore = getCoolingScore(world, pos);

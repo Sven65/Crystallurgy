@@ -9,6 +9,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.network.NetworkEvent;
 import org.joml.Vector3f;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
+import xyz.mackan.crystallurgy.forge.CrystallurgyForge;
+import xyz.mackan.crystallurgy.forge.block.CoolingFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.forge.block.CrystalFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.forge.block.EnergySyncableBlockEntity;
 import xyz.mackan.crystallurgy.forge.gui.FluidSynthesizerScreenHandler;
@@ -55,16 +58,20 @@ public class ForgeSpawnParticleS2CPacket {
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
-        context.enqueueWork(() -> {
-            BlockEntity entity = MinecraftClient.getInstance().world.getBlockEntity(pos);
-//            if (entity instanceof CoolingFluidCauldronBlockEntity blockEntity) {
-//                Vector3f color = TextureUtil.getAverageItemColor(itemStack);
-//                boolean isCrafting = blockEntity.getIsCrafting();
-//
-//                ParticleSpawnS2CPacket.spawnParticles(client.world, position, isCrafting ? 30 : 10, color);
-//            } else
+        if (!context.getDirection().getReceptionSide().isClient()) {
+            CrystallurgyCommon.LOGGER.info("World is NOT client.");
+            return true;
+        }
 
-            if (entity instanceof CrystalFluidCauldronBlockEntity blockEntity) {
+        context.enqueueWork(() -> {
+            assert MinecraftClient.getInstance().world != null;
+            BlockEntity entity = MinecraftClient.getInstance().world.getBlockEntity(pos);
+            if (entity instanceof CoolingFluidCauldronBlockEntity blockEntity) {
+                Vector3f color = TextureUtil.getAverageItemColor(itemStack);
+                boolean isCrafting = blockEntity.getIsCrafting();
+
+                ForgeSpawnParticleS2CPacket.spawnParticles(MinecraftClient.getInstance().world, pos, isCrafting ? 30 : 10, color);
+            } else if (entity instanceof CrystalFluidCauldronBlockEntity blockEntity) {
                 Vector3f color = TextureUtil.getAverageItemColor(itemStack);
                 boolean isCrafting = blockEntity.getIsCrafting();
 

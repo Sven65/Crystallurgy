@@ -14,10 +14,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidCauldronBlockEntity;
+import xyz.mackan.crystallurgy.forge.networking.ForgeSpawnParticleS2CPacket;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModBlockEntities;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModFluids;
+import xyz.mackan.crystallurgy.forge.registry.ForgeModMessages;
 import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.registry.ModProperties;
+import xyz.mackan.crystallurgy.util.CauldronUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -76,8 +79,7 @@ public class CoolingFluidCauldronBlockEntity extends AbstractFluidCauldronBlockE
         }
 
         if (this.hasFluid(world)) {
-            // TODO: Fix this packet
-            //ForgeModMessages.sendToClients(new ForgeSpawnParticleS2CPacket(getPos(), CauldronUtil.getItemStack(entity)));
+            ForgeModMessages.sendToClients(new ForgeSpawnParticleS2CPacket(getPos(), CauldronUtil.getItemStack(entity)));
         }
 
         int coolingScore = getCoolingScore(world, pos);

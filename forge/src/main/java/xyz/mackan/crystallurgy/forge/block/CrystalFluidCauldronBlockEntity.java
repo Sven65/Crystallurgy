@@ -41,8 +41,7 @@ public class CrystalFluidCauldronBlockEntity extends AbstractFluidCauldronBlockE
         }
 
         if (this.hasFluid(world)) {
-            // TODO: Fix this packet
-            //ForgeModMessages.sendToClients(new ForgeSpawnParticleS2CPacket(getPos(), CauldronUtil.getItemStack(entity)));
+            ForgeModMessages.sendToClients(new ForgeSpawnParticleS2CPacket(getPos(), CauldronUtil.getItemStack(entity)));
         }
 
         BlockState blockBelow = world.getBlockState(pos.down());
