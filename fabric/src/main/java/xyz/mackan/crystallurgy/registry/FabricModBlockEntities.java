@@ -7,6 +7,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import team.reborn.energy.api.EnergyStorage;
 import xyz.mackan.crystallurgy.Constants;
+import xyz.mackan.crystallurgy.block.CoolingFluidCauldronBlockEntity;
+import xyz.mackan.crystallurgy.block.CrystalFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.block.FluidSynthesizerBlockEntity;
 import xyz.mackan.crystallurgy.block.ResonanceForgeBlockEntity;
 
@@ -24,6 +26,22 @@ public class FabricModBlockEntities {
             FabricBlockEntityTypeBuilder.create(FluidSynthesizerBlockEntity::new,
                     FabricModBlocks.FLUID_SYNTHESIZER).build()
     );
+
+    public static BlockEntityType<CrystalFluidCauldronBlockEntity> CRYSTAL_FLUID_CAULDRON = Registry.register(
+            Registries.BLOCK_ENTITY_TYPE,
+            Constants.id("crystal_fluid_cauldron_entity"),
+
+            FabricBlockEntityTypeBuilder.create(CrystalFluidCauldronBlockEntity::new,
+                    FabricModCauldron.CRYSTAL_CAULDRON).build()
+    );
+
+    public static BlockEntityType<CoolingFluidCauldronBlockEntity> COOLING_FLUID_CAULDRON = Registry.register(
+            Registries.BLOCK_ENTITY_TYPE,
+            Constants.id("cooling_fluid_cauldron_entity"),
+            FabricBlockEntityTypeBuilder.create(CoolingFluidCauldronBlockEntity::new,
+                    FabricModCauldron.COOLING_CAULDRON).build()
+    );
+
 
     public static void register() {
         EnergyStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> blockEntity.energyStorage, RESONANCE_FORGE);

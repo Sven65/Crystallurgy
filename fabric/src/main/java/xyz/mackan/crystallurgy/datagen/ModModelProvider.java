@@ -10,8 +10,7 @@ import net.minecraft.data.client.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import xyz.mackan.crystallurgy.Constants;
-import xyz.mackan.crystallurgy.registry.FabricModBlocks;
-import xyz.mackan.crystallurgy.registry.ModItems;
+import xyz.mackan.crystallurgy.registry.*;
 
 import java.util.List;
 import java.util.Map;
@@ -27,15 +26,15 @@ public class ModModelProvider extends FabricModelProvider {
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
         blockStateModelGenerator.registerNorthDefaultHorizontalRotation(FabricModBlocks.RESONANCE_FORGE);
         blockStateModelGenerator.registerNorthDefaultHorizontalRotation(FabricModBlocks.FLUID_SYNTHESIZER);
-        //generateCauldronBlockState("crystal_cauldron", ModCauldron.CRYSTAL_CAULDRON, blockStateModelGenerator);
-        //generateCauldronBlockState("cooling_cauldron", ModCauldron.COOLING_CAULDRON, blockStateModelGenerator);
+        generateCauldronBlockState("crystal_cauldron", FabricModCauldron.CRYSTAL_CAULDRON, blockStateModelGenerator);
+        generateCauldronBlockState("cooling_cauldron", FabricModCauldron.COOLING_CAULDRON, blockStateModelGenerator);
     }
 
     @Override
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
         itemModelGenerator.register(ModItems.CRYSTAL_SEED, Models.GENERATED);
-        itemModelGenerator.register(ModFluids.CRYSTAL_FLUID_BUCKET, Models.GENERATED);
-        itemModelGenerator.register(ModFluids.COOLING_FLUID_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(FabricModFluids.CRYSTAL_FLUID_BUCKET, Models.GENERATED);
+        itemModelGenerator.register(FabricModFluids.COOLING_FLUID_BUCKET, Models.GENERATED);
 
         itemModelGenerator.register(ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, Models.GENERATED);
         itemModelGenerator.register(ModItems.COAL_RESONATOR_CRYSTAL, Models.GENERATED);
@@ -104,14 +103,14 @@ public class ModModelProvider extends FabricModelProvider {
         );
 
         // Create the blockstate definition with variants for each level
-//        VariantsBlockStateSupplier blockStateSupplier = VariantsBlockStateSupplier.create(cauldronBlock)
-//                .coordinate(BlockStateVariantMap.create(ModCauldron.FLUID_LEVEL)
-//                        .register(0, BlockStateVariant.create().put(VariantSettings.MODEL, level0))
-//                        .register(1, BlockStateVariant.create().put(VariantSettings.MODEL, level1))
-//                        .register(2, BlockStateVariant.create().put(VariantSettings.MODEL, level2))
-//                        .register(3, BlockStateVariant.create().put(VariantSettings.MODEL, level3)));
+        VariantsBlockStateSupplier blockStateSupplier = VariantsBlockStateSupplier.create(cauldronBlock)
+                .coordinate(BlockStateVariantMap.create(ModProperties.FLUID_LEVEL)
+                        .register(0, BlockStateVariant.create().put(VariantSettings.MODEL, level0))
+                        .register(1, BlockStateVariant.create().put(VariantSettings.MODEL, level1))
+                        .register(2, BlockStateVariant.create().put(VariantSettings.MODEL, level2))
+                        .register(3, BlockStateVariant.create().put(VariantSettings.MODEL, level3)));
 
-        //blockStateModelGenerator.blockStateCollector.accept(blockStateSupplier);
+        blockStateModelGenerator.blockStateCollector.accept(blockStateSupplier);
     }
 
     private Identifier createCauldronModel(String name, TextureMap textureMap, BlockStateModelGenerator blockStateModelGenerator) {

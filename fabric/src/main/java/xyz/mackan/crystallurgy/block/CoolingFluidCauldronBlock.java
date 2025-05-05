@@ -1,6 +1,7 @@
-package xyz.mackan.crystallurgy.forge.block;
+package xyz.mackan.crystallurgy.block;
 
-import net.minecraft.block.*;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -19,7 +20,7 @@ import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidCauldronBlock;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidCauldronBlockEntity;
-import xyz.mackan.crystallurgy.forge.registry.ForgeModBlockEntities;
+import xyz.mackan.crystallurgy.registry.FabricModBlockEntities;
 
 import java.util.Map;
 
@@ -75,7 +76,7 @@ public class CoolingFluidCauldronBlock extends AbstractFluidCauldronBlock implem
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, ForgeModBlockEntities.COOLING_FLUID_CAULDRON.get(),
+        return checkType(type, FabricModBlockEntities.COOLING_FLUID_CAULDRON,
                 (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1, blockEntity));
     }
 }

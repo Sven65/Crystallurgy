@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "fluid_level=0": {
+      "model": "crystallurgy:block/crystal_cauldron_level0"
+    },
+    "fluid_level=1": {
+      "model": "crystallurgy:block/crystal_cauldron_level1"
+    },
+    "fluid_level=2": {
+      "model": "crystallurgy:block/crystal_cauldron_level2"
+    },
+    "fluid_level=3": {
+      "model": "crystallurgy:block/crystal_cauldron_level3"
+    }
+  }
+}

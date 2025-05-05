@@ -6,12 +6,15 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.util.Identifier;
 import xyz.mackan.crystallurgy.gui.FluidSynthesizerScreen;
 import xyz.mackan.crystallurgy.gui.ResonanceForgeScreen;
 import xyz.mackan.crystallurgy.networking.ModNetworking;
+import xyz.mackan.crystallurgy.registry.FabricModBlockEntities;
 import xyz.mackan.crystallurgy.registry.FabricModFluids;
 import xyz.mackan.crystallurgy.registry.FabricModScreens;
+import xyz.mackan.crystallurgy.render.FluidCauldronRenderer;
 
 public class CrystallurgyClient implements ClientModInitializer {
 	@Override
@@ -45,6 +48,9 @@ public class CrystallurgyClient implements ClientModInitializer {
 
 		HandledScreens.register(FabricModScreens.RESONANCE_FORGE_SCREEN_HANDLER, ResonanceForgeScreen::new);
 		HandledScreens.register(FabricModScreens.FLUID_SYNTHESIZER_SCREEN_HANDLER, FluidSynthesizerScreen::new);
+
+		BlockEntityRendererFactories.register(FabricModBlockEntities.CRYSTAL_FLUID_CAULDRON, FluidCauldronRenderer::new);
+		BlockEntityRendererFactories.register(FabricModBlockEntities.COOLING_FLUID_CAULDRON, FluidCauldronRenderer::new);
 
 		ModNetworking.registerS2CPackets();
 	}

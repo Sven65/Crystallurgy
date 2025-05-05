@@ -27,17 +27,16 @@ public class CrystallurgyFabric implements ModInitializer {
 
         CrystallurgyCommon.init();
 
-
         FabricModScreens.register();
         FabricModBlocks.register();
         FabricModItems.register();
         FabricModRecipes.register();
-
-        FabricModBlockEntities.register();
+        // Loot Tables
         FabricModFluids.register();
-
         FabricModItemGroup.register();
 
+        FabricModCauldron.register();
+        FabricModBlockEntities.register();
 
         ModServerNetworking.registerC2SPackets();
     }

@@ -1,42 +1,51 @@
-package xyz.mackan.crystallurgy.forge.block;
+package xyz.mackan.crystallurgy.block;
 
-import net.minecraft.block.*;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidCauldronBlock;
-import xyz.mackan.crystallurgy.blocks.AbstractFluidCauldronBlockEntity;
-import xyz.mackan.crystallurgy.forge.registry.ForgeModBlockEntities;
+import xyz.mackan.crystallurgy.registry.FabricModBlockEntities;
 
 import java.util.Map;
 
-public class CoolingFluidCauldronBlock extends AbstractFluidCauldronBlock implements BlockEntityProvider {
-    public CoolingFluidCauldronBlock(Settings settings, Map<Item, CauldronBehavior> behaviorMap) {
+public class CrystalFluidCauldronBlock extends AbstractFluidCauldronBlock implements BlockEntityProvider {
+    public CrystalFluidCauldronBlock(Settings settings, Map<Item, CauldronBehavior> behaviorMap) {
         super(settings, behaviorMap);
+    }
+
+    @Override
+    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+        if (entity instanceof ItemEntity itemEntity) {
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof CrystalFluidCauldronBlockEntity cauldronEntity) {
+                cauldronEntity.addItemEntityToCauldron(itemEntity);
+            }
+        }
     }
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (hand != Hand.MAIN_HAND) return ActionResult.PASS;
-        ItemStack stack = player.getStackInHand(hand);
 
+        ItemStack stack = player.getStackInHand(hand);
         if (stack.isEmpty()) {
             if (!world.isClient()) {
                 BlockEntity be = world.getBlockEntity(pos);
-                if (be instanceof AbstractFluidCauldronBlockEntity cauldronEntity) {
+                if (be instanceof CrystalFluidCauldronBlockEntity cauldronEntity) {
                     cauldronEntity.handleEmptyHandInteraction(hand, player);
                 }
 
@@ -47,19 +56,10 @@ public class CoolingFluidCauldronBlock extends AbstractFluidCauldronBlock implem
         return super.onUse(state, world, pos, player, hand, hit);
     }
 
-    @Override
-    public void precipitationTick(BlockState state, World world, BlockPos pos, Biome.Precipitation precipitation) {
-        // Do nothing - don't let rain fill this cauldron
-    }
 
     @Override
-    protected boolean canBeFilledByDripstone(Fluid fluid) {
-        return false;
-    }
-
-    @Override
-    public Item asItem() {
-        return Items.CAULDRON;
+    public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new CrystalFluidCauldronBlockEntity(pos, state);
     }
 
     @Nullable
@@ -67,15 +67,9 @@ public class CoolingFluidCauldronBlock extends AbstractFluidCauldronBlock implem
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
     }
 
-
-    @Override
-    public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new CoolingFluidCauldronBlockEntity(pos, state);
-    }
-
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, ForgeModBlockEntities.COOLING_FLUID_CAULDRON.get(),
+        return checkType(type, FabricModBlockEntities.CRYSTAL_FLUID_CAULDRON,
                 (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1, blockEntity));
     }
 }
