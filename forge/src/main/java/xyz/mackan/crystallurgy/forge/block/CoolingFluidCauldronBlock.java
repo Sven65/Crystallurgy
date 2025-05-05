@@ -21,36 +21,25 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidCauldronBlock;
-import xyz.mackan.crystallurgy.forge.registry.ForgeModBlockEntities;
-import xyz.mackan.crystallurgy.forge.registry.ForgeModCauldron;
+import xyz.mackan.crystallurgy.blocks.AbstractFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.registry.ModProperties;
 
 import java.util.Map;
 
-public class CrystalFluidCauldronBlock extends AbstractFluidCauldronBlock implements BlockEntityProvider {
-    public CrystalFluidCauldronBlock(Settings settings, Map<Item, CauldronBehavior> behaviorMap) {
+public class CoolingFluidCauldronBlock extends AbstractFluidCauldronBlock implements BlockEntityProvider {
+    public CoolingFluidCauldronBlock(Settings settings, Map<Item, CauldronBehavior> behaviorMap) {
         super(settings, behaviorMap);
-    }
-
-    @Override
-    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        if (entity instanceof ItemEntity itemEntity) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof CrystalFluidCauldronBlockEntity cauldronEntity) {
-                cauldronEntity.addItemEntityToCauldron(itemEntity);
-            }
-        }
     }
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (hand != Hand.MAIN_HAND) return ActionResult.PASS;
-
         ItemStack stack = player.getStackInHand(hand);
+
         if (stack.isEmpty()) {
             if (!world.isClient()) {
                 BlockEntity be = world.getBlockEntity(pos);
-                if (be instanceof CrystalFluidCauldronBlockEntity cauldronEntity) {
+                if (be instanceof AbstractFluidCauldronBlockEntity cauldronEntity) {
                     cauldronEntity.handleEmptyHandInteraction(hand, player);
                 }
 
@@ -61,10 +50,19 @@ public class CrystalFluidCauldronBlock extends AbstractFluidCauldronBlock implem
         return super.onUse(state, world, pos, player, hand, hit);
     }
 
+    @Override
+    public void precipitationTick(BlockState state, World world, BlockPos pos, Biome.Precipitation precipitation) {
+        // Do nothing - don't let rain fill this cauldron
+    }
 
     @Override
-    public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new CrystalFluidCauldronBlockEntity(pos, state);
+    protected boolean canBeFilledByDripstone(Fluid fluid) {
+        return false;
+    }
+
+    @Override
+    public Item asItem() {
+        return Items.CAULDRON;
     }
 
     @Nullable
@@ -72,9 +70,9 @@ public class CrystalFluidCauldronBlock extends AbstractFluidCauldronBlock implem
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
     }
 
+
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, ForgeModBlockEntities.CRYSTAL_FLUID_CAULDRON.get(),
-                (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1, blockEntity));
+    public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new CoolingFluidCauldronBlockEntity(pos, state);
     }
 }

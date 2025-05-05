@@ -21,7 +21,6 @@ import java.util.Optional;
 
 public class CrystalFluidCauldronBlockEntity extends AbstractFluidCauldronBlockEntity {
     public boolean isHeating = false;
-    private boolean isCrafting;
 
     public CrystalFluidCauldronBlockEntity(BlockPos pos, BlockState state) {
         super(ForgeModBlockEntities.CRYSTAL_FLUID_CAULDRON.get(), pos, state);
@@ -87,14 +86,10 @@ public class CrystalFluidCauldronBlockEntity extends AbstractFluidCauldronBlockE
         world.spawnEntity(itemEntity);
     }
 
-    private void resetProgress() {
-        this.progress = 0;
-        this.maxProgress = 100;
+    @Override
+    protected void resetProgress() {
+        super.resetProgress();
         this.isCrafting = false;
-    }
-
-    private boolean hasCraftingFinished() {
-        return progress >= maxProgress;
     }
 
     private Optional<CrystalFluidCauldronRecipe> getCurrentRecipe() {
@@ -112,27 +107,4 @@ public class CrystalFluidCauldronBlockEntity extends AbstractFluidCauldronBlockE
 
         return recipe.isPresent();
     }
-
-    public void handleEmptyHandInteraction(Hand hand, PlayerEntity player) {
-        if (inventory.isEmpty()) {
-            return;
-        }
-
-        Optional<ItemStack> firstNonEmpty = inventory.stream()
-                .filter(stack -> !stack.isEmpty())
-                .findFirst();
-
-        if (firstNonEmpty.isPresent()) {
-            ItemStack stack = firstNonEmpty.get();
-            int index = inventory.indexOf(stack);
-            player.getInventory().insertStack(stack);
-
-            inventory.set(index, ItemStack.EMPTY);
-
-            this.markDirty();
-        }
-
-        this.isCrafting = false;
-    }
-
 }

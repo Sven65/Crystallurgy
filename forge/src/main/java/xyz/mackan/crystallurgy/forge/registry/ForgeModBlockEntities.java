@@ -9,6 +9,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import xyz.mackan.crystallurgy.Constants;
+import xyz.mackan.crystallurgy.forge.block.CoolingFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.forge.block.CrystalFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.forge.block.FluidSynthesizerBlockEntity;
 import xyz.mackan.crystallurgy.forge.block.ResonanceForgeBlockEntity;
@@ -24,6 +25,10 @@ public class ForgeModBlockEntities {
 
     public static final RegistryObject<BlockEntityType<CrystalFluidCauldronBlockEntity>> CRYSTAL_FLUID_CAULDRON = BLOCK_ENTITIES.register("crystal_fluid_cauldron_entity", () ->
             BlockEntityType.Builder.create(CrystalFluidCauldronBlockEntity::new, ForgeModCauldron.CRYSTAL_CAULDRON.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<CoolingFluidCauldronBlockEntity>> COOLING_FLUID_CAULDRON = BLOCK_ENTITIES.register("cooling_fluid_cauldron_entity", () ->
+            BlockEntityType.Builder.create(CoolingFluidCauldronBlockEntity::new, ForgeModCauldron.COOLING_CAULDRON.get()).build(null));
+
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);

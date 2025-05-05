@@ -26,6 +26,7 @@ public class CrystallurgyForgeClient {
         CrystallurgyCommon.LOGGER.info("Hello Forge Client");
 
         BlockEntityRendererFactories.register(ForgeModBlockEntities.CRYSTAL_FLUID_CAULDRON.get(), FluidCauldronRenderer::new);
+        BlockEntityRendererFactories.register(ForgeModBlockEntities.COOLING_FLUID_CAULDRON.get(), FluidCauldronRenderer::new);
 
         event.enqueueWork(() -> {
             HandledScreens.register(ForgeModScreens.RESONANCE_FORGE_SCREEN.get(), ResonanceForgeScreen::new);

@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventories;
@@ -14,6 +15,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.state.property.IntProperty;
+import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,11 +23,14 @@ import xyz.mackan.crystallurgy.Constants;
 import xyz.mackan.crystallurgy.registry.ModProperties;
 import xyz.mackan.crystallurgy.util.ImplementedInventory;
 
+import java.util.Optional;
+
 public class AbstractFluidCauldronBlockEntity extends BlockEntity implements ImplementedInventory {
     public final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
 
     public int maxProgress = 100;
     public int progress = 0;
+    protected boolean isCrafting;
 
     public AbstractFluidCauldronBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -180,5 +185,36 @@ public class AbstractFluidCauldronBlockEntity extends BlockEntity implements Imp
 
     public Fluid getFluid() {
         return Fluids.WATER;
+    }
+
+    public void handleEmptyHandInteraction(Hand hand, PlayerEntity player) {
+        if (inventory.isEmpty()) {
+            return;
+        }
+
+        Optional<ItemStack> firstNonEmpty = inventory.stream()
+                .filter(stack -> !stack.isEmpty())
+                .findFirst();
+
+        if (firstNonEmpty.isPresent()) {
+            ItemStack stack = firstNonEmpty.get();
+            int index = inventory.indexOf(stack);
+            player.getInventory().insertStack(stack);
+
+            inventory.set(index, ItemStack.EMPTY);
+
+            this.markDirty();
+        }
+
+        this.isCrafting = false;
+    }
+
+    protected void resetProgress() {
+        this.progress = 0;
+        this.maxProgress = 100;
+    }
+
+    protected boolean hasCraftingFinished() {
+        return progress >= maxProgress;
     }
 }

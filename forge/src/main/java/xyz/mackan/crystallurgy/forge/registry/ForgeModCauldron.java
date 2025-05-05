@@ -23,6 +23,7 @@ import net.minecraftforge.registries.RegistryObject;
 import xyz.mackan.crystallurgy.Constants;
 import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidCauldronBlockEntity;
+import xyz.mackan.crystallurgy.forge.block.CoolingFluidCauldronBlock;
 import xyz.mackan.crystallurgy.forge.block.CrystalFluidCauldronBlock;
 import xyz.mackan.crystallurgy.forge.block.CrystalFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.registry.ModProperties;
@@ -34,10 +35,13 @@ public class ForgeModCauldron {
     public static final DeferredRegister<Block> BLOCKS =  DeferredRegister.create(ForgeRegistries.BLOCKS, Constants.MOD_ID);
 
     public static final Map<Item, CauldronBehavior> CRYSTAL_CAULDRON_BEHAVIOR = CauldronBehavior.createMap();
+    public static final Map<Item, CauldronBehavior> COOLING_CAULDRON_BEHAVIOR = CauldronBehavior.createMap();
 
     public static final RegistryObject<Block> CRYSTAL_CAULDRON =
             BLOCKS.register("crystal_fluid_cauldron", () -> new CrystalFluidCauldronBlock(AbstractBlock.Settings.copy(Blocks.CAULDRON), CRYSTAL_CAULDRON_BEHAVIOR));
 
+    public static final RegistryObject<Block> COOLING_CAULDRON =
+            BLOCKS.register("cooling_fluid_cauldron", () -> new CoolingFluidCauldronBlock(AbstractBlock.Settings.copy(Blocks.CAULDRON), COOLING_CAULDRON_BEHAVIOR));
 
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
@@ -47,9 +51,11 @@ public class ForgeModCauldron {
     private static void onCommonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             setupCauldronBehaviors(ForgeModFluids.CRYSTAL_FLUID_BUCKET.get(), CRYSTAL_CAULDRON.get(), CRYSTAL_CAULDRON_BEHAVIOR);
+            setupCauldronBehaviors(ForgeModFluids.COOLING_FLUID_BUCKET.get(), COOLING_CAULDRON.get(), COOLING_CAULDRON_BEHAVIOR);
         });
     }
 
+    // TODO: Make crystal fluid insertable in cooling cauldron and vice versa.
     private static void setupCauldronBehaviors(Item bucket, Block newCauldron, Map<Item, CauldronBehavior> behaviorMap) {
         // Fill empty cauldron with crystal fluid
         CauldronBehavior.EMPTY_CAULDRON_BEHAVIOR.put(bucket, (state, world, pos, player, hand, stack) -> {
