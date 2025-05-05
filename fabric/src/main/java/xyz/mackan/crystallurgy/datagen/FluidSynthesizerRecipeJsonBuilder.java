@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 import xyz.mackan.crystallurgy.util.FluidStack;
 
@@ -56,13 +57,13 @@ public class FluidSynthesizerRecipeJsonBuilder {
 
                 JsonArray ingredientsArray = new JsonArray();
                 for (Ingredient ingredient : ingredients) {
+                    if (ingredient.isEmpty()) continue;
                     JsonObject ingredientJson = ingredient.toJson().getAsJsonObject();
                     ItemStack[] matching = ingredient.getMatchingStacks();
 
                     if (matching[0].getCount() > 0) {
                         ingredientJson.addProperty("count", matching[0].getCount());
                     }
-
 
                     ingredientsArray.add(ingredientJson);
                 }

@@ -65,8 +65,8 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     );
 
     private final static List<FluidSynthesizerRecipeContainer> fluidSynthesizerRecipes = List.of(
-            new FluidSynthesizerRecipeContainer("crystal_fluid", ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, new ItemStack(Items.AMETHYST_SHARD, 16), new FluidStack(FluidVariant.of(Fluids.WATER), 1000), new FluidStack(FluidVariant.of(FabricModFluids.STILL_CRYSTAL_FLUID), 1000), 100, 100)
-            // TODO: Add cooling fluid
+            new FluidSynthesizerRecipeContainer("crystal_fluid", new ItemStack(ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, 1), new ItemStack(Items.AMETHYST_SHARD, 16), new FluidStack(FluidVariant.of(Fluids.WATER), 1000), new FluidStack(FluidVariant.of(FabricModFluids.STILL_CRYSTAL_FLUID), 1000), 100, 100),
+            new FluidSynthesizerRecipeContainer("cooling_fluid", new ItemStack(Items.BLUE_ICE, 16), ItemStack.EMPTY, new FluidStack(FluidVariant.of(Fluids.WATER), 1000), new FluidStack(FluidVariant.of(FabricModFluids.STILL_COOLING_FLUID), 1000), 100, 100)
     );
 
     public ModRecipeProvider(FabricDataOutput output) {
@@ -134,7 +134,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     public void generateFluidSynthesizerRecipes(Consumer<RecipeJsonProvider> consumer) {
         fluidSynthesizerRecipes.forEach(recipe -> {
             List<Ingredient> ingredientList = new ArrayList<>(List.of(
-                    Ingredient.ofItems(recipe.baseItem),
+                    Ingredient.ofStacks(recipe.baseItem),
                     Ingredient.ofStacks(recipe.secondItem)
             ));
 
@@ -160,5 +160,5 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     private record CrystalRecipeContainer(String recipeId, Item baseItem, @Nullable Item secondItem, Item result, int count, int ticks) {}
     private record CoolingRecipeContainer(String recipeId, Item baseItem, Item result, int count, int ticks, int coolingScore) {}
     private record ForgeRecipeContainer(String recipeId, Item baseItem, ItemStack secondItem, @Nullable ItemStack dyeItem, Item result, int count, int ticks, int energyPerTicks) {}
-    private record FluidSynthesizerRecipeContainer(String recipeId, Item baseItem, ItemStack secondItem, FluidStack inputFluid, FluidStack result, int ticks, int energyPerTicks) {}
+    private record FluidSynthesizerRecipeContainer(String recipeId, ItemStack baseItem, ItemStack secondItem, FluidStack inputFluid, FluidStack result, int ticks, int energyPerTicks) {}
 }
