@@ -6,6 +6,8 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.BucketItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -108,7 +110,9 @@ public abstract class AbstractFluidSynthesizerBlockEntity extends BlockEntity im
     protected abstract Optional<FluidSynthesizerRecipe> getCurrentRecipe();
 
     private boolean hasFluidSourceInSlot(AbstractFluidSynthesizerBlockEntity entity) {
-        return entity.getStack(FLUID_INPUT_SLOT).getItem() == Items.WATER_BUCKET; // TODO: Check if is fluid bucket.
+        Item item = entity.getStack(FLUID_INPUT_SLOT).getItem();
+
+        return item instanceof BucketItem;
     }
 
     private boolean hasBucketInOutputSlot(AbstractFluidSynthesizerBlockEntity entity) {

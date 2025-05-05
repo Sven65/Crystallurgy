@@ -71,8 +71,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
 
         @Override
         public boolean isFluidValid(FluidStack stack) {
-            // TODO: Check this against recipe
-            return stack.getFluid() == Fluids.WATER;
+            return (this.getFluid().isEmpty() || this.getFluid().isFluidEqual(stack));
         }
     };
 
@@ -179,7 +178,10 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
     @Override
     protected <T extends AbstractFluidSynthesizerBlockEntity> boolean hasEnoughInputFluid(T entity) {
         if (entity instanceof FluidSynthesizerBlockEntity fluidSynthesizerBlockEntity) {
-            return fluidSynthesizerBlockEntity.inputFluidStorage.getFluidAmount() >= 500; // TODO: Recipe check, this is in millibuckets
+            if (!this.hasRecipe(entity)) return false;
+            Optional<FluidSynthesizerRecipe> recipe = getCurrentRecipe();
+
+            return fluidSynthesizerBlockEntity.inputFluidStorage.getFluidAmount() >= recipe.get().getInputFluidAmount();
         }
         return false;
     }
@@ -292,7 +294,6 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         return Text.translatable(ForgeModBlocks.FLUID_SYNTHESIZER.get().getTranslationKey());
     }
 
-    // TODO: Return correct screen
     @Override
     public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
         sendEnergyPacket();

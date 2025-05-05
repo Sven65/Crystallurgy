@@ -225,8 +225,6 @@ public class FluidSynthesizerRecipe implements Recipe<SimpleInventory> {
             Fluid inputFluid = Registries.FLUID.get(inputFluidId);
             Fluid outputFluid = Registries.FLUID.get(outputFluidId);
 
-            // TODO: Read fluid
-
             return new FluidSynthesizerRecipe(id, inputs, inputCount, energyPerTick, ticks, inputFluid, inputFluidAmount, outputFluid, outputFluidAmount);
         }
 

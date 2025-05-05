@@ -12,6 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
@@ -204,7 +205,9 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
     @Override
     protected <T extends AbstractFluidSynthesizerBlockEntity> boolean hasEnoughInputFluid(T entity) {
         if (entity instanceof FluidSynthesizerBlockEntity fluidSynthesizerBlockEntity) {
-            return fluidSynthesizerBlockEntity.inputFluidStorage.amount >= 500; // TODO: Recipe check, this is in millibuckets
+            if (!this.hasRecipe(entity)) return false;
+            Optional<FluidSynthesizerRecipe> recipe = getCurrentRecipe();
+            return fluidSynthesizerBlockEntity.inputFluidStorage.amount >= recipe.get().getInputFluidAmount();
         }
         return false;
     }
@@ -234,10 +237,10 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
     protected <T extends AbstractFluidSynthesizerBlockEntity> void transferFluidToInputStorage(T entity) {
         if (entity instanceof FluidSynthesizerBlockEntity fluidSynthesizerBlockEntity) {
             try (Transaction transaction = Transaction.openOuter()) {
-                // TODO: Insert what's actually in the bucket.
                 ItemStack bucketItem = entity.getStack(FLUID_INPUT_SLOT);
 
                 if (bucketItem.getItem() instanceof BucketItem bucket) {
+                    if (bucket.fluid == Fluids.EMPTY) return;
                     fluidSynthesizerBlockEntity.inputFluidStorage.insert(
                             FluidVariant.of(bucket.fluid),
                             FluidStack.convertDropletsToMb(FluidConstants.BUCKET),
@@ -323,7 +326,6 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         return Text.translatable(FabricModBlocks.FLUID_SYNTHESIZER.getTranslationKey());
     }
 
-    // TODO: Return correct screen
     @Override
     public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
         sendEnergyPacket();
