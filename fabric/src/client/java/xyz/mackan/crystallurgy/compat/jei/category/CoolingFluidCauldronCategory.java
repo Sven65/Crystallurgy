@@ -35,6 +35,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Constants;
@@ -42,6 +43,7 @@ import xyz.mackan.crystallurgy.compat.jei.EmptyBackground;
 import xyz.mackan.crystallurgy.compat.jei.ModJEIRecipeTypes;
 import xyz.mackan.crystallurgy.datagen.ModBlockTagProvider;
 import xyz.mackan.crystallurgy.gui.GUIElement;
+import xyz.mackan.crystallurgy.gui.renderer.IsometricRenderer;
 import xyz.mackan.crystallurgy.recipe.CoolingFluidCauldronRecipe;
 import xyz.mackan.crystallurgy.registry.FabricModCauldron;
 import xyz.mackan.crystallurgy.registry.FabricModFluids;
@@ -49,6 +51,7 @@ import xyz.mackan.crystallurgy.util.FluidStack;
 
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.Set;
 
 public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFluidCauldronRecipe> {
     private static final NumberFormat nf = NumberFormat.getIntegerInstance();
@@ -129,8 +132,8 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
         background.draw(guiGraphics, 0, 0);
 
         int ICON_SCALE = 16;
-        int cx = 75 + 8;
-        int cy = 35 + 16;
+        int cx = 75 + 16;
+        int cy = 35 + 16 + 16;
 
 
         guiGraphics.drawTexture(INFO_TEXTURE, this.infoIcon.x(), this.infoIcon.y(), 0, 0, this.infoIcon.width(), this.infoIcon.height(), 8, 8);
@@ -138,39 +141,26 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
         guiGraphics.drawTexture(ARROWS_TEXTURE, 73 - 4, 16 + 4, 0, 0, 16, 16);
         guiGraphics.drawTexture(ARROWS_TEXTURE, 93 + 16, 48, 16, 0, 16, 16);
 
-        renderBlockInGui(guiGraphics, Blocks.CAULDRON.getDefaultState(), cx, cy, 100, ICON_SCALE);
-
-        int[][] directions = {
-            {0, 1},   // North (positive Y direction)
-            {1, 0},   // East (positive X direction)
-            //{0, -1},  // South (negative Y direction)
-            {-1, 0},  // West (negative X direction)
-            //{0, 1},   // Up (positive Y direction)
-            //{0, -1}   // Down (negative Y direction)
-        };
-
-        for (int[] direction : directions) {
-            int x = cx + (direction[0] * ICON_SCALE);
-            int y = cy + (direction[1] * ICON_SCALE);
-            renderCoolingBlock(guiGraphics, x, y, 0, 16);
-        }
+       renderCoolingBlocks(guiGraphics, cx, cy, 0, ICON_SCALE);
     }
 
-    public void renderCoolingBlock(DrawContext guiGraphics, int x, int y, int extraZ, float scale) {
+    public void renderCoolingBlocks(DrawContext guiGraphics, int x, int y, int extraZ, float scale) {
         long time = MinecraftClient.getInstance().world.getTime();
         if (time - lastSwitchTime >= SWITCH_INTERVAL_TICKS) {
             lastSwitchTime = time;
             currentCoolerIndex = (currentCoolerIndex + 1) % coolingBlocks.size();
         }
 
-        Block currentBlock = coolingBlocks.get(currentCoolerIndex);
-        BlockState blockState = currentBlock.getDefaultState();
+        BlockPos startPos = new BlockPos(0, 0,0);
 
-        if (currentBlock instanceof FluidBlock) {
-            blockState = blockState.with(FluidBlock.LEVEL, 8);
-        }
+        List<BlockPos> cardinals = List.of(
+                startPos, startPos.down(), startPos.east(), startPos.west(), startPos.north(), startPos.south()
+        );
 
-        renderBlockInGui(guiGraphics, blockState, x, y, extraZ, scale);
+        MatrixStack matrices = guiGraphics.getMatrices();
+        IsometricRenderer.renderBlocks(matrices, x, y, 16, cardinals, pos -> pos.equals(startPos)
+                ? Blocks.CAULDRON.getDefaultState()
+                : coolingBlocks.get(currentCoolerIndex).getDefaultState());
     }
 
     public void renderBlockInGui(DrawContext context, BlockState state, int x, int y, int extraZ, float scale) {
