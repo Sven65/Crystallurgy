@@ -20,10 +20,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -65,6 +62,8 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
     private final List<Block> coolingBlocks;
 
     private final GUIElement infoIcon;
+
+    private final int INPUT_SLOT_Y = 16;
 
 
     public CoolingFluidCauldronCategory(IGuiHelper helper) {
@@ -124,39 +123,42 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
 
 
     // TODO: Make the render of this better... (may god help the one who attempts this one.)
+    // We want it to look like the lava mill in JEI from Extra Utils 2
     @Override
-    public void draw(CoolingFluidCauldronRecipe recipe, IRecipeSlotsView recipeSlotsView, DrawContext guiGraphics, double mouseX, double mouseY) {
+    public void draw(CoolingFluidCauldronRecipe recipe,
+                     IRecipeSlotsView recipeSlotsView,
+                     DrawContext guiGraphics,
+                     double mouseX, double mouseY) {
+        // — your existing JEI/GUIs —
         background.draw(guiGraphics, 0, 0);
 
         int ICON_SCALE = 16;
         int cx = 75 + 8;
-        int cy = 35 + 16;
+        int cy = 35 + 16 + 16;
 
+        guiGraphics.drawTexture(
+                INFO_TEXTURE,
+                this.infoIcon.x(), this.infoIcon.y(),
+                0, 0,
+                this.infoIcon.width(), this.infoIcon.height(),
+                8, 8
+        );
+        guiGraphics.drawTexture(ARROWS_TEXTURE, 73 - 4, INPUT_SLOT_Y, 0, 0, 16, 16);
+        guiGraphics.drawTexture(ARROWS_TEXTURE, 93 + 16, 48,        16, 0, 16, 16);
 
-        guiGraphics.drawTexture(INFO_TEXTURE, this.infoIcon.x(), this.infoIcon.y(), 0, 0, this.infoIcon.width(), this.infoIcon.height(), 8, 8);
+        // — begin block rendering —
+        MinecraftClient client = MinecraftClient.getInstance();
+        BlockRenderManager blockRenderer = client.getBlockRenderManager();
+        MatrixStack matrices = guiGraphics.getMatrices();
+        VertexConsumerProvider.Immediate buffers = guiGraphics.getVertexConsumers();
 
-        guiGraphics.drawTexture(ARROWS_TEXTURE, 73 - 4, 16 + 4, 0, 0, 16, 16);
-        guiGraphics.drawTexture(ARROWS_TEXTURE, 93 + 16, 48, 16, 0, 16, 16);
+        RenderSystem.enableDepthTest();
 
-        renderBlockInGui(guiGraphics, Blocks.CAULDRON.getDefaultState(), cx, cy, 100, ICON_SCALE);
+        // Central lava cube
+        renderGuiBlock(matrices, buffers, blockRenderer,
+                Blocks.CAULDRON.getDefaultState(),
+                cx, cy, 100, ICON_SCALE);
 
-        int[][] directions = {
-            {0, 1},   // North (positive Y direction)
-            {1, 0},   // East (positive X direction)
-            //{0, -1},  // South (negative Y direction)
-            {-1, 0},  // West (negative X direction)
-            //{0, 1},   // Up (positive Y direction)
-            //{0, -1}   // Down (negative Y direction)
-        };
-
-        for (int[] direction : directions) {
-            int x = cx + (direction[0] * ICON_SCALE);
-            int y = cy + (direction[1] * ICON_SCALE);
-            renderCoolingBlock(guiGraphics, x, y, 0, 16);
-        }
-    }
-
-    public void renderCoolingBlock(DrawContext guiGraphics, int x, int y, int extraZ, float scale) {
         long time = MinecraftClient.getInstance().world.getTime();
         if (time - lastSwitchTime >= SWITCH_INTERVAL_TICKS) {
             lastSwitchTime = time;
@@ -170,57 +172,65 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
             blockState = blockState.with(FluidBlock.LEVEL, 8);
         }
 
-        renderBlockInGui(guiGraphics, blockState, x, y, extraZ, scale);
+
+        renderGuiBlock(matrices, buffers, blockRenderer,
+                blockState,
+                cx - ICON_SCALE, cy, 0, ICON_SCALE);
+
+        renderGuiBlock(matrices, buffers, blockRenderer,
+                blockState,
+                cx + ICON_SCALE, cy, 0, ICON_SCALE);
+
+        renderGuiBlock(matrices, buffers, blockRenderer,
+                blockState,
+                cx, cy + ICON_SCALE, 0, ICON_SCALE);
+
+        // Flush and disable depth so the rest of JEI draws normally
+        buffers.draw();
+        RenderSystem.disableDepthTest();
+        // — end block rendering —
     }
 
-    public void renderBlockInGui(DrawContext context, BlockState state, int x, int y, int extraZ, float scale) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        BlockRenderManager blockRenderManager = client.getBlockRenderManager();
-        MatrixStack matrices = context.getMatrices();
-
+    // Helper to push, scale, and render a 16×16 block as a 'size'×'size' GUI cube
+    private void renderGuiBlock(MatrixStack matrices,
+                                VertexConsumerProvider.Immediate vertexConsumers,
+                                BlockRenderManager blockRenderManager,
+                                BlockState state,
+                                int x, int y, int z,
+                                int scale) {
         matrices.push();
 
-        // Move to position in GUI
-        matrices.translate(x, y, 100.0 + extraZ);
+        // 1) Translate into GUI-space and bring forward in Z
+        matrices.translate(x, y, 100);
+
+        // 2) Scale block down to desired size (100 = full block)
+        matrices.translate(-8, -8, z);
         matrices.scale(scale, scale, scale);
 
-        // Center and rotate
-        matrices.translate(0.5, 0.5, 0.5);
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180)); // flip to face forward
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(30));  // slight tilt
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(45));  // slight tilt
 
+        // 3) Tilt: 22.5° X and Y for pseudo-isometric look
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(30f));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(45f));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180f));
 
-        // Enable lighting & depth
-        DiffuseLighting.enableGuiDepthLighting();
-        RenderSystem.enableDepthTest();
-        VertexConsumerProvider.Immediate vertexConsumers = client.getBufferBuilders().getEntityVertexConsumers();
+        // 4) Centre the 16×16 block around origin
 
-        if (state.getFluidState() != null) {
-            // Get model & render
-            BakedModel model = blockRenderManager.getModel(state);
+        // 5) Get model and render with fullbright light
+        BakedModel model = blockRenderManager.getModel(state);
 
-
-            blockRenderManager.getModelRenderer().render(
-                    matrices.peek(),
-                    vertexConsumers.getBuffer(RenderLayers.getBlockLayer(state)),
-                    state,
-                    model,
-                    1f, 1f, 1f,
-                    0xF000F0,
-                    OverlayTexture.DEFAULT_UV
-            );
-
-            vertexConsumers.draw(); // flush
-
-        } else {
-            // TODO: Render fluid blocks in gui
-        }
-
+        blockRenderManager.getModelRenderer().render(
+                matrices.peek(),
+                vertexConsumers.getBuffer(RenderLayers.getBlockLayer(state)),
+                state,
+                model,
+                1f, 1f, 1f, // RGB
+                LightmapTextureManager.MAX_LIGHT_COORDINATE, // full brightness
+                OverlayTexture.DEFAULT_UV
+        );
 
         matrices.pop();
-        RenderSystem.disableDepthTest();
     }
+
 
     @Override
     public void getTooltip(ITooltipBuilder tooltip, CoolingFluidCauldronRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
