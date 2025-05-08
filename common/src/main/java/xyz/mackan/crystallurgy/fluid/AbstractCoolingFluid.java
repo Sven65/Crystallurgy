@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
-// TODO: Add random particles to placed fluid
 public abstract class AbstractCoolingFluid extends FlowableFluid {
     @Override
     protected boolean isInfinite(World world) {
@@ -67,5 +66,9 @@ public abstract class AbstractCoolingFluid extends FlowableFluid {
     @Override
     public boolean isStill(FluidState state) {
         return false;
+    }
+
+    public static int getColor() {
+        return 0x970A4757;
     }
 }

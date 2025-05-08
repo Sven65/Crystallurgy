@@ -8,6 +8,8 @@ import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.util.Identifier;
+import xyz.mackan.crystallurgy.fluid.AbstractCoolingFluid;
+import xyz.mackan.crystallurgy.fluid.AbstractCrystalFluid;
 import xyz.mackan.crystallurgy.gui.FluidSynthesizerScreen;
 import xyz.mackan.crystallurgy.gui.ResonanceForgeScreen;
 import xyz.mackan.crystallurgy.networking.ModNetworking;
@@ -26,7 +28,7 @@ public class CrystallurgyClient implements ClientModInitializer {
 				new SimpleFluidRenderHandler(
 						new Identifier("minecraft:block/water_still"),
 						new Identifier("minecraft:block/water_flow"),
-						0xA1B83BCE
+						AbstractCrystalFluid.getColor()
 				)
 		);
 
@@ -39,7 +41,7 @@ public class CrystallurgyClient implements ClientModInitializer {
 				new SimpleFluidRenderHandler(
 						new Identifier("minecraft:block/water_still"),
 						new Identifier("minecraft:block/water_flow"),
-						0x970A4757
+						AbstractCoolingFluid.getColor()
 				)
 		);
 

@@ -15,6 +15,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import xyz.mackan.crystallurgy.Constants;
+import xyz.mackan.crystallurgy.fluid.AbstractCoolingFluid;
+import xyz.mackan.crystallurgy.fluid.AbstractCrystalFluid;
 import xyz.mackan.crystallurgy.fluid.CoolingFluidBlock;
 import xyz.mackan.crystallurgy.forge.fluid.BaseFluid;
 import xyz.mackan.crystallurgy.forge.fluid.CrystalFluidBlock;
@@ -45,7 +47,7 @@ public class ForgeModFluids {
                 FLUIDS.register("crystal_fluid", () -> new ForgeFlowingFluid.Source(CRYSTAL_FLUID_PROPERTIES));
 
         CRYSTAL_FLUID_BUCKET = FLUID_ITEMS.register("crystal_fluid_bucket", () -> new BucketItem(STILL_CRYSTAL_FLUID, new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1)));
-        CRYSTAL_FLUID_TYPE = FLUID_TYPES.register("crystal_fluid", () -> new BaseFluid(0xA1B83BCE));
+        CRYSTAL_FLUID_TYPE = FLUID_TYPES.register("crystal_fluid", () -> new BaseFluid(AbstractCrystalFluid.getColor()));
 
         CRYSTAL_FLUID_BLOCK = FLUID_BLOCKS.register("crystal_fluid_block", () ->
                 new CrystalFluidBlock(STILL_CRYSTAL_FLUID.get(), AbstractBlock.Settings.copy(Blocks.WATER))
@@ -67,7 +69,7 @@ public class ForgeModFluids {
         // COOLING FLUID
 
         COOLING_FLUID_BUCKET = FLUID_ITEMS.register("cooling_fluid_bucket", () -> new BucketItem(STILL_COOLING_FLUID, new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1)));
-        COOLING_FLUID_TYPE = FLUID_TYPES.register("cooling_fluid", () -> new BaseFluid(0x970A4757));
+        COOLING_FLUID_TYPE = FLUID_TYPES.register("cooling_fluid", () -> new BaseFluid(AbstractCoolingFluid.getColor()));
 
         COOLING_FLUID_BLOCK = FLUID_BLOCKS.register("cooling_fluid_block", () ->
                 new CoolingFluidBlock(STILL_COOLING_FLUID.get(), AbstractBlock.Settings.copy(Blocks.WATER))

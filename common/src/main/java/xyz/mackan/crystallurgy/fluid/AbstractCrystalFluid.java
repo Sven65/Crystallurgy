@@ -15,8 +15,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
-// TODO: Add random particles to placed fluid
-// TODO: Make player take corrosion damage if in liquid
 public abstract class AbstractCrystalFluid extends FlowableFluid {
     @Override
     protected boolean isInfinite(World world) {
@@ -64,9 +62,12 @@ public abstract class AbstractCrystalFluid extends FlowableFluid {
         return false;
     }
 
-
     @Override
     public boolean isStill(FluidState state) {
         return false;
+    }
+
+    public static int getColor() {
+        return 0xA1B83BCE;
     }
 }
