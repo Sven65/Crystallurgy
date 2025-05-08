@@ -26,6 +26,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Constants;
@@ -40,9 +42,11 @@ import xyz.mackan.crystallurgy.forge.registry.ForgeModBlocks;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModFluids;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModMessages;
 import xyz.mackan.crystallurgy.forge.util.ModEnergyStorage;
+import xyz.mackan.crystallurgy.forge.util.StorageUtil;
 import xyz.mackan.crystallurgy.recipe.FluidSynthesizerRecipe;
 import xyz.mackan.crystallurgy.util.BlockUtils;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEntity implements NamedScreenHandlerFactory, EnergySyncableBlockEntity {
@@ -86,9 +90,17 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         }
     };
 
+
     private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
     private LazyOptional<IFluidHandler> lazyInputFluidHandler = LazyOptional.empty();
     private LazyOptional<IFluidHandler> lazyOutputFluidHandler = LazyOptional.empty();
+
+    private LazyOptional<IItemHandler> lazyMaterial0ItemHandler = LazyOptional.empty();
+    private LazyOptional<IItemHandler> lazyMaterial1ItemHandler = LazyOptional.empty();
+
+    private final ItemStackHandler material0ItemHandler = StorageUtil.createItemStorage(1, inventory, MATERIAL_0_SLOT, this::markDirty);
+    private final ItemStackHandler material1ItemHandler = StorageUtil.createItemStorage(1, inventory, MATERIAL_1_SLOT, this::markDirty);
+
 
     public FluidSynthesizerBlockEntity(BlockPos pos, BlockState state) {
         super(ForgeModBlockEntities.FLUID_SYNTHESIZER.get(), pos, state);
@@ -309,6 +321,8 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         lazyEnergyHandler.invalidate();
         lazyInputFluidHandler.invalidate();
         lazyOutputFluidHandler.invalidate();
+        lazyMaterial0ItemHandler.invalidate();
+        lazyMaterial1ItemHandler.invalidate();
     }
 
     @Override
@@ -317,6 +331,8 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         lazyEnergyHandler = LazyOptional.of(() -> ENERGY_STORAGE);
         lazyInputFluidHandler = LazyOptional.of(() -> inputFluidStorage);
         lazyOutputFluidHandler = LazyOptional.of(() -> outputFluidStorage);
+        lazyMaterial0ItemHandler = LazyOptional.of(() -> material0ItemHandler);
+        lazyMaterial1ItemHandler = LazyOptional.of(() -> material1ItemHandler);
     }
 
     @Override
@@ -325,11 +341,16 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
             return lazyEnergyHandler.cast();
         }
 
-        // TODO: Make this work with both in and out
         if(cap == ForgeCapabilities.FLUID_HANDLER) {
             BlockUtils.Side side = BlockUtils.getSideFromDirection(this.getCachedState(), direction);
             if (side == BlockUtils.Side.LEFT) return lazyInputFluidHandler.cast();
             if (side == BlockUtils.Side.RIGHT) return lazyOutputFluidHandler.cast();
+        }
+
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            BlockUtils.Side side = BlockUtils.getSideFromDirection(this.getCachedState(), direction);
+            if (side == BlockUtils.Side.TOP) return lazyMaterial0ItemHandler.cast();
+            if (side == BlockUtils.Side.BACK) return lazyMaterial1ItemHandler.cast();
         }
 
         return super.getCapability(cap, direction);

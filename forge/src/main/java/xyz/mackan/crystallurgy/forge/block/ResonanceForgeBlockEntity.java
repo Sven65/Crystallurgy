@@ -16,6 +16,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.mackan.crystallurgy.Constants;
@@ -27,8 +29,10 @@ import xyz.mackan.crystallurgy.forge.registry.ForgeModBlockEntities;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModBlocks;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModMessages;
 import xyz.mackan.crystallurgy.forge.util.ModEnergyStorage;
+import xyz.mackan.crystallurgy.forge.util.StorageUtil;
 import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 import xyz.mackan.crystallurgy.registry.ModMessages;
+import xyz.mackan.crystallurgy.util.BlockUtils;
 
 import java.util.Optional;
 
@@ -46,6 +50,16 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
     };
 
     private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
+
+    private LazyOptional<IItemHandler> lazyCatalystItemHandler = LazyOptional.empty();
+    private LazyOptional<IItemHandler> lazyRawMaterialItemHandler = LazyOptional.empty();
+    private LazyOptional<IItemHandler> lazyDyeItemHandler = LazyOptional.empty();
+    private LazyOptional<IItemHandler> lazyOutputItemHandler = LazyOptional.empty();
+
+    private final ItemStackHandler catalystItemHandler = StorageUtil.createItemStorage(1, inventory, CATALYST_SLOT, this::markDirty);
+    private final ItemStackHandler rawMaterialItemHandler = StorageUtil.createItemStorage(1, inventory, RAW_MATERIAL_SLOT, this::markDirty);
+    private final ItemStackHandler dyeItemHandler = StorageUtil.createItemStorage(1, inventory, DYE_SLOT, this::markDirty);
+    private final ItemStackHandler outputItemHandler = StorageUtil.createItemStorage(1, inventory, OUTPUT_SLOT, this::markDirty);
 
     public ResonanceForgeBlockEntity(BlockPos pos, BlockState state) {
         super(ForgeModBlockEntities.RESONANCE_FORGE.get(), pos, state);
@@ -119,13 +133,21 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
     @Override
     public void onLoad() {
         super.onLoad();
-        lazyEnergyHandler = LazyOptional.of(() -> ENERGY_STORAGE);
+        lazyEnergyHandler          = LazyOptional.of(() -> ENERGY_STORAGE);
+        lazyCatalystItemHandler    = LazyOptional.of(() -> catalystItemHandler);
+        lazyRawMaterialItemHandler = LazyOptional.of(() -> rawMaterialItemHandler);
+        lazyDyeItemHandler         = LazyOptional.of(() -> dyeItemHandler);
+        lazyOutputItemHandler      = LazyOptional.of(() -> outputItemHandler);
     }
 
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
         lazyEnergyHandler.invalidate();
+        lazyCatalystItemHandler.invalidate();
+        lazyRawMaterialItemHandler.invalidate();
+        lazyDyeItemHandler.invalidate();
+        lazyOutputItemHandler.invalidate();
     }
 
     @Override
@@ -141,11 +163,19 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction direction) {
         if (cap == ForgeCapabilities.ENERGY) {
             return lazyEnergyHandler.cast();
         }
 
-        return super.getCapability(cap, side);
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            BlockUtils.Side side = BlockUtils.getSideFromDirection(this.getCachedState(), direction);
+            if (side == BlockUtils.Side.LEFT) return lazyCatalystItemHandler.cast();
+            if (side == BlockUtils.Side.BACK) return lazyRawMaterialItemHandler.cast();
+            if (side == BlockUtils.Side.RIGHT) return lazyDyeItemHandler.cast();
+            if (side == BlockUtils.Side.BOTTOM) return lazyOutputItemHandler.cast();
+        }
+
+        return super.getCapability(cap, direction);
     }
 }
