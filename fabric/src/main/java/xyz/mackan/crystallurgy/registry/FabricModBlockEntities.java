@@ -5,12 +5,14 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.math.Direction;
 import team.reborn.energy.api.EnergyStorage;
 import xyz.mackan.crystallurgy.Constants;
 import xyz.mackan.crystallurgy.block.CoolingFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.block.CrystalFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.block.FluidSynthesizerBlockEntity;
 import xyz.mackan.crystallurgy.block.ResonanceForgeBlockEntity;
+import xyz.mackan.crystallurgy.util.BlockUtils;
 
 public class FabricModBlockEntities {
     public static BlockEntityType<ResonanceForgeBlockEntity> RESONANCE_FORGE = Registry.register(
@@ -47,7 +49,13 @@ public class FabricModBlockEntities {
         EnergyStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> blockEntity.energyStorage, RESONANCE_FORGE);
         EnergyStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> blockEntity.energyStorage, FLUID_SYNTHESIZER);
 
-        FluidStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> blockEntity.inputFluidStorage, FLUID_SYNTHESIZER);
-        FluidStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> blockEntity.outputFluidStorage, FLUID_SYNTHESIZER);
+        FluidStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> {
+            if (BlockUtils.getSideFromDirection(blockEntity.getCachedState(), direction) == BlockUtils.Side.LEFT) return blockEntity.inputFluidStorage;
+            return null;
+        }, FLUID_SYNTHESIZER);
+        FluidStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> {
+            if (BlockUtils.getSideFromDirection(blockEntity.getCachedState(), direction) == BlockUtils.Side.RIGHT) return blockEntity.outputFluidStorage;
+            return null;
+        }, FLUID_SYNTHESIZER);
     }
 }

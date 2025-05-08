@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -28,6 +29,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 import team.reborn.energy.api.base.SimpleEnergyStorage;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.blocks.AbstractFluidSynthesizerBlockEntity;
 import xyz.mackan.crystallurgy.gui.FluidSynthesizerScreenHandler;
 import xyz.mackan.crystallurgy.recipe.FluidSynthesizerRecipe;
@@ -59,7 +61,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
 
         @Override
         protected long getCapacity(FluidVariant transferVariant) {
-            return FluidStack.convertDropletsToMb(FluidConstants.BUCKET * 20);
+            return FluidConstants.BUCKET * 20;
         }
 
         @Override
@@ -68,6 +70,16 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
             if(!world.isClient()) {
                 sendFluidPacket("input", this);
             }
+        }
+
+        @Override
+        public long insert(FluidVariant insertedVariant, long maxAmount, TransactionContext transaction) {
+            CrystallurgyCommon.LOGGER.info("Insert: maxAmount: {}, transaction: {}", maxAmount);
+            long inserted = super.insert(insertedVariant, maxAmount, transaction);
+
+            CrystallurgyCommon.LOGGER.info("Inserted: {}", inserted);
+
+            return inserted;
         }
     };
 

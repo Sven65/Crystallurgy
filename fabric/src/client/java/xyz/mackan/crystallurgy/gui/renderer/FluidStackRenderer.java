@@ -36,9 +36,11 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidUtils.Decode
     private final int width;
     private final int height;
 
-    enum TooltipMode {
+    public enum TooltipMode {
         SHOW_AMOUNT,
         SHOW_AMOUNT_AND_CAPACITY,
+        SHOW_AMOUNT_FROM_DROPLETS,
+        SHOW_AMOUNT_AND_CAPACITY_FROM_DROPLETS,
         ITEM_LIST
     }
 
@@ -56,7 +58,7 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidUtils.Decode
         this(capacityMb, showCapacity ? TooltipMode.SHOW_AMOUNT_AND_CAPACITY : TooltipMode.SHOW_AMOUNT, width, height);
     }
 
-    private FluidStackRenderer(long capacityMb, TooltipMode tooltipMode, int width, int height) {
+    public FluidStackRenderer(long capacityMb, TooltipMode tooltipMode, int width, int height) {
         Preconditions.checkArgument(capacityMb > 0, "capacity must be > 0");
         Preconditions.checkArgument(width > 0, "width must be > 0");
         Preconditions.checkArgument(height > 0, "height must be > 0");
@@ -108,6 +110,7 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidUtils.Decode
         List<Text> tooltip = new ArrayList<>();
         Fluid fluidType = fluidStack.fluid();
         if (fluidType == null || fluidStack.isBlank() ) {
+            tooltip.add(Text.translatable("text.crystallurgy.empty"));
             return tooltip;
         }
 
@@ -120,6 +123,12 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidUtils.Decode
             tooltip.add(amountString.fillStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
             MutableText amountString = Text.translatable("text.crystallurgy.tooltip.liquid.amount", nf.format(amount));
+            tooltip.add(amountString.fillStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
+        } else if (tooltipMode == TooltipMode.SHOW_AMOUNT_FROM_DROPLETS) {
+            MutableText amountString = Text.translatable("text.crystallurgy.tooltip.liquid.amount", nf.format(amount / 81L));
+            tooltip.add(amountString.fillStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
+        } else if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY_FROM_DROPLETS) {
+            MutableText amountString = Text.translatable("text.crystallurgy.tooltip.liquid.amount.with.capacity", nf.format(amount / 81L), nf.format(capacityMb / 81L));
             tooltip.add(amountString.fillStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
         }
 

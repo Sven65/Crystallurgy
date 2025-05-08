@@ -54,8 +54,8 @@ public class FluidSynthesizerScreen extends HandledScreen<FluidSynthesizerScreen
     }
 
     private void assignFluidStackRenderers() {
-        inputFluidRenderer = new FluidStackRenderer(FluidStack.convertDropletsToMb(FluidConstants.BUCKET) * 20, true, 15, 66);
-        outputFluidRenderer = new FluidStackRenderer(FluidStack.convertDropletsToMb(FluidConstants.BUCKET) * 20, true, 15, 66);
+        inputFluidRenderer = new FluidStackRenderer(FluidConstants.BUCKET * 20, FluidStackRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY_FROM_DROPLETS, 15, 66);
+        outputFluidRenderer = new FluidStackRenderer(FluidConstants.BUCKET * 20, FluidStackRenderer.TooltipMode.SHOW_AMOUNT_AND_CAPACITY_FROM_DROPLETS, 15, 66);
     }
 
     public Text getTooltips() {
@@ -75,10 +75,10 @@ public class FluidSynthesizerScreen extends HandledScreen<FluidSynthesizerScreen
         renderEnergyBar(context, x, y);
 
         inputFluidRenderer.drawFluid(context, handler.inputFluidStack, x + 51, y + 9, 9, 66,
-                FluidStack.convertDropletsToMb(FluidConstants.BUCKET) * 20);
+                FluidConstants.BUCKET * 20);
 
         outputFluidRenderer.drawFluid(context, handler.outputFluidStack, x + 129, y + 9, 9, 66,
-                FluidStack.convertDropletsToMb(FluidConstants.BUCKET) * 20);
+                FluidConstants.BUCKET * 20);
     }
 
     @Override
