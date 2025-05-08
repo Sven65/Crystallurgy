@@ -50,5 +50,10 @@
 
   "text.crystallurgy.recipe.time": "Time: %ss",
   "text.crystallurgy.recipe.energy": "Energy: %s FE",
-  "text.crystallurgy.tooltip.required_cooling_score": "Requires a cooling score of %s"
+  "text.crystallurgy.tooltip.required_cooling_score": "Requires a cooling score of %s",
+
+  "death.attack.corrosion": "%1$s corroded into nothingness.",
+  "death.attack.corrosion.player": "%1$s was corroded by %2$s.",
+
+  "effect.crystallurgy.corrosion": "Corrosion"
 }

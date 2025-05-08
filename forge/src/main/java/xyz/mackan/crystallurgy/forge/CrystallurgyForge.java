@@ -16,6 +16,7 @@ public final class CrystallurgyForge {
         CrystallurgyCommon.LOGGER.info("Hello Forge World");
 
         CrystallurgyCommon.init();
+        ForgeModDamageType.register(modEventBus);
         ForgeModBlocks.register(modEventBus);
         ForgeModItems.register(modEventBus);
         ForgeModRecipes.register(modEventBus);

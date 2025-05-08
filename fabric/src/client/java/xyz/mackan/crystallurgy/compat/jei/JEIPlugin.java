@@ -28,8 +28,6 @@ import xyz.mackan.crystallurgy.registry.FabricModCauldron;
 
 import java.util.List;
 
-
-// TODO: Add Loot Table integration for crystal seed
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
     @Override

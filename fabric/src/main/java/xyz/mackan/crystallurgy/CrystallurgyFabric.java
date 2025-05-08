@@ -27,6 +27,7 @@ public class CrystallurgyFabric implements ModInitializer {
 
         CrystallurgyCommon.init();
 
+        FabricModDamageTypes.register();
         FabricModScreens.register();
         FabricModBlocks.register();
         FabricModItems.register();

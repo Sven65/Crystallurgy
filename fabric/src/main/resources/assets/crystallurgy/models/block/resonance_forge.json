@@ -1,9 +1,0 @@
-{
-	"parent": "block/orientable",
-	"textures": {
-		"top": "crystallurgy:block/resonance_forge_side",
-		"front": "crystallurgy:block/resonance_forge_front",
-		"side": "crystallurgy:block/resonance_forge_side",
-		"bottom": "crystallurgy:block/resonance_forge_side"
-	}
-}
