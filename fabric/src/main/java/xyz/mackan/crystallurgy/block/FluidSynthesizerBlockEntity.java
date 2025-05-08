@@ -219,7 +219,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         if (entity instanceof FluidSynthesizerBlockEntity fluidSynthesizerBlockEntity) {
             if (!this.hasRecipe(entity)) return false;
             Optional<FluidSynthesizerRecipe> recipe = getCurrentRecipe();
-            return fluidSynthesizerBlockEntity.inputFluidStorage.amount >= recipe.get().getInputFluidAmount();
+            return fluidSynthesizerBlockEntity.inputFluidStorage.amount >= recipe.get().getInputFluidAmount() * 81L;
         }
         return false;
     }
@@ -287,7 +287,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         this.removeStack(MATERIAL_1_SLOT, recipe.get().getCount(1));
 
         Fluid outputFluid = recipe.get().getOutputFluid();
-        int outputFluidAmount = recipe.get().getOutputFluidAmount();
+        int outputFluidAmount = recipe.get().getOutputFluidAmount() * 81;
 
         this.setOutputFluidLevel(outputFluid, outputFluidStorage.amount + outputFluidAmount);
     }
@@ -322,7 +322,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
 
     @Override
     protected void onCrafingFinished(AbstractFluidSynthesizerBlockEntity entity, Optional<FluidSynthesizerRecipe> recipe) {
-        this.extractInputFluid(entity, recipe.get().getInputFluidAmount());
+        this.extractInputFluid(entity, recipe.get().getInputFluidAmount() * 81L);
 
         sendFluidPacket("input", inputFluidStorage);
         sendFluidPacket("output", outputFluidStorage);
