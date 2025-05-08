@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
@@ -14,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
@@ -37,6 +40,7 @@ import xyz.mackan.crystallurgy.registry.FabricModBlockEntities;
 import xyz.mackan.crystallurgy.registry.FabricModBlocks;
 import xyz.mackan.crystallurgy.registry.ModMessages;
 import xyz.mackan.crystallurgy.util.FluidStack;
+import xyz.mackan.crystallurgy.util.StorageUtil;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -92,6 +96,9 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
             }
         }
     };
+
+    public final SingleVariantStorage<ItemVariant> material0StorageVariant = StorageUtil.createItemStorage(this.inventory, MATERIAL_0_SLOT, this::markDirty);
+    public final SingleVariantStorage<ItemVariant> material1StorageVariant = StorageUtil.createItemStorage(this.inventory, MATERIAL_1_SLOT, this::markDirty);
 
     public FluidSynthesizerBlockEntity(BlockPos pos, BlockState state) {
         super(FabricModBlockEntities.FLUID_SYNTHESIZER, pos, state);

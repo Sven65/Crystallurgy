@@ -23,7 +23,7 @@ import xyz.mackan.crystallurgy.util.ImplementedInventory;
 import java.util.Optional;
 
 public abstract class AbstractFluidSynthesizerBlockEntity extends BlockEntity implements ImplementedInventory {
-    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
+    protected final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
     public static final int ENERGY_CAPACITY = 100000;
     public static final int MAX_ENERGY_EXTRACT = 20000;
     public static final int MAX_ENERGY_INSERT = 10000;
@@ -161,6 +161,4 @@ public abstract class AbstractFluidSynthesizerBlockEntity extends BlockEntity im
     private boolean hasCraftingFinished() {
         return progress >= maxProgress;
     }
-
-
 }

@@ -122,6 +122,7 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidStack> {
         List<Text> tooltip = new ArrayList<>();
         Fluid fluidType = fluidStack.getFluid();
         if (fluidType == null || fluidStack.isEmpty() ) {
+            tooltip.add(Text.translatable("text.crystallurgy.empty"));
             return tooltip;
         }
 

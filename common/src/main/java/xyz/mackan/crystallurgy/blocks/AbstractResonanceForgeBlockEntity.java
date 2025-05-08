@@ -22,7 +22,7 @@ import xyz.mackan.crystallurgy.util.ImplementedInventory;
 import java.util.Optional;
 
 public abstract class AbstractResonanceForgeBlockEntity extends BlockEntity implements ImplementedInventory {
-    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
+    protected final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
     public static final int ENERGY_CAPACITY = 100000;
     public static final int MAX_ENERGY_EXTRACT = 20000;
     public static final int MAX_ENERGY_INSERT = 10000;
@@ -32,10 +32,10 @@ public abstract class AbstractResonanceForgeBlockEntity extends BlockEntity impl
         super(type, pos, state);
     }
 
-    private static final int CATALYST_SLOT = 0;
-    private static final int RAW_MATERIAL_SLOT = 1;
-    private static final int DYE_SLOT = 2;
-    private static final int OUTPUT_SLOT = 3;
+    protected static final int CATALYST_SLOT = 0;
+    protected static final int RAW_MATERIAL_SLOT = 1;
+    protected static final int DYE_SLOT = 2;
+    protected static final int OUTPUT_SLOT = 3;
 
     protected PropertyDelegate propertyDelegate;
 
@@ -50,40 +50,40 @@ public abstract class AbstractResonanceForgeBlockEntity extends BlockEntity impl
 
     protected abstract <T extends AbstractResonanceForgeBlockEntity> boolean hasEnoughEnergy(T entity);
 
-    @Override
-    public boolean canInsert(int slot, ItemStack stack, @Nullable Direction side) {
-        Direction localDir = this.getWorld().getBlockState(this.pos).get(AbstractResonanceForge.FACING);
-
-        if (side == Direction.UP || side == Direction.DOWN) {
-            return false;
-        }
-
-        // Insert top 1
-        // Right insert 1
-        // Left insert 0
-
-        // TODO: Check item tag on slot 0 to only allow crystals
-        // TODO: Make this work with slot 2
-
-        return switch (localDir) {
-            case EAST ->
-                    side.rotateYClockwise() == Direction.NORTH && slot == 1 ||
-                            side.rotateYClockwise() == Direction.EAST && slot == 1 ||
-                            side.rotateYClockwise() == Direction.WEST && slot == 0;
-            case SOUTH ->
-                    side == Direction.NORTH && slot == 1 ||
-                            side == Direction.EAST && slot == 1 ||
-                            side == Direction.WEST && slot == 0;
-            case WEST ->
-                    side.rotateYCounterclockwise() == Direction.NORTH && slot == 1 ||
-                            side.rotateYCounterclockwise() == Direction.EAST && slot == 1 ||
-                            side.rotateYCounterclockwise() == Direction.WEST && slot == 0;
-            default ->
-                    side.getOpposite() == Direction.NORTH && slot == 1 ||
-                            side.getOpposite() == Direction.EAST && slot == 1 ||
-                            side.getOpposite() == Direction.WEST && slot == 0;
-        };
-    }
+//    @Override
+//    public boolean canInsert(int slot, ItemStack stack, @Nullable Direction side) {
+//        Direction localDir = this.getWorld().getBlockState(this.pos).get(AbstractResonanceForge.FACING);
+//
+//        if (side == Direction.UP || side == Direction.DOWN) {
+//            return false;
+//        }
+//
+//        // Insert top 1
+//        // Right insert 1
+//        // Left insert 0
+//
+//        // TODO: Check item tag on slot 0 to only allow crystals
+//        // TODO: Make this work with slot 2
+//
+//        return switch (localDir) {
+//            case EAST ->
+//                    side.rotateYClockwise() == Direction.NORTH && slot == 1 ||
+//                            side.rotateYClockwise() == Direction.EAST && slot == 1 ||
+//                            side.rotateYClockwise() == Direction.WEST && slot == 0;
+//            case SOUTH ->
+//                    side == Direction.NORTH && slot == 1 ||
+//                            side == Direction.EAST && slot == 1 ||
+//                            side == Direction.WEST && slot == 0;
+//            case WEST ->
+//                    side.rotateYCounterclockwise() == Direction.NORTH && slot == 1 ||
+//                            side.rotateYCounterclockwise() == Direction.EAST && slot == 1 ||
+//                            side.rotateYCounterclockwise() == Direction.WEST && slot == 0;
+//            default ->
+//                    side.getOpposite() == Direction.NORTH && slot == 1 ||
+//                            side.getOpposite() == Direction.EAST && slot == 1 ||
+//                            side.getOpposite() == Direction.WEST && slot == 0;
+//        };
+//    }
 
     @Override
     public boolean canExtract(int slot, ItemStack stack, Direction side) {

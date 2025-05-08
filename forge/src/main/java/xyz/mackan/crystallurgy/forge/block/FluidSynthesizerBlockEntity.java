@@ -41,6 +41,7 @@ import xyz.mackan.crystallurgy.forge.registry.ForgeModFluids;
 import xyz.mackan.crystallurgy.forge.registry.ForgeModMessages;
 import xyz.mackan.crystallurgy.forge.util.ModEnergyStorage;
 import xyz.mackan.crystallurgy.recipe.FluidSynthesizerRecipe;
+import xyz.mackan.crystallurgy.util.BlockUtils;
 
 import java.util.Optional;
 
@@ -319,17 +320,19 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction direction) {
         if(cap == ForgeCapabilities.ENERGY) {
             return lazyEnergyHandler.cast();
         }
 
         // TODO: Make this work with both in and out
         if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            return lazyInputFluidHandler.cast();
+            BlockUtils.Side side = BlockUtils.getSideFromDirection(this.getCachedState(), direction);
+            if (side == BlockUtils.Side.LEFT) return lazyInputFluidHandler.cast();
+            if (side == BlockUtils.Side.RIGHT) return lazyOutputFluidHandler.cast();
         }
 
-        return super.getCapability(cap, side);
+        return super.getCapability(cap, direction);
     }
 
     @Override

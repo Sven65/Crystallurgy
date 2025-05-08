@@ -4,6 +4,8 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,6 +27,7 @@ import xyz.mackan.crystallurgy.recipe.ResonanceForgeRecipe;
 import xyz.mackan.crystallurgy.registry.FabricModBlockEntities;
 import xyz.mackan.crystallurgy.registry.FabricModBlocks;
 import xyz.mackan.crystallurgy.registry.ModMessages;
+import xyz.mackan.crystallurgy.util.StorageUtil;
 
 import java.util.Optional;
 
@@ -38,6 +41,11 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
             }
         }
     };
+
+    public final SingleVariantStorage<ItemVariant> catalystStorage = StorageUtil.createItemStorage(inventory, CATALYST_SLOT, this::markDirty);
+    public final SingleVariantStorage<ItemVariant> rawMaterialStorage = StorageUtil.createItemStorage(inventory, RAW_MATERIAL_SLOT, this::markDirty);
+    public final SingleVariantStorage<ItemVariant> dyeStorage = StorageUtil.createItemStorage(inventory, DYE_SLOT, this::markDirty);
+    public final SingleVariantStorage<ItemVariant> outputStorage = StorageUtil.createItemStorage(inventory, OUTPUT_SLOT, this::markDirty);
 
     public ResonanceForgeBlockEntity(BlockPos pos, BlockState state) {
         super(FabricModBlockEntities.RESONANCE_FORGE, pos, state);
@@ -65,6 +73,7 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
             }
         };
     }
+
 
     @Override
     protected void sendEnergyPacket() {
