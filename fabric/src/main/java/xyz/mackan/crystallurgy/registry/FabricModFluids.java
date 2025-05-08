@@ -15,6 +15,7 @@ import xyz.mackan.crystallurgy.Constants;
 import xyz.mackan.crystallurgy.fluid.CoolingFluid;
 import xyz.mackan.crystallurgy.fluid.CoolingFluidBlock;
 import xyz.mackan.crystallurgy.fluid.CrystalFluid;
+import xyz.mackan.crystallurgy.fluid.CrystalFluidBlock;
 
 public class FabricModFluids {
     public static FlowableFluid STILL_CRYSTAL_FLUID;
@@ -31,7 +32,7 @@ public class FabricModFluids {
         STILL_CRYSTAL_FLUID = Registry.register(Registries.FLUID, Constants.id("crystal_fluid"), new CrystalFluid.Still());
         FLOWING_CRYSTAL_FLUID = Registry.register(Registries.FLUID, Constants.id("flowing_crystal_fluid"), new CrystalFluid.Flowing());
 
-        CRYSTAL_FLUID_BLOCK = Registry.register(Registries.BLOCK, Constants.id("crystal_fluid_block"), new FluidBlock(STILL_CRYSTAL_FLUID, FabricBlockSettings.copyOf(Blocks.WATER)));
+        CRYSTAL_FLUID_BLOCK = Registry.register(Registries.BLOCK, Constants.id("crystal_fluid_block"), new CrystalFluidBlock(STILL_CRYSTAL_FLUID, FabricBlockSettings.copyOf(Blocks.WATER)));
         CRYSTAL_FLUID_BUCKET = Registry.register(Registries.ITEM, Constants.id("crystal_fluid_bucket"), new BucketItem(STILL_CRYSTAL_FLUID, new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)));
 
 

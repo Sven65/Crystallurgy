@@ -15,7 +15,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import xyz.mackan.crystallurgy.Constants;
+import xyz.mackan.crystallurgy.fluid.CoolingFluidBlock;
 import xyz.mackan.crystallurgy.forge.fluid.BaseFluid;
+import xyz.mackan.crystallurgy.forge.fluid.CrystalFluidBlock;
 
 public class ForgeModFluids {
     public static final DeferredRegister<Item> FLUID_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Constants.MOD_ID);
@@ -46,7 +48,7 @@ public class ForgeModFluids {
         CRYSTAL_FLUID_TYPE = FLUID_TYPES.register("crystal_fluid", () -> new BaseFluid(0xA1B83BCE));
 
         CRYSTAL_FLUID_BLOCK = FLUID_BLOCKS.register("crystal_fluid_block", () ->
-                new FluidBlock(() -> STILL_CRYSTAL_FLUID.get(), AbstractBlock.Settings.copy(Blocks.WATER))
+                new CrystalFluidBlock(STILL_CRYSTAL_FLUID.get(), AbstractBlock.Settings.copy(Blocks.WATER))
         );
 
 
@@ -68,7 +70,7 @@ public class ForgeModFluids {
         COOLING_FLUID_TYPE = FLUID_TYPES.register("cooling_fluid", () -> new BaseFluid(0x970A4757));
 
         COOLING_FLUID_BLOCK = FLUID_BLOCKS.register("cooling_fluid_block", () ->
-                new FluidBlock(() -> STILL_COOLING_FLUID.get(), AbstractBlock.Settings.copy(Blocks.WATER))
+                new CoolingFluidBlock(STILL_COOLING_FLUID.get(), AbstractBlock.Settings.copy(Blocks.WATER))
         );
 
         STILL_COOLING_FLUID =
