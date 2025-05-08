@@ -153,7 +153,7 @@ public class FluidSynthesizerScreen extends HandledScreen<FluidSynthesizerScreen
             if ((held.getItem() == Items.BUCKET)) {
                 FluidStack outputFluid = handler.outputFluidStack;
 
-                if (!outputFluid.fluidVariant.isBlank() && outputFluid.amount >= 1000) {
+                if (!outputFluid.fluidVariant.isBlank() && outputFluid.amount >= FluidConstants.BUCKET) {
                     PacketByteBuf buf = PacketByteBufs.create();
                     buf.writeBlockPos(handler.synthesizerBlockEntity.getPos());
                     buf.writeString("output");
@@ -169,13 +169,12 @@ public class FluidSynthesizerScreen extends HandledScreen<FluidSynthesizerScreen
             }
         }
 
-        // For input fluid (if needed)
         if (isMouseAboveArea((int) mouseX, (int) mouseY, x, y, 51, 9, inputFluidRenderer)) {
             ItemStack held = client.player.currentScreenHandler.getCursorStack();
             if ((held.getItem() == Items.BUCKET)) {
                 FluidStack inputFluid = handler.inputFluidStack;
 
-                if (!inputFluid.fluidVariant.isBlank() && inputFluid.amount >= 1000) {
+                if (!inputFluid.fluidVariant.isBlank() && inputFluid.amount >= FluidConstants.BUCKET) {
                     Item newItem = inputFluid.fluidVariant.getFluid().getBucketItem();
 
                     PacketByteBuf buf = PacketByteBufs.create();

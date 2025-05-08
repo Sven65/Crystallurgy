@@ -71,16 +71,6 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
                 sendFluidPacket("input", this);
             }
         }
-
-        @Override
-        public long insert(FluidVariant insertedVariant, long maxAmount, TransactionContext transaction) {
-            CrystallurgyCommon.LOGGER.info("Insert: maxAmount: {}, transaction: {}", maxAmount);
-            long inserted = super.insert(insertedVariant, maxAmount, transaction);
-
-            CrystallurgyCommon.LOGGER.info("Inserted: {}", inserted);
-
-            return inserted;
-        }
     };
 
     public final SingleVariantStorage<FluidVariant> outputFluidStorage = new SingleVariantStorage<FluidVariant>() {
@@ -91,7 +81,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
 
         @Override
         protected long getCapacity(FluidVariant transferVariant) {
-            return FluidStack.convertDropletsToMb(FluidConstants.BUCKET * 20);
+            return FluidConstants.BUCKET * 20;
         }
 
         @Override
@@ -255,7 +245,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
                     if (bucket.fluid == Fluids.EMPTY) return;
                     fluidSynthesizerBlockEntity.inputFluidStorage.insert(
                             FluidVariant.of(bucket.fluid),
-                            FluidStack.convertDropletsToMb(FluidConstants.BUCKET),
+                            FluidConstants.BUCKET,
                             transaction
                     );
 
@@ -294,11 +284,11 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
 
     @Override
     protected boolean canInsertFluidIntoOutputSlot(Fluid fluidOutput, int fluidOutputAmount) {
-        boolean sameFluid = outputFluidStorage.getResource().equals(fluidOutput)
+        boolean sameFluid = outputFluidStorage.getResource().getFluid().equals(fluidOutput)
                 || outputFluidStorage.getResource().isBlank();
 
         // Check if there's enough capacity left to insert the new amount
-        boolean hasSpace = outputFluidStorage.getCapacity() - outputFluidStorage.getAmount() >= fluidOutputAmount;
+        boolean hasSpace = outputFluidStorage.getCapacity() - outputFluidStorage.getAmount() >= fluidOutputAmount * 81L;
 
         return sameFluid && hasSpace;
     }
@@ -313,7 +303,7 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
 
 
         Optional<FluidSynthesizerRecipe> recipe = getWorld().getRecipeManager().getFirstMatch(FluidSynthesizerRecipe.Type.INSTANCE, inv, getWorld());
-        if (recipe.isPresent() && recipe.get().matchFluid(getWorld(), this.inputFluidStorage.variant.getFluid(), (int) this.inputFluidStorage.amount)) {
+        if (recipe.isPresent() && recipe.get().matchFluid(getWorld(), this.inputFluidStorage.variant.getFluid(), this.inputFluidStorage.amount)) {
             return recipe;
         } else {
             return Optional.empty();

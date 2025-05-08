@@ -32,7 +32,7 @@ public class ExtractFluidToCursorC2SPacket {
             SingleVariantStorage<FluidVariant> fluidTank = Objects.equals(tankName, "input") ? blockEntity.inputFluidStorage : blockEntity.outputFluidStorage;
             FluidVariant fluid = fluidTank.variant;
 
-            if (fluid == null || fluid.isBlank() || fluidTank.amount < FluidStack.convertDropletsToMb(FluidConstants.BUCKET)) return;
+            if (fluid == null || fluid.isBlank() || fluidTank.amount < FluidConstants.BUCKET) return;
 
             ItemStack cursor = screenHandler.getCursorStack();
             if (!cursor.isOf(Items.BUCKET) || cursor.getCount() != 1) return;
@@ -47,9 +47,9 @@ public class ExtractFluidToCursorC2SPacket {
             // Decrease fluid in block entity
 
             if (Objects.equals(tankName, "input")) {
-                blockEntity.extractInputFluid((FluidSynthesizerBlockEntity) be, FluidStack.convertDropletsToMb(FluidConstants.BUCKET));
+                blockEntity.extractInputFluid((FluidSynthesizerBlockEntity) be, FluidConstants.BUCKET);
             } else {
-                blockEntity.extractOutputFluid((FluidSynthesizerBlockEntity)be, FluidStack.convertDropletsToMb(FluidConstants.BUCKET));
+                blockEntity.extractOutputFluid((FluidSynthesizerBlockEntity)be, FluidConstants.BUCKET);
             }
 
             blockEntity.markDirty();

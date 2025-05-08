@@ -8,6 +8,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.math.Direction;
 import team.reborn.energy.api.EnergyStorage;
 import xyz.mackan.crystallurgy.Constants;
+import xyz.mackan.crystallurgy.CrystallurgyCommon;
 import xyz.mackan.crystallurgy.block.CoolingFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.block.CrystalFluidCauldronBlockEntity;
 import xyz.mackan.crystallurgy.block.FluidSynthesizerBlockEntity;
@@ -51,9 +52,6 @@ public class FabricModBlockEntities {
 
         FluidStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> {
             if (BlockUtils.getSideFromDirection(blockEntity.getCachedState(), direction) == BlockUtils.Side.LEFT) return blockEntity.inputFluidStorage;
-            return null;
-        }, FLUID_SYNTHESIZER);
-        FluidStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> {
             if (BlockUtils.getSideFromDirection(blockEntity.getCachedState(), direction) == BlockUtils.Side.RIGHT) return blockEntity.outputFluidStorage;
             return null;
         }, FLUID_SYNTHESIZER);

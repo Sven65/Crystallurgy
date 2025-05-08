@@ -72,7 +72,7 @@ public class FluidSynthesizerRecipe implements Recipe<SimpleInventory> {
         return list;
     }
 
-    public boolean matchFluid(World world, Fluid checkFluid, int checkAmount) {
+    public boolean matchFluid(World world, Fluid checkFluid, long checkAmount) {
         // inputFluid is from the recipe.
         if (world.isClient()) {
             return false;
