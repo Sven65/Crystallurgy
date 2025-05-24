@@ -1,0 +1,13 @@
+{
+  "type": "crystallurgy:cooling_fluid_cauldron_recipe",
+  "cooling_score": 5,
+  "ingredients": [
+    {
+      "item": "crystallurgy:unrefined_lapis_resonator_crystal"
+    }
+  ],
+  "output": {
+    "item": "crystallurgy:lapis_resonator_crystal"
+  },
+  "ticks": 100
+}

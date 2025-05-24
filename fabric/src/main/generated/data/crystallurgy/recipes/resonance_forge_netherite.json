@@ -1,0 +1,20 @@
+{
+  "type": "crystallurgy:resonance_forging",
+  "energy": {
+    "energy_per_tick": 10000,
+    "ticks": 600
+  },
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "crystallurgy:netherite_resonator_crystal"
+    },
+    {
+      "count": 8,
+      "item": "minecraft:diamond_block"
+    }
+  ],
+  "output": {
+    "item": "minecraft:netherite_ingot"
+  }
+}

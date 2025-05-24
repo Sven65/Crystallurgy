@@ -1,0 +1,13 @@
+{
+  "type": "crystallurgy:cooling_fluid_cauldron_recipe",
+  "cooling_score": 5,
+  "ingredients": [
+    {
+      "item": "crystallurgy:unrefined_redstone_resonator_crystal"
+    }
+  ],
+  "output": {
+    "item": "crystallurgy:redstone_resonator_crystal"
+  },
+  "ticks": 100
+}

@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+#issueTrackerURL = ""
+license = "MIT"
+
+[[mods]]
+modId = "crystallurgy"
+version = "${version}"
+displayName = "crystallurgy"
+authors = "Mackan"
+description = '''
+Crystallurgy is a Minecraft tech mod using RF energy and catalyst crystals to synthesize ores from raw materials. It offers a fresh approach to automation and resource management.
+'''
+#logoFile = ""
+
+[[dependencies.crystallurgy]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.crystallurgy]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,)"
+ordering = "NONE"
+side = "BOTH"

@@ -1,0 +1,23 @@
+{
+  "type": "crystallurgy:fluid_synthesizer",
+  "energy": {
+    "energy_per_tick": 100,
+    "ticks": 100
+  },
+  "ingredients": [
+    {
+      "count": 16,
+      "item": "minecraft:blue_ice"
+    }
+  ],
+  "inputFluid": {
+    "amount": 1000,
+    "fluid": "minecraft:water"
+  },
+  "output": {
+    "fluid": {
+      "amount": 1000,
+      "fluid": "crystallurgy:cooling_fluid"
+    }
+  }
+}

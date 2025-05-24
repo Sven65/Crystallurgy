@@ -1,0 +1,21 @@
+{
+  "type": "crystallurgy:resonance_forging",
+  "energy": {
+    "energy_per_tick": 500,
+    "ticks": 300
+  },
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "crystallurgy:crystal_seed_resonator_crystal"
+    },
+    {
+      "count": 64,
+      "item": "minecraft:charcoal"
+    }
+  ],
+  "output": {
+    "count": 2,
+    "item": "crystallurgy:crystal_seed"
+  }
+}

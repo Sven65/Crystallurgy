@@ -1,0 +1,44 @@
+{
+	"schemaVersion": 1,
+	"id": "crystallurgy",
+	"version": "${version}",
+	"name": "Crystallurgy",
+	"description": "Crystallurgy is a Minecraft tech mod using RF energy and catalyst crystals to synthesize ores from raw materials. It offers a fresh approach to automation and resource management.",
+	"authors": [
+		"Mackan"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/crystallurgy/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+          "xyz.mackan.crystallurgy.CrystallurgyFabric"
+		],
+		"client": [
+			"xyz.mackan.crystallurgy.CrystallurgyClient"
+		],
+		"fabric-datagen": [
+			"xyz.mackan.crystallurgy.CrystallurgyDataGenerator"
+		],
+		"jei_mod_plugin": [
+			"xyz.mackan.crystallurgy.compat.jei.JEIPlugin"
+		]
+	},
+	"mixins": [
+		"crystallurgy.mixins.json",
+		{
+			"config": "crystallurgy.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.13",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}

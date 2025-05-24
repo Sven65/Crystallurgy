@@ -1,0 +1,8 @@
+{
+  "message_id": "corrosion",
+  "scaling": "never",
+  "effects": {
+    "armor_penetration": 0.0
+  },
+  "exhaustion": 0.0
+}

@@ -1,0 +1,24 @@
+{
+  "type": "crystallurgy:resonance_forging",
+  "energy": {
+    "energy_per_tick": 2500,
+    "ticks": 140
+  },
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "crystallurgy:emerald_resonator_crystal"
+    },
+    {
+      "count": 16,
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:lime_dye"
+    }
+  ],
+  "output": {
+    "item": "minecraft:emerald"
+  }
+}
