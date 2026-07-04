@@ -122,8 +122,8 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
     }
 
 
-    // TODO: Make the render of this better... (may god help the one who attempts this one.)
-    // We want it to look like the lava mill in JEI from Extra Utils 2
+    // We want it to look like the lava mill in JEI from Extra Utils 2,
+    // rendered as a cauldron + 3 cooling blocks in a cross layout.
     @Override
     public void draw(CoolingFluidCauldronRecipe recipe,
                      IRecipeSlotsView recipeSlotsView,
@@ -133,8 +133,10 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
         background.draw(guiGraphics, 0, 0);
 
         int ICON_SCALE = 16;
-        int cx = 75 + 8;
-        int cy = 35 + 16 + 16;
+        int cx = 75 + 8;   // horizontal anchor (structure center)
+        int cy = 35 + 16;  // vertical anchor — lifted so the structure sits
+        // centered under the down-arrow instead of at the
+        // bottom edge of the panel
 
         guiGraphics.drawTexture(
                 INFO_TEXTURE,
@@ -150,14 +152,8 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
         MinecraftClient client = MinecraftClient.getInstance();
         BlockRenderManager blockRenderer = client.getBlockRenderManager();
         MatrixStack matrices = guiGraphics.getMatrices();
-        VertexConsumerProvider.Immediate buffers = guiGraphics.getVertexConsumers();
 
         RenderSystem.enableDepthTest();
-
-        // Central lava cube
-        renderGuiBlock(matrices, buffers, blockRenderer,
-                Blocks.CAULDRON.getDefaultState(),
-                cx, cy, 100, ICON_SCALE);
 
         long time = MinecraftClient.getInstance().world.getTime();
         if (time - lastSwitchTime >= SWITCH_INTERVAL_TICKS) {
@@ -172,62 +168,77 @@ public class CoolingFluidCauldronCategory implements IRecipeCategory<CoolingFlui
             blockState = blockState.with(FluidBlock.LEVEL, 8);
         }
 
+        // Render the structure like it exists in the world: cauldron in the
+        // middle, cooling blocks directly adjacent, all inside ONE shared
+        // isometric transform. Offsets are in block units (1.0 = one block),
+        // applied BEFORE the rotation, so the blocks connect seamlessly like
+        // placed blocks instead of floating separately.
+        renderStructure(matrices, client, blockRenderer, blockState, cx, cy, ICON_SCALE);
 
-        renderGuiBlock(matrices, buffers, blockRenderer,
-                blockState,
-                cx - ICON_SCALE, cy, 0, ICON_SCALE);
-
-        renderGuiBlock(matrices, buffers, blockRenderer,
-                blockState,
-                cx + ICON_SCALE, cy, 0, ICON_SCALE);
-
-        renderGuiBlock(matrices, buffers, blockRenderer,
-                blockState,
-                cx, cy + ICON_SCALE, 0, ICON_SCALE);
-
-        // Flush and disable depth so the rest of JEI draws normally
-        buffers.draw();
         RenderSystem.disableDepthTest();
         // — end block rendering —
     }
 
-    // Helper to push, scale, and render a 16×16 block as a 'size'×'size' GUI cube
-    private void renderGuiBlock(MatrixStack matrices,
-                                VertexConsumerProvider.Immediate vertexConsumers,
-                                BlockRenderManager blockRenderManager,
-                                BlockState state,
-                                int x, int y, int z,
-                                int scale) {
+    private void renderStructure(MatrixStack matrices,
+                                 MinecraftClient client,
+                                 BlockRenderManager blockRenderManager,
+                                 BlockState coolingState,
+                                 int cx, int cy, int scale) {
         matrices.push();
 
-        // 1) Translate into GUI-space and bring forward in Z
-        matrices.translate(x, y, 100);
+        // Anchor at the desired on-screen position, forward in Z so the
+        // structure draws above the background.
+        matrices.translate(cx, cy, 100);
 
-        // 2) Scale block down to desired size (100 = full block)
-        matrices.translate(-8, -8, z);
-        matrices.scale(scale, scale, scale);
+        // One block model spans 0..1 in model space, so scale = pixels per
+        // block. Negative Y because the GUI Y-axis points down.
+        matrices.scale(scale, -scale, scale);
 
-
-        // 3) Tilt: 22.5° X and Y for pseudo-isometric look
+        // Isometric camera: pitch down 30°, yaw 45°.
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(30f));
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(45f));
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180f));
 
-        // 4) Centre the 16×16 block around origin
+        // Center the middle block on the origin.
+        matrices.translate(-0.5f, -0.5f, -0.5f);
 
-        // 5) Get model and render with fullbright light
+        // Cauldron in the middle, facing the user...
+        renderBlockAt(matrices, client, blockRenderManager,
+                Blocks.CAULDRON.getDefaultState(), 0, 0, 0);
+
+        // ...cooling blocks to its left, right, and in front + behind.
+        renderBlockAt(matrices, client, blockRenderManager, coolingState, -1,  0,  0);
+        renderBlockAt(matrices, client, blockRenderManager, coolingState,  1,  0,  0);
+        renderBlockAt(matrices, client, blockRenderManager, coolingState,  0,  0, -1); // behind
+        renderBlockAt(matrices, client, blockRenderManager, coolingState,  0,  0,  1); // in front
+
+        matrices.pop();
+    }
+
+    // Renders one block at an integer block-space offset inside the current
+    // (already rotated/scaled) structure transform. Own buffer + immediate
+    // flush per block so translucent faces render fully.
+    private void renderBlockAt(MatrixStack matrices,
+                               MinecraftClient client,
+                               BlockRenderManager blockRenderManager,
+                               BlockState state,
+                               int bx, int by, int bz) {
+        matrices.push();
+        matrices.translate(bx, by, bz);
+
+        VertexConsumerProvider.Immediate buffers = client.getBufferBuilders().getEntityVertexConsumers();
+
         BakedModel model = blockRenderManager.getModel(state);
-
         blockRenderManager.getModelRenderer().render(
                 matrices.peek(),
-                vertexConsumers.getBuffer(RenderLayers.getBlockLayer(state)),
+                buffers.getBuffer(RenderLayers.getBlockLayer(state)),
                 state,
                 model,
-                1f, 1f, 1f, // RGB
+                1f, 1f, 1f,
                 LightmapTextureManager.MAX_LIGHT_COORDINATE, // full brightness
                 OverlayTexture.DEFAULT_UV
         );
 
+        buffers.draw();
         matrices.pop();
     }
 
