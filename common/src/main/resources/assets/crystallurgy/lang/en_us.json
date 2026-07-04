@@ -44,6 +44,9 @@
   "fluid.crystallurgy.crystal_fluid": "Crystal Fluid",
   "fluid.crystallurgy.cooling_fluid": "Cooling Fluid",
 
+  "fluid_type.crystallurgy.crystal_fluid": "Crystal Fluid",
+  "fluid_type.crystallurgy.cooling_fluid": "Cooling Fluid",
+
   "text.crystallurgy.item_group": "Crystallurgy",
   "text.crystallurgy.tooltip.liquid.amount.with.capacity": "%s / %s mB",
   "text.crystallurgy.tooltip.liquid.amount": "%s mB",

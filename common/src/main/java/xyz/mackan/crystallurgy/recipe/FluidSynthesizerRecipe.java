@@ -213,6 +213,10 @@ public class FluidSynthesizerRecipe implements Recipe<SimpleInventory> {
                 inputs.set(i, ingredient);
             }
 
+            for (int i = 0; i < size; i++) {
+                inputCount.set(i, buf.readVarInt());
+            }
+
             int ticks = buf.readInt();
             int energyPerTick = buf.readInt();
 
@@ -236,7 +240,11 @@ public class FluidSynthesizerRecipe implements Recipe<SimpleInventory> {
                 ing.write(buf);
             }
 
-            buf.writeItemStack(recipe.getOutput(null));
+            for (int count : recipe.recipeItemCount) {
+                buf.writeVarInt(count);
+            }
+
+            //buf.writeItemStack(recipe.getOutput(null));
 
             buf.writeInt(recipe.ticks);
             buf.writeInt(recipe.energyPerTick);
