@@ -169,6 +169,7 @@ public class ResonanceForgeBlockEntity extends AbstractResonanceForgeBlockEntity
         }
 
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            if (direction == null) return lazyOutputItemHandler.cast();
             BlockUtils.Side side = BlockUtils.getSideFromDirection(this.getCachedState(), direction);
             if (side == BlockUtils.Side.LEFT) return lazyCatalystItemHandler.cast();
             if (side == BlockUtils.Side.BACK) return lazyRawMaterialItemHandler.cast();

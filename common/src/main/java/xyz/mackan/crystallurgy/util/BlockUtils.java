@@ -16,6 +16,10 @@ public class BlockUtils {
     }
 
     public static Side getSideFromDirection(BlockState state, Direction direction) {
+        if (direction == null) {
+            return null;
+        }
+
         Direction facing = state.get(Properties.HORIZONTAL_FACING);
 
         // Map the world-relative direction to block sides based on the facing of the block

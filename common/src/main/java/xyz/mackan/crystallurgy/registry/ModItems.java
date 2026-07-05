@@ -10,7 +10,7 @@ public class ModItems {
     public static final Item CRYSTAL_SEED = new CrystalSeed();
 
     public static final Item CRYSTAL_SEED_RESONATOR_CRYSTAL = new CatalystCrystalItem(1);
-    public static final Item COAL_RESONATOR_CRYSTAL         = new CatalystCrystalItem(64);
+    public static final Item COAL_RESONATOR_CRYSTAL         = new CatalystCrystalItem(256);
     public static final Item IRON_RESONATOR_CRYSTAL         = new CatalystCrystalItem(24);
     public static final Item GOLD_RESONATOR_CRYSTAL         = new CatalystCrystalItem(24);
     public static final Item DIAMOND_RESONATOR_CRYSTAL      = new CatalystCrystalItem(32);

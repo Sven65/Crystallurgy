@@ -209,14 +209,11 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         if (entity instanceof FluidSynthesizerBlockEntity fluidSynthesizerBlockEntity) {
             if (fluidSynthesizerBlockEntity.outputFluidStorage.isEmpty()) return 0;
 
-            FluidStack drainStack = this.outputFluidStorage.getFluid();
-            drainStack.setAmount(this.outputFluidStorage.getFluidAmount() - 1000);
+            FluidStack drained = this.outputFluidStorage.drain((int) amount, IFluidHandler.FluidAction.EXECUTE);
 
-            this.outputFluidStorage.drain(drainStack, IFluidHandler.FluidAction.EXECUTE);
+            this.sendFluidPacket("output", this.outputFluidStorage);
 
-            this.sendFluidPacket("output", this.inputFluidStorage);
-
-            return amount;
+            return drained.getAmount();
         }
         return 0;
     }
@@ -378,7 +375,6 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
         super.readNbt(nbt);
 
         ENERGY_STORAGE.setEnergy(nbt.getInt(String.format("%s.stored_energy", Constants.MOD_ID)));
-        inputFluidStorage.readFromNBT(nbt);
 
         NbtCompound inputFluidNbt = nbt.getCompound("input_fluid");
         NbtCompound outputFluidNbt = nbt.getCompound("output_fluid");
