@@ -341,13 +341,15 @@ public class FluidSynthesizerBlockEntity extends AbstractFluidSynthesizerBlockEn
             return lazyEnergyHandler.cast();
         }
 
-        if(cap == ForgeCapabilities.FLUID_HANDLER) {
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            if (direction == null) return lazyInputFluidHandler.cast();  // or lazyOutputFluidHandler — overlay display only
             BlockUtils.Side side = BlockUtils.getSideFromDirection(this.getCachedState(), direction);
             if (side == BlockUtils.Side.LEFT) return lazyInputFluidHandler.cast();
             if (side == BlockUtils.Side.RIGHT) return lazyOutputFluidHandler.cast();
         }
 
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            if (direction == null) return lazyMaterial0ItemHandler.cast();
             BlockUtils.Side side = BlockUtils.getSideFromDirection(this.getCachedState(), direction);
             if (side == BlockUtils.Side.TOP) return lazyMaterial0ItemHandler.cast();
             if (side == BlockUtils.Side.BACK) return lazyMaterial1ItemHandler.cast();

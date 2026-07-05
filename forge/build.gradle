@@ -19,6 +19,12 @@ repositories {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
+    maven { url = "https://www.cursemaven.com" }
+
+    maven {
+        url = "https://modmaven.dev"
+        // Mekanism's mirror on modmaven, commonly used for CI/dev builds
+    }
 }
 
 configurations {
@@ -47,7 +53,11 @@ dependencies {
     // compile against the JEI API but do not include it at runtime
     modCompileOnlyApi("mezz.jei:jei-${rootProject.minecraft_version}-forge-api:${rootProject.jei_version}")
     // at runtime, use the full JEI jar for Fabric
-    modRuntimeOnly("mezz.jei:jei-${rootProject.minecraft_version}-forge:${rootProject.jei_version}")
+    //modRuntimeOnly("mezz.jei:jei-${rootProject.minecraft_version}-forge:${rootProject.jei_version}")
+    modRuntimeOnly("curse.maven:jei-238222:6075247")
+
+    modCompileOnly("mekanism:Mekanism:1.20.1-10.4.9.61:api")
+    modRuntimeOnly("mekanism:Mekanism:1.20.1-10.4.9.61:all")
 }
 
 processResources {

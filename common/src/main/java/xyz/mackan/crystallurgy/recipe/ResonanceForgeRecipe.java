@@ -153,10 +153,9 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
             DefaultedList<Ingredient> inputs = DefaultedList.ofSize(size, Ingredient.EMPTY);
             DefaultedList<Integer> inputCount = DefaultedList.ofSize(size, 1);
 
-            for (int i = 0; i < inputs.size(); i++) {
-                Ingredient ingredient = Ingredient.fromPacket(buf);
-
-                inputs.set(i, ingredient);
+            for (int i = 0; i < size; i++) {
+                inputs.set(i, Ingredient.fromPacket(buf));
+                inputCount.set(i, buf.readVarInt());
             }
 
             ItemStack output = buf.readItemStack();
@@ -169,10 +168,11 @@ public class ResonanceForgeRecipe implements Recipe<SimpleInventory> {
 
         @Override
         public void write(PacketByteBuf buf, ResonanceForgeRecipe recipe) {
-            buf.writeInt(recipe.getIngredients().size());
+            buf.writeInt(recipe.recipeItems.size());
 
-            for (Ingredient ing : recipe.getIngredients()) {
-                ing.write(buf);
+            for (int i = 0; i < recipe.recipeItems.size(); i++) {
+                recipe.recipeItems.get(i).write(buf);
+                buf.writeVarInt(recipe.getCount(i));
             }
 
             buf.writeItemStack(recipe.getOutput(null));

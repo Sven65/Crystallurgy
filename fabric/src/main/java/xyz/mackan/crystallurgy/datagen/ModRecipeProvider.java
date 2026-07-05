@@ -50,7 +50,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     );
 
     private final static List<ForgeRecipeContainer> forgeRecipes = List.of(
-            new ForgeRecipeContainer("seed", ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, new ItemStack(Items.CHARCOAL, 64), null, ModItems.CRYSTAL_SEED, 2, 15 * 20, 500),
+            new ForgeRecipeContainer("seed", ModItems.CRYSTAL_SEED_RESONATOR_CRYSTAL, new ItemStack(Items.CHARCOAL, 64), null, ModItems.CRYSTAL_SEED, 3, 15 * 20, 500),
             new ForgeRecipeContainer("coal", ModItems.COAL_RESONATOR_CRYSTAL, new ItemStack(Items.CHARCOAL, 64), null, Items.COAL, 1, 5 * 20, 100),
             new ForgeRecipeContainer("iron", ModItems.IRON_RESONATOR_CRYSTAL, new ItemStack(Items.COAL, 32), null, Items.IRON_INGOT, 1, 10 * 20, 700),
             new ForgeRecipeContainer("gold", ModItems.GOLD_RESONATOR_CRYSTAL, new ItemStack(Items.IRON_BLOCK, 8), null, Items.GOLD_INGOT, 1, 20 * 20, 1000),
