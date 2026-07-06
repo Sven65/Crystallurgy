@@ -50,66 +50,27 @@ public abstract class AbstractResonanceForgeBlockEntity extends BlockEntity impl
 
     protected abstract <T extends AbstractResonanceForgeBlockEntity> boolean hasEnoughEnergy(T entity);
 
-//    @Override
-//    public boolean canInsert(int slot, ItemStack stack, @Nullable Direction side) {
-//        Direction localDir = this.getWorld().getBlockState(this.pos).get(AbstractResonanceForge.FACING);
-//
-//        if (side == Direction.UP || side == Direction.DOWN) {
-//            return false;
-//        }
-//
-//        // Insert top 1
-//        // Right insert 1
-//        // Left insert 0
-//
-//        // TODO: Check item tag on slot 0 to only allow crystals
-//        // TODO: Make this work with slot 2
-//
-//        return switch (localDir) {
-//            case EAST ->
-//                    side.rotateYClockwise() == Direction.NORTH && slot == 1 ||
-//                            side.rotateYClockwise() == Direction.EAST && slot == 1 ||
-//                            side.rotateYClockwise() == Direction.WEST && slot == 0;
-//            case SOUTH ->
-//                    side == Direction.NORTH && slot == 1 ||
-//                            side == Direction.EAST && slot == 1 ||
-//                            side == Direction.WEST && slot == 0;
-//            case WEST ->
-//                    side.rotateYCounterclockwise() == Direction.NORTH && slot == 1 ||
-//                            side.rotateYCounterclockwise() == Direction.EAST && slot == 1 ||
-//                            side.rotateYCounterclockwise() == Direction.WEST && slot == 0;
-//            default ->
-//                    side.getOpposite() == Direction.NORTH && slot == 1 ||
-//                            side.getOpposite() == Direction.EAST && slot == 1 ||
-//                            side.getOpposite() == Direction.WEST && slot == 0;
-//        };
-//    }
-
     @Override
-    public boolean canExtract(int slot, ItemStack stack, Direction side) {
-        Direction localDir = this.getWorld().getBlockState(this.pos).get(AbstractResonanceForge.FACING);
-
-        if(side == Direction.UP) {
+    public boolean canInsert(int slot, ItemStack stack, @Nullable Direction side) {
+        if (slot == OUTPUT_SLOT) {
             return false;
         }
 
-        // Down extract 3
-        if(side == Direction.DOWN) {
-            return slot == 3;
+        if (this.getWorld() == null) {
+            return true;
         }
 
-        // bottom extract 3
-        // right extract 3
-        return switch (localDir) {
-            case EAST -> side.rotateYClockwise() == Direction.SOUTH && slot == 3 ||
-                    side.rotateYClockwise() == Direction.EAST && slot == 3;
-            case SOUTH -> side == Direction.SOUTH && slot == 3 ||
-                    side == Direction.EAST && slot == 3;
-            case WEST -> side.rotateYCounterclockwise() == Direction.SOUTH && slot == 3 ||
-                    side.rotateYCounterclockwise() == Direction.EAST && slot == 3;
-            default -> side.getOpposite() == Direction.SOUTH && slot == 3 ||
-                    side.getOpposite() == Direction.EAST && slot == 3;
-        };
+        // Only allow the item if some recipe actually expects it in this slot
+        return this.getWorld().getRecipeManager()
+                .listAllOfType(ResonanceForgeRecipe.Type.INSTANCE)
+                .stream()
+                .anyMatch(recipe -> recipe.getIngredients().size() > slot
+                        && recipe.getIngredients().get(slot).test(stack));
+    }
+
+    @Override
+    public boolean canExtract(int slot, ItemStack stack, Direction side) {
+        return slot == OUTPUT_SLOT;
     }
 
     private void resetProgress() {

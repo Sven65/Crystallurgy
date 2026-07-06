@@ -26,10 +26,14 @@ public class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
 
         getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
-                .add(FabricModBlocks.RESONANCE_FORGE);
+                .add(FabricModBlocks.RESONANCE_FORGE)
+                .add(FabricModBlocks.FLUID_SYNTHESIZER);
 
         getOrCreateTagBuilder(BlockTags.NEEDS_IRON_TOOL)
-                .add(FabricModBlocks.RESONANCE_FORGE);
+                .add(FabricModBlocks.RESONANCE_FORGE)
+                .add(FabricModBlocks.FLUID_SYNTHESIZER);
+
+
 
         this.getOrCreateTagBuilder(FLUID_CAULDRON_HEATERS)
                 .add(Blocks.FIRE)

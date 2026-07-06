@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "crystallurgy:resonance_forge"
+    "crystallurgy:resonance_forge",
+    "crystallurgy:fluid_synthesizer"
   ]
 }

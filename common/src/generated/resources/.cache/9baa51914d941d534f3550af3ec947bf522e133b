@@ -1,5 +1,5 @@
-// 1.20.1	2026-07-05T12:56:51.4676008	Crystallurgy/Tags for minecraft:block
-bae0099f082bc762b15cd9328f93554a04b138a2 data\minecraft\tags\blocks\needs_iron_tool.json
-bae0099f082bc762b15cd9328f93554a04b138a2 data\minecraft\tags\blocks\mineable\pickaxe.json
+// 1.20.1	2026-07-06T20:17:36.1439679	Crystallurgy/Tags for minecraft:block
+326187f75efaa377d21603564b69c9ddcd994230 data\minecraft\tags\blocks\needs_iron_tool.json
+326187f75efaa377d21603564b69c9ddcd994230 data\minecraft\tags\blocks\mineable\pickaxe.json
 bb7b9c8de671771405d4180db7cdca7cf82ee76b data\crystallurgy\tags\blocks\fluid_cauldron_heaters.json
 c3f29422af3ccb1de525883d0fe80aafee98515d data\crystallurgy\tags\blocks\cooling_blocks.json
